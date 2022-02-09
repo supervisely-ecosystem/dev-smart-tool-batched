@@ -63,21 +63,24 @@
             <json-viewer :value="{'state': state, 'data': data}"
                          style="position: fixed; top: 0; right: 0"></json-viewer>
 
+            <div style="display: flex; margin: 20px 0">
+                <h3>Smart Tool Segmentation batched</h3>
+                <el-button type="primary" size="mini" style="margin: 15px 10px;"
+                           @click="post('/get_image_from_dataset')">LOAD IMAGE
+                </el-button>
+            </div>
 
-            <h3>Smart Tool Segmentation batched</h3>
+            <p>{{state.widgets[2].mask}}</p>
 
             <div id="smart-tool-clickers-container"
                  style="display: flex; width:80%;
                      flex-direction: row;
                      flex-wrap: wrap">
-                {% for i in range(15) %}
+                {% for i in range(30) %}
                 {{{smart_tool.to_html(identifier = i) | safe }}}
                 {% endfor %}
             </div>
-            <!--            <div v-for="(n, i) in 10">-->
-            <!--                &lt;!&ndash;                {{ i.toString() }} "bla"&ndash;&gt;-->
-            <!--                <div> {{{smart_tool.to_html(identifier = 'smart_tool_${i}') | safe }}}</div>-->
-            <!--            </div>-->
+
 
 
         </template>
@@ -94,30 +97,32 @@
           <div style="width: 250px; height:250px; border: saddlebrown solid 1px;
                     display: flex;
                     flex-direction: column;
-                    align-items: center;">
+                    align-items: center;
+                    position: relative">
 
 
-          <div style="display: flex; align-items: center; justify-content: space-between">
-            <p style="padding-bottom: 2px; margin: 0 0;">is active</p>
-            <el-switch
-                style="margin: 10px 10px"
-                v-model="data.isActive"
-                on-text=""
-                off-text="">
-            </el-switch>
-          </div>
+              <div style="display: flex; align-items: center; justify-content: space-between;
+                          position: absolute">
 
-          <smarttool-editor
-              style="width: 100%; height: 100%;"
-              :mask="data.mask"
-              :image-url="data.imageUrl"
-              :bbox.sync="data.bbox"
-              @update:bbox="data.bbox = $event; update_annotation()"
-              :positive-points="data.positivePoints"
-              @update:positive-points="data.positivePoints = $event; update_annotation()"
-              :negative-points="data.negativePoints"
-              @update:negative-points="data.negativePoints = $event; update_annotation()"
-          ></smarttool-editor>
+                <el-switch
+                    style="margin: 10px 10px"
+                    v-model="data.isActive"
+                    on-text=""
+                    off-text="">
+                </el-switch>
+              </div>
+
+              <smarttool-editor
+                  style="width: 100%; height: 100%;"
+                  :mask="data.mask"
+                  :image-url="data.imageUrl"
+                  :bbox.sync="data.bbox"
+                  @update:bbox="data.bbox = $event; update_annotation()"
+                  :positive-points="data.positivePoints"
+                  @update:positive-points="data.positivePoints = $event; update_annotation()"
+                  :negative-points="data.negativePoints"
+                  @update:negative-points="data.negativePoints = $event; update_annotation()"
+              ></smarttool-editor>
           </div>
 
         `,
@@ -142,7 +147,7 @@
         watch: {
             value: {
                 handler(value) {
-                    console.log('second log', this.value);
+
                     this.editor.set(value);
                 },
                 // slow implementation
@@ -154,7 +159,7 @@
             const options = {
                 mode: 'view'
             };
-            console.log('first log', this.value);
+
             this.editor = new JSONEditor(container, options);
             this.editor.set(this.value);
 

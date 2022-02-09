@@ -28,6 +28,11 @@ class smart_tool:
             raise ValueError('identifier must be initialized')
 
     @staticmethod
+    def update_data(identifier, data_to_upload, state):
+        for key, value in data_to_upload.items():
+            state['widgets'][f'{identifier}'][key] = value
+
+    @staticmethod
     def to_html(identifier=None):
         if identifier is None:
             return f"<p style='background-color: darkred; color: white;'>" \
@@ -37,17 +42,18 @@ class smart_tool:
         if LastStateJson()['widgets'].get(f'{identifier}') is None:
             state = LastStateJson()
             state['widgets'][f'{identifier}'] = {
-                'identifier': identifier,
-                'imageUrl': 'https://supervisely-dev.deepsystems.io/image-converter/convert/h5un6l2bnaz1vj8a9qgms4-public/images/original/7/h/Vo/9DJXpviU3WfWBv3b8rz6umnz6qnuRvBdU7xFbYKqK1uihMqNNCkAlqMViGM7jxp0CeoswqkpffSwC1XUoV80MdXMkhETuGfDkvSGKj4Nst2S6wJUyT5b8fTHCm2U.jpg?1589882430061',
+                'identifier': f'{identifier}',
+                'imageUrl': '',
+                'imageHash': '',
                 'positivePoints': [],
                 'negativePoints': [],
-                'bbox': [[530, 200], [930, 460]],
+                'bbox': [],
                 'mask': None,
                 'isActive': True
             }
 
         return '''
-        <div id="widgets-{0}">
+        <div v-if="state.widgets[{0}].bbox.length > 0" id="widgets-{0}">
                 <vue-smart-seg-widget :data="state.widgets[{0}]" :post="post"></vue-smart-seg-widget>
         </div>
         '''.format(identifier)

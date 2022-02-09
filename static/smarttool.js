@@ -147,18 +147,27 @@ Vue.component('smarttool-editor', {
     };
   },
   watch: {
-    async mask() {
-      const buf = await base64BitmapToRaw(this.mask.data);
-      const annImageUrl = URL.createObjectURL(new Blob([buf]));
-      let image = await loadImage(annImageUrl);
-      const canvasImg = canvasTintImage(image, this.mask.color);
 
-      this.maskEl.load(canvasImg.toDataURL())
-        .attr({
-          width: image.width,
-          height: image.height,
-        })
-        .move(...this.mask.origin);
+    mask: {
+      async handler () {
+        console.log('smarttool watcher activated 1', this.mask);
+        if (!this.mask) return;
+        const buf = await base64BitmapToRaw(this.mask.data);
+        const annImageUrl = URL.createObjectURL(new Blob([buf]));
+        let image = await loadImage(annImageUrl);
+        const canvasImg = canvasTintImage(image, this.mask.color);
+
+        this.maskEl.load(canvasImg.toDataURL())
+            .attr({
+              width: image.width,
+              height: image.height,
+            })
+            .move(...this.mask.origin);
+
+        console.log('smarttool watcher activated 2', this.mask)
+        },
+        deep: true,
+
     },
 
     bbox() {

@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 
+from asgiref.sync import async_to_sync
 from fastapi import FastAPI
 from starlette.responses import FileResponse
 from starlette.staticfiles import StaticFiles
@@ -9,6 +10,9 @@ from starlette.staticfiles import StaticFiles
 import supervisely
 from supervisely.app import DataJson, LastStateJson
 from supervisely.app.fastapi import create, Jinja2Templates
+
+
+from smart_tool import smart_tool
 
 app_dir = str(Path(sys.argv[0]).parents[1])
 print(f"App root directory: {app_dir}")
@@ -25,6 +29,7 @@ api = supervisely.Api(address, token)
 
 LastStateJson(
     {
+        'processingServerSessionId': 13303,
         'widgets': {},
     }
 )
@@ -37,6 +42,12 @@ DataJson(
 )
 
 templates_env = Jinja2Templates(directory="../templates")
+templates_env.get_template('index.html').render(smart_tool=smart_tool)
+#
+#
+async_to_sync(LastStateJson().synchronize_changes)()
+
+print()
 
 # 'smartToolSegWidget':
 # {
