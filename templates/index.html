@@ -54,6 +54,7 @@
 
 <script src="/static/smarttool.js"></script>
 
+
 <script src="https://supervisely-ecosystem.github.io/supervisely-app-frontend-js/SlyApp.js"></script>
 
 <div id="sly-app">
@@ -65,26 +66,42 @@
 
             <h3>Smart Tool Segmentation batched</h3>
 
-            <smart-seg-widget :data="state.widgets.smartToolSegWidget" :post="post"></smart-seg-widget>
+
+<!--            <div v-for="(n, i) in 10">-->
+<!--                {{ i.toString() }} "bla"-->
+                <div> {{{smart_tool.to_html(identifier = `smart_tool_`) | safe }}}</div>
+<!--            </div>-->
+
+
         </template>
     </sly-app>
 </div>
 
+<!--<include src="/static/widgets.html"></include>-->
+
 
 <script>
-    Vue.component('smart-seg-widget', {
+    Vue.component('vue-smart-seg-widget', {
         props: ['data', 'post'],
         template: `
-          <div>
+          <div style="width: 450px; height:450px; border: saddlebrown solid 1px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;">
 
-          <el-switch
-              v-model="data.isActive"
-              on-text=""
-              off-text="">
-          </el-switch>
+
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <p style="padding-bottom: 2px">is active</p>
+            <el-switch
+                style="margin: 10px 10px"
+                v-model="data.isActive"
+                on-text=""
+                off-text="">
+            </el-switch>
+          </div>
 
           <smarttool-editor
-              style="width: 400px; height: 400px;"
+              style="width: 100%; height: 400px;"
               :mask="data.mask"
               :image-url="data.imageUrl"
               :bbox.sync="data.bbox"
