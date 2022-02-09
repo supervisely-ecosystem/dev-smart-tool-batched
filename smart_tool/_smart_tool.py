@@ -48,6 +48,6 @@ class smart_tool:
 
         return '''
         <div id="widgets-{0}">
-                <vue-smart-seg-widget :data="state.widgets.{0}" :post="post"></vue-smart-seg-widget>
+                <vue-smart-seg-widget :data="state.widgets[{0}]" :post="post"></vue-smart-seg-widget>
         </div>
         '''.format(identifier)

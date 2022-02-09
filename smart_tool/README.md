@@ -14,5 +14,4 @@
 
 ```python
 from supervisely.app.widgets import smart_tool
-
 ```

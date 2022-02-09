@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Supervisely Widgets: SegSmartTool</title>
+    <title>Supervisely Applications: Batched Smart Tool</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/svg.select.js@3.0.1/dist/svg.select.min.css"/>
 
     <style>
@@ -66,11 +66,18 @@
 
             <h3>Smart Tool Segmentation batched</h3>
 
-
-<!--            <div v-for="(n, i) in 10">-->
-<!--                {{ i.toString() }} "bla"-->
-                <div> {{{smart_tool.to_html(identifier = `smart_tool_`) | safe }}}</div>
-<!--            </div>-->
+            <div id="smart-tool-clickers-container"
+                 style="display: flex; width:80%;
+                     flex-direction: row;
+                     flex-wrap: wrap">
+                {% for i in range(15) %}
+                {{{smart_tool.to_html(identifier = i) | safe }}}
+                {% endfor %}
+            </div>
+            <!--            <div v-for="(n, i) in 10">-->
+            <!--                &lt;!&ndash;                {{ i.toString() }} "bla"&ndash;&gt;-->
+            <!--                <div> {{{smart_tool.to_html(identifier = 'smart_tool_${i}') | safe }}}</div>-->
+            <!--            </div>-->
 
 
         </template>
@@ -84,14 +91,14 @@
     Vue.component('vue-smart-seg-widget', {
         props: ['data', 'post'],
         template: `
-          <div style="width: 450px; height:450px; border: saddlebrown solid 1px;
+          <div style="width: 250px; height:250px; border: saddlebrown solid 1px;
                     display: flex;
                     flex-direction: column;
                     align-items: center;">
 
 
           <div style="display: flex; align-items: center; justify-content: space-between">
-            <p style="padding-bottom: 2px">is active</p>
+            <p style="padding-bottom: 2px; margin: 0 0;">is active</p>
             <el-switch
                 style="margin: 10px 10px"
                 v-model="data.isActive"
@@ -101,7 +108,7 @@
           </div>
 
           <smarttool-editor
-              style="width: 100%; height: 400px;"
+              style="width: 100%; height: 100%;"
               :mask="data.mask"
               :image-url="data.imageUrl"
               :bbox.sync="data.bbox"
@@ -117,7 +124,7 @@
         methods: {
             async update_annotation() {
                 await this.post('/update_annotation', {
-                        'id': 123
+                        'identifier': this.data.identifier
                     }
                 )
             }

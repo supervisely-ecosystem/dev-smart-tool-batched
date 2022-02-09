@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 from fastapi import FastAPI
+from starlette.responses import FileResponse
 from starlette.staticfiles import StaticFiles
 
 import supervisely
@@ -47,3 +48,8 @@ templates_env = Jinja2Templates(directory="../templates")
 #     'mask': None,
 #     'isActive': True
 # }
+
+
+@app.get('/favicon.ico')
+async def favicon():
+    return FileResponse('../static/favicon.png')

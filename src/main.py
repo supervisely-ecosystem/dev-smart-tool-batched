@@ -21,26 +21,14 @@ async def read_index(request: Request):
     return g.templates_env.TemplateResponse('index.html', {'request': request,
                                                            'smart_tool': smart_tool})
 
-# class UpdatedAnnotation(BaseModel):
-#     id: int
-
 
 @g.app.post("/update_annotation")
 async def update_annotation(request: Request, state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    # print(f'{updated=}')
-    # content = await request.json()
-    # d = content.get('payload', {})
-    print(f'{state=}')
+    identifier = await f.get_widget_identifier_from_request(request)
+    print(identifier)
+    if identifier is not None:
+        changed_card = state['widgets'][f'{identifier}']
 
-
-@g.app.on_event("startup")
-async def startup_event():
-    print("startup_event --- init something before server starts")
-
-#
-# @g.app.get('/favicon.ico')
-# async def favicon():
-#     return FileResponse('./icon.png')
 
 if __name__ == "__main__":
     uvicorn.run(g.app, host="0.0.0.0", port=8000)
