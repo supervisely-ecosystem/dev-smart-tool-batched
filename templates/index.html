@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supervisely Widgets: SegSmartTool</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/svg.select.js@3.0.1/dist/svg.select.min.css"/>
+
+    <style>
+        .svg_select_points_rot {
+            display: none;
+        }
+
+        .sly-smart-tool__annotation {
+            opacity: 0.5;
+        }
+
+        .sly-smart-tool__point {
+            stroke: white;
+            stroke-width: 1px;
+            /* fill: none; */
+        }
+
+        .sly-smart-tool__point:hover {
+            cursor: pointer;
+        }
+
+        .sly-smart-tool__point.positive:hover {
+            stroke: green;
+        }
+
+        .sly-smart-tool__point.negative:hover {
+            stroke: red;
+        }
+    </style>
+</head>
+
+<body style="font-family: Verdana">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsoneditor@9.7.0/dist/jsoneditor.min.css">
+<script src="https://cdn.jsdelivr.net/npm/jsoneditor@9.7.0/dist/jsoneditor.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.15.7/theme-chalk/index.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.15.7/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fast-json-patch@3.1.0/dist/fast-json-patch.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/svg.js@2.7.1/dist/svg.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/svg.select.js@3.0.1/dist/svg.select.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/svg.resize.js@1.4.3/dist/svg.resize.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/svg.draggable.js@2.2.2/dist/svg.draggable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/svg.panzoom.js@1.2.3/dist/svg.panzoom.min.js"></script>
+<script src="https://rawgit.com/nodeca/pako/1.0.11/dist/pako.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuidv4.min.js"></script>
+
+<script src="/static/smarttool.js"></script>
+
+<script src="https://supervisely-ecosystem.github.io/supervisely-app-frontend-js/SlyApp.js"></script>
+
+<div id="sly-app">
+    <sly-app>
+        <template v-slot="{ post, state, data }">
+            <json-viewer :value="{'state': state, 'data': data}"
+                         style="position: fixed; top: 0; right: 0"></json-viewer>
+
+
+            <h3>Smart Tool Segmentation batched</h3>
+
+            <smart-seg-widget :data="state.widgets.smartToolSegWidget" :post="post"></smart-seg-widget>
+        </template>
+    </sly-app>
+</div>
+
+
+<script>
+    Vue.component('smart-seg-widget', {
+        props: ['data', 'post'],
+        template: `
+          <div>
+
+          <el-switch
+              v-model="data.isActive"
+              on-text=""
+              off-text="">
+          </el-switch>
+
+          <smarttool-editor
+              style="width: 400px; height: 400px;"
+              :mask="data.mask"
+              :image-url="data.imageUrl"
+              :bbox.sync="data.bbox"
+              @update:bbox="data.bbox = $event; update_annotation()"
+              :positive-points="data.positivePoints"
+              @update:positive-points="data.positivePoints = $event; update_annotation()"
+              :negative-points="data.negativePoints"
+              @update:negative-points="data.negativePoints = $event; update_annotation()"
+          ></smarttool-editor>
+          </div>
+
+        `,
+        methods: {
+            async update_annotation() {
+                await this.post('/update_annotation', {
+                        'id': 123
+                    }
+                )
+            }
+        }
+    })
+
+
+    Vue.component('json-viewer', {
+        props: ['value'],
+        template: `
+          <div>
+          <div ref="jsoneditor" style="width: 340px; height: 350px;"></div>
+          </div>
+        `,
+        watch: {
+            value: {
+                handler(value) {
+                    console.log('second log', this.value);
+                    this.editor.set(value);
+                },
+                // slow implementation
+                deep: true,
+            },
+        },
+        mounted() {
+            const container = this.$refs.jsoneditor;
+            const options = {
+                mode: 'view'
+            };
+            console.log('first log', this.value);
+            this.editor = new JSONEditor(container, options);
+            this.editor.set(this.value);
+
+        }
+
+    })
+    ;
+</script>
+
+
+</body>
+</html>

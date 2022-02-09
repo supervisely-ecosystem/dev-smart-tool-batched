@@ -1,0 +1,12 @@
+uvicorn==0.17.0
+fastapi==0.71.0
+websockets==10.1
+jinja2==3.0.3
+python-dotenv==0.19.2
+psutil==5.9.0
+jsonpatch==1.32
+
+# supervisely==6.4.3
+
+# for demo example
+names==0.3.0
