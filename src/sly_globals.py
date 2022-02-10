@@ -8,6 +8,7 @@ from starlette.responses import FileResponse
 from starlette.staticfiles import StaticFiles
 
 import supervisely
+from sly_tqdm import sly_tqdm
 from supervisely.app import DataJson, LastStateJson
 from supervisely.app.fastapi import create, Jinja2Templates
 
@@ -42,12 +43,13 @@ DataJson(
 )
 
 templates_env = Jinja2Templates(directory="../templates")
-templates_env.get_template('index.html').render(smart_tool=smart_tool)
+templates_env.get_template('index.html').render(smart_tool=smart_tool, sly_tqdm=sly_tqdm)
 #
 #
 async_to_sync(LastStateJson().synchronize_changes)()
 
 print()
+relative_points = set()
 
 # 'smartToolSegWidget':
 # {

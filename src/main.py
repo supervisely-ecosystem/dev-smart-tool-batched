@@ -14,12 +14,14 @@ import sly_globals as g
 import sly_functions as f
 
 from smart_tool import smart_tool  # 🤖 widgets
+from sly_tqdm import sly_tqdm  # 🤖 widgets
 
 
 @g.app.get("/")
 async def read_index(request: Request):
     return g.templates_env.TemplateResponse('index.html', {'request': request,
-                                                           'smart_tool': smart_tool})
+                                                           'smart_tool': smart_tool,
+                                                           'sly_tqdm': sly_tqdm})
 
 
 @g.app.post("/get_image_from_dataset")
@@ -46,50 +48,53 @@ async def get_image_from_dataset(request: Request,
     # print(images_in_dataset)
 
 
+@g.app.post("/update_masks")
+def update_annotation(request: Request,
+                            state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    f.update_masks(state)
+    # state.synchronize_changes()
+
+
 @g.app.post("/update_annotation")
 async def update_annotation(request: Request,
                             state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    identifier = await f.get_widget_identifier_from_request(request)
+    widget_arguments = await f.get_widget_arguments_from_request(request)
+
+    identifier = widget_arguments.get('identifier')
 
     if identifier is not None:
         changed_card = state['widgets'][f'{identifier}']
 
-        context = {
-            "crop": [
-                {
-                    "x": changed_card['bbox'][0][0],
-                    "y": changed_card['bbox'][0][1]
-                },
-                {
-                    "x": changed_card['bbox'][1][0],
-                    "y": changed_card['bbox'][1][1]
-                }
-            ],
-            "positive": [
-                {
-                    "x": positive_point['position'][0][0],
-                    "y": positive_point['position'][0][1]
-                } for positive_point in changed_card['positivePoints']
-            ],
-            "negative": [
-                {
-                    "x": negative_points['position'][0][0],
-                    "y": negative_points['position'][0][1]
-                } for negative_points in changed_card['negativePoints']
-            ],
-            "image_hash": f"{changed_card['imageHash']}"
-        }
-        response = g.api.task.send_request(state['processingServerSessionId'], "smart_segmentation", data={},
-                                           context=context)
+        new_relative_point = f.get_new_relative_point_coordinates(changed_card)  # coordinates from 0 to 1
+        if new_relative_point is not None:
+            updated_cards = f.add_rel_points_to_all_active_cards(state, new_relative_point, origin_identifier=identifier)
 
-        state['widgets'][f'{identifier}']['mask'] = {
-            'data': response.get('bitmap'),
-            'origin': [response['origin']['x'], response['origin']['y']],
-            'color': '#77e377'
-        }
+        mask = f.get_mask_from_processing_server(current_card=changed_card,
+                                                 processing_session_id=state['processingServerSessionId'])
+        if mask is not None:
+            state['widgets'][f'{identifier}']['mask'] = mask
 
         await state.synchronize_changes()
-        print()
+
+
+def create_empty_project():
+    remote_dataset = g.api.dataset.create(project_id=9055, name="main", change_name_if_conflict=True)
+    print(f'Dataset created {remote_dataset.name=}')
+
+
+
+@g.app.post("/upload_to_project")
+def upload_to_project(request: Request,
+                            state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+
+    create_empty_project()
+
+    smart_segmentation_tool_cards = f.get_smart_segmentation_tool_cards(state)
+    f.get_image_hash2annotation(smart_segmentation_tool_cards)
+
+
+
+
 
 
 if __name__ == "__main__":

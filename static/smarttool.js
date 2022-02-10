@@ -305,6 +305,7 @@ Vue.component('smarttool-editor', {
     },
 
     init() {
+      console.log('initialized')
       this.container.addEventListener('contextmenu', (e) => {
         e.preventDefault();
       });
