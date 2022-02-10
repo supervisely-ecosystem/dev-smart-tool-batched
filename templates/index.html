@@ -44,8 +44,8 @@
 
 
 <!--<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>-->
-<!--<link href="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.15.7/theme-chalk/index.min.css" rel="stylesheet">-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.15.7/index.min.js"></script>-->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.15.7/theme-chalk/index.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.15.7/index.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fast-json-patch@3.1.0/dist/fast-json-patch.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/svg.js@2.7.1/dist/svg.min.js"></script>
@@ -60,28 +60,37 @@
 <script src="/static/smarttool.js"></script>
 
 
-
-
 <div id="sly-app">
     <sly-app>
         <template v-slot="{ post, state, data }">
-            <json-viewer :value="{'state': state, 'data': data}"
-                         style="position: fixed; top: 0; right: 0"></json-viewer>
+<!--            <json-viewer :value="{'state': state, 'data': data}"-->
+<!--                         style="position: fixed; top: 0; right: 0"></json-viewer>-->
 
             <div style="display: flex; flex-direction: column; margin: 20px 0; width: 50%;
-                        border: brown 1px solid;
+                        border: #c1c1c1 2px solid; border-radius: 20px;
                         padding: 15px; padding-top: 8px">
                 <div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0 5px">
 
-                    <h3>Batched Smart Tool</h3>
+                    <h3>Batched Smart Tool [demo]</h3>
                     <div>
-                        <el-button type="primary" size="mini" style="margin: 15px 5px;"
+                        <el-button type="primary" class="regular" size="small" style="margin: 15px 5px;"
                                    @click="post('/get_image_from_dataset')">LOAD IMAGE
                         </el-button>
 
-                        <el-button type="primary" size="mini" style="margin: 15px 5px;"
+                        <el-button type="primary" class="regular" size="small" style="margin: 15px 5px;"
                                    @click="post('/update_masks')">UPDATE MASKS
                         </el-button>
+
+                        <el-button v-if="state.finished === false" type="primary" class="regular" size="small"
+                                   style="margin: 15px 5px;"
+                                   @click="post('/upload_to_project')">UPLOAD TO PROJECT
+                        </el-button>
+                        <a v-else href="https://supervisely-dev.deepsystems.io/projects/9100/datasets" target="_blank">
+                            <el-button type="success" class="regular" size="small" style="margin: 15px 5px;">
+                                OPEN PROJECT
+                            </el-button>
+                        </a>
+
                     </div>
 
                 </div>
@@ -94,12 +103,26 @@
 
 
             <div id="smart-tool-clickers-container"
-                 style="display: flex; width:80%;
+                 style="display: flex; width:100%;
                      flex-direction: row;
                      flex-wrap: wrap">
                 {% for i in range(30) %}
                 {{{smart_tool.to_html(identifier = i) | safe }}}
                 {% endfor %}
+            </div>
+
+            <div style="display: flex">
+                <div>
+                    <el-button type="success" class="regular" size="small" style="margin: 15px 2px;"
+                               @click="post('/change_all_buttons', {'mode': 'on'})">ALL ON
+                    </el-button>
+                </div>
+                <div>
+                    <el-button type="danger" class="regular" size="small" style="margin: 15px 2px;"
+                               @click="post('/change_all_buttons'), {'mode': 'off'}">ALL OFF
+                    </el-button>
+                </div>
+
             </div>
 
 
@@ -114,7 +137,7 @@
     Vue.component('vue-smart-seg-widget', {
         props: ['data', 'post'],
         template: `
-          <div style="width: 250px; height:250px; border: saddlebrown solid 1px;
+          <div style="width: 250px; height:250px; border: #77b4ff solid 1px;
                     display: flex;
                     flex-direction: column;
                     align-items: center;

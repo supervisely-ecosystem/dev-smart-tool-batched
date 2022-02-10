@@ -32,6 +32,7 @@ LastStateJson(
     {
         'processingServerSessionId': 13303,
         'widgets': {},
+        'finished': False
     }
 )
 

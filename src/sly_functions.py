@@ -148,23 +148,34 @@ def update_masks(state):
 
 
 def get_label_by_card(current_card):
-    mask_np = supervisely.Bitmap.base64_2_data(current_card['mask']['data'])
-    geometry = supervisely.Bitmap(data=mask_np, origin=current_card['mask']['origin'])
+    if current_card.get('mask') is not None:
+        mask_np = supervisely.Bitmap.base64_2_data(current_card['mask']['data'])
+        geometry = supervisely.Bitmap(data=mask_np,
+                                      origin=supervisely.PointLocation(row=current_card['mask']['origin'][1],
+                                                                       col=current_card['mask']['origin'][0]))
 
-    label = supervisely.Label(geometry=geometry,
-                              obj_class=supervisely.ObjClass("batched_smart_tool", supervisely.Bitmap))
+        label = supervisely.Label(geometry=geometry,
+                                  obj_class=supervisely.ObjClass("batched_smart_tool", supervisely.Bitmap))
 
-    return label
+        return label
 
 
-def get_image_hash2annotation(smart_segmentation_tool_cards):
+def upload_images_to_dataset(dataset_id, smart_segmentation_tool_cards):
     hash2annotation = {}
     hash2labels = {}
 
     for card_id, current_card in smart_segmentation_tool_cards.items():
-        hash2labels[current_card['imageHash']].setdefault([]).append(get_label_by_card(current_card))
+        label = get_label_by_card(current_card)
+        if label is not None:
+            hash2labels.setdefault(current_card['imageHash'], []).append(label)
 
+    for image_hash, labels in sly_tqdm(hash2labels.items(), identifier='progress_1', message='uploading to project'):
+        if len(labels) > 0:
+            image_info = g.api.image.upload_hash(dataset_id=dataset_id, name=f'{image_hash[:5]}.png', hash=image_hash)
 
-    # for
+            annotation = supervisely.Annotation(img_size=(image_info.height, image_info.width),
+                                                labels=labels)
+            g.api.annotation.upload_ann(image_info.id, annotation)
+            # print()
 
     return hash2annotation

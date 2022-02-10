@@ -27,8 +27,8 @@ async def read_index(request: Request):
 @g.app.post("/get_image_from_dataset")
 async def get_image_from_dataset(request: Request,
                                  state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=9099))
-    images_in_dataset = g.api.image.get_list(dataset_id=43859)
+    project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=9140))
+    images_in_dataset = g.api.image.get_list(dataset_id=43989)
 
     selected_image = images_in_dataset[0]
 
@@ -50,7 +50,7 @@ async def get_image_from_dataset(request: Request,
 
 @g.app.post("/update_masks")
 def update_annotation(request: Request,
-                            state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+                      state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     f.update_masks(state)
     # state.synchronize_changes()
 
@@ -67,7 +67,8 @@ async def update_annotation(request: Request,
 
         new_relative_point = f.get_new_relative_point_coordinates(changed_card)  # coordinates from 0 to 1
         if new_relative_point is not None:
-            updated_cards = f.add_rel_points_to_all_active_cards(state, new_relative_point, origin_identifier=identifier)
+            updated_cards = f.add_rel_points_to_all_active_cards(state, new_relative_point,
+                                                                 origin_identifier=identifier)
 
         mask = f.get_mask_from_processing_server(current_card=changed_card,
                                                  processing_session_id=state['processingServerSessionId'])
@@ -77,24 +78,38 @@ async def update_annotation(request: Request,
         await state.synchronize_changes()
 
 
-def create_empty_project():
-    remote_dataset = g.api.dataset.create(project_id=9055, name="main", change_name_if_conflict=True)
+def get_remote_dataset_id():
+    remote_dataset = g.api.dataset.create(project_id=9100, name="main", change_name_if_conflict=True)
     print(f'Dataset created {remote_dataset.name=}')
-
+    return remote_dataset.id
 
 
 @g.app.post("/upload_to_project")
 def upload_to_project(request: Request,
-                            state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-
-    create_empty_project()
+                      state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    remote_dataset_id = get_remote_dataset_id()
 
     smart_segmentation_tool_cards = f.get_smart_segmentation_tool_cards(state)
-    f.get_image_hash2annotation(smart_segmentation_tool_cards)
+    f.upload_images_to_dataset(dataset_id=remote_dataset_id,
+                               smart_segmentation_tool_cards=smart_segmentation_tool_cards)
+
+    state['finished'] = True
+    async_to_sync(state.synchronize_changes)()
 
 
+@g.app.post("/change_all_buttons")
+async def change_all_buttons(request: Request,
+                            state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    widget_arguments = await f.get_widget_arguments_from_request(request)
+    mode = widget_arguments.get('mode')
 
+    smart_segmentation_tool_cards = f.get_smart_segmentation_tool_cards(state)
 
+    for card_id, current_card in smart_segmentation_tool_cards.items():
+        current_card['isActive'] = True if mode == 'on' else False
+        state['widgets'][card_id] = current_card
+
+    await state.synchronize_changes()
 
 
 if __name__ == "__main__":
