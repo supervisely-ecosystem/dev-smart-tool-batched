@@ -34,7 +34,7 @@ class SmartTool:
         self.mask = None
         self.is_active = True
 
-        self._connected_points = {}  # {{1, 2, 3), {4, 5, 6}} — connected points
+        self._connected_points = list()  # [{1, 2, 3), {4, 5, 6}] — connected points
 
         self.update_remote_fields(state, data)
 
@@ -81,8 +81,8 @@ class SmartTool:
             'y': (abs_coordinates['position'][0][1] - self.bbox[0][1]) / box_height,
         }
 
-    def add_connected_point(self, origin_point_id, connected_points_ids):
-        self._connected_points[origin_point_id] = connected_points_ids
+    def add_connected_point(self, connected_points_ids):
+        self._connected_points.append(connected_points_ids)
 
     def update_by_relative_coordinates(self, updated_point, points_type='positive'):
         box_width, box_height = self.get_box_size()
@@ -90,32 +90,34 @@ class SmartTool:
         y_real = int(updated_point['relative']['y'] * box_height + self.bbox[0][1])
 
         existing_points = self.__getattribute__(f'{points_type}_points')
+        existing_points_ids = [point['id'] for point in existing_points]
 
-        if updated_point['id'] in set(self._connected_points.keys()):  # change existing point
-            connected_point_id = self._connected_points[updated_point['id']]
-            index = get_existing_point_index(existing_points, connected_point_id)
-            if index is not None:
+        for connected_points in self._connected_points:
+            if updated_point['id'] in connected_points and len(set(existing_points_ids).intersection(connected_points)) > 0:  # change existing point
+                connected_point_id = list(set(existing_points_ids).intersection(connected_points))[0]
+                index = existing_points_ids.index(connected_point_id)
                 existing_points[index]['position'] = [[x_real, y_real]]
+
+                break
 
         else:  # create new point
             point_id = f'{uuid.uuid4()}'
             existing_points.append({'position': [[x_real, y_real]], 'id': point_id})
 
-            self._connected_points[updated_point['id']] = point_id
-
             return point_id
 
     def remove_connected_point(self, removed_point, points_type='positive'):
         existing_points = self.__getattribute__(f'{points_type}_points')
-        origin_id = removed_point['id']
+        existing_points_ids = [point['id'] for point in existing_points]
 
-        if origin_id in set(self._connected_points.keys()):  # change existing point
-            connected_point_id = self._connected_points[origin_id]
-            index = get_existing_point_index(existing_points, connected_point_id)
+        for connected_points in self._connected_points:  # change existing point
+            if removed_point['id'] in connected_points and len(set(existing_points_ids).intersection(connected_points)) > 0:
+                connected_point_id = list(set(existing_points_ids).intersection(connected_points))[0]
+                index = existing_points_ids.index(connected_point_id)
 
-            if index is not None:
+                print(f'remove point {existing_points=}\n{index=}')
+
                 existing_points.pop(index)
-            self._connected_points.pop(origin_id)
 
     # @TODO: move next methods to Factory Class
 

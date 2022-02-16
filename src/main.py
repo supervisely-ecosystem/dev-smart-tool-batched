@@ -95,8 +95,9 @@ async def change_all_buttons(request: Request,
 
 
 if __name__ == "__main__":
-    # g.app.add_api_route('/widgets/smarttool/bbox-updated/{identifier}', smart_tool_handlers.bbox_updated, methods=["POST"])
+
     g.app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', smart_tool_handlers.points_updated, methods=["POST"])
     g.app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', smart_tool_handlers.points_updated, methods=["POST"])
+    g.app.add_api_route('/change_all_buttons/{flag}', smart_tool_handlers.change_all_buttons, methods=["POST"])
 
     uvicorn.run(g.app, host="0.0.0.0", port=8000)

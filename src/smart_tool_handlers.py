@@ -9,18 +9,21 @@ from supervisely.app import DataJson
 
 
 def add_point_to_active_cards(origin_identifier, updated_point, points_type):
-    new_connected_points = []
+    new_connected_points = set()
 
     for widget in g.grid_controller.widgets.values():
         if widget.is_active and widget.identifier != origin_identifier:
             point_id = widget.update_by_relative_coordinates(updated_point, points_type)
 
             if point_id is not None:
-                new_connected_points.append(point_id)
+                new_connected_points.add(point_id)
 
     origin_widget = g.grid_controller.get_widget_by_id(widget_id=origin_identifier)
-    # origin_widget.add_connected_point(origin_point_id=updated_point['id'],
-    #                                   connected_points=new_connected_points)
+    new_connected_points.add(updated_point['id'])
+
+    for widget in g.grid_controller.widgets.values():
+        if widget.is_active:
+            widget.add_connected_point(connected_points_ids=new_connected_points)
 
 
 def remove_point_from_connected_cards(origin_identifier, point_to_remove, points_type):
@@ -60,3 +63,7 @@ def points_updated(identifier: str,
 
     # update all remote state by local objects
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
+
+
+def change_all_buttons():
+    return None

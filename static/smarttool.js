@@ -147,15 +147,6 @@ Vue.component('smarttool-editor', {
     };
   },
   watch: {
-    positivePoints: {
-      handler () {
-        console.log('------------');
-        this.pointsChanged(this.positivePoints, true);
-      },
-      deep: true,
-    },
-
-
     mask: {
       async handler () {
         if (!this.mask) return;
@@ -182,6 +173,13 @@ Vue.component('smarttool-editor', {
       this.sceneEl.viewbox(getViewBox(this.bboxEl.bbox()))
     },
 
+    positivePoints: {
+      handler () {
+        this.pointsChanged(this.positivePoints, true);
+      },
+      deep: true,
+    },
+
     negativePoints: {
       handler() {
         this.pointsChanged(this.negativePoints, false);
@@ -191,8 +189,12 @@ Vue.component('smarttool-editor', {
   },
   methods: {
     pointsChanged(points, isPositive) {
+      const pointsSet = new Set();
       points.forEach((point) => {
+        pointsSet.add(point.id);
+
         const pt = this.pointsMap.get(point.id);
+
         if (pt) {
           pt.point.move(point.position[0][0], point.position[0][1])
           return;
@@ -204,6 +206,16 @@ Vue.component('smarttool-editor', {
           y: point.position[0][1],
           isPositive,
         });
+      });
+
+      this.pointsMap.forEach((p) => {
+        if (p.point.slyData.isPositive !== isPositive) return;
+
+        if (!pointsSet.has(p.point.slyData.id)) {
+          p.point.off('contextmenu', this.removePointHandler);
+          p.point.remove();
+          this.pointsMap.delete(p.point.slyData.id);
+        }
       });
     },
 
