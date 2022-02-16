@@ -1,0 +1,60 @@
+{% if identifier %}
+
+<div id="batched-smart-tool-widget-container-{{{identifier}}}"
+     style="width: 250px; height:250px; border: #77b4ff solid 1px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        position: relative">
+    <div style="display: flex; align-items: center; justify-content: space-between; position: absolute">
+        <el-switch
+                style="margin: 10px 10px"
+                v-model="state.widgets['{{{identifier}}}'].isActive"
+                on-text=""
+                off-text="">
+        </el-switch>
+    </div>
+    <smarttool-editor
+            style="width: 100%; height: 100%;"
+            :mask="state.widgets['{{{identifier}}}'].mask"
+            :image-url="state.widgets['{{{identifier}}}'].imageUrl"
+            :bbox.sync="state.widgets['{{{identifier}}}'].bbox"
+            @update:bbox="state.widgets['{{{identifier}}}'].bbox = $event; post('/widgets/smarttool/bbox-updated/{{{identifier}}}')"
+            :positive-points="state.widgets['{{{identifier}}}'].positivePoints"
+            @update:positive-points="state.widgets['{{{identifier}}}'].positivePoints = $event; post('/widgets/smarttool/positive-updated/{{{identifier}}}')"
+            :negative-points="state.widgets['{{{identifier}}}'].negativePoints"
+            @update:negative-points="state.widgets['{{{identifier}}}'].negativePoints = $event; post('/widgets/smarttool/negative-updated/{{{identifier}}}')">
+
+    </smarttool-editor>
+</div>
+
+{% else %}
+
+<div style="width: 250px; height:250px; border: #77b4ff solid 1px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        position: relative">
+    <div style="display: flex; align-items: center; justify-content: space-between; position: absolute">
+        <el-switch
+                style="margin: 10px 10px"
+                v-model="widget.isActive"
+                on-text=""
+                off-text="">
+        </el-switch>
+    </div>
+    <smarttool-editor
+            style="width: 100%; height: 100%;"
+            :mask="widget.mask"
+            :image-url="widget.imageUrl"
+            :bbox.sync="widget.bbox"
+            @update:bbox="widget.bbox = $event; post('/widgets/smarttool/bbox-updated/widget.identifier')"
+            :positive-points="widget.positivePoints"
+            @update:positive-points="widget.positivePoints = $event; post('/widgets/smarttool/positive-updated/widget.identifier')"
+            :negative-points="widget.negativePoints"
+            @update:negative-points="widget.negativePoints = $event; post('/widgets/smarttool/negative-updated/widget.identifier')">
+
+    </smarttool-editor>
+</div>
+
+{% endif %}

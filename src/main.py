@@ -12,23 +12,47 @@ from supervisely.app import StateJson, DataJson
 
 import sly_globals as g
 import sly_functions as f
+import sly_widgets as w
 
-from smart_tool import smart_tool  # 🤖 widgets
-from sly_tqdm import sly_tqdm  # 🤖 widgets
+from smart_tool import SmartTool  # 🤖 widgets
+from sly_tqdm import sly_tqdm
 
 
 @g.app.get("/")
-async def read_index(request: Request):
+def read_index(request: Request):
     return g.templates_env.TemplateResponse('index.html', {'request': request,
-                                                           'smart_tool': smart_tool,
-                                                           'sly_tqdm': sly_tqdm})
+                                                           'sly_tqdm': sly_tqdm,
+                                                           'smart_tool': SmartTool})
+
+
+@g.app.post("/windows-count-changed/")
+def windows_count_changed(request: Request,
+                          state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    windows_count = state['windowsCount']
+
+    smart_tools = []
+    for _ in range(windows_count):
+        smart_tools.append(SmartTool(app=g.app, state=state, data=DataJson()))
+
+    w.smart_tool_widgets = smart_tools
+
+    async_to_sync(state.synchronize_changes)()
+
+    # return g.templates_env.TemplateResponse('index.html', {'request': request,
+    #                                                        'sly_tqdm': sly_tqdm,
+    #                                                        'smart_tool_widgets': smart_tools})
+
+    # return ({'smart_tool_widgets': w.smart_tool_widgets})
+    # return g.templates_env.TemplateResponse('index.html', {'request': request,
+    #                                                        'sly_tqdm': sly_tqdm,
+    #                                                        'smart_tool_widgets': w.smart_tool_widgets})
 
 
 @g.app.post("/get_image_from_dataset")
 async def get_image_from_dataset(request: Request,
                                  state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=9140))
-    images_in_dataset = g.api.image.get_list(dataset_id=43989)
+    project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=9131))
+    images_in_dataset = g.api.image.get_list(dataset_id=43964)
 
     selected_image = images_in_dataset[0]
 
@@ -55,7 +79,7 @@ def update_annotation(request: Request,
     # state.synchronize_changes()
 
 
-@g.app.post("/update_annotation")
+@g.app.post("/update_annotation_{1-10}")
 async def update_annotation(request: Request,
                             state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     widget_arguments = await f.get_widget_arguments_from_request(request)
@@ -99,7 +123,7 @@ def upload_to_project(request: Request,
 
 @g.app.post("/change_all_buttons")
 async def change_all_buttons(request: Request,
-                            state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+                             state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     widget_arguments = await f.get_widget_arguments_from_request(request)
     mode = widget_arguments.get('mode')
 
@@ -113,4 +137,7 @@ async def change_all_buttons(request: Request,
 
 
 if __name__ == "__main__":
+    # g.app.add_api_route('/custom-post-req/{identifier}', test_method, methods=["POST"])
+
+
     uvicorn.run(g.app, host="0.0.0.0", port=8000)

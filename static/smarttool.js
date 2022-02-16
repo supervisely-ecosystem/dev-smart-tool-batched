@@ -240,7 +240,7 @@ Vue.component('smarttool-editor', {
       const typeKey = isPositive ? 'positive' : 'negative';
 
       const point = this.sceneEl
-        .circle(POINT_SIZE)
+        .circle(POINT_SIZE * 2.5)
         .move(x, y)
         .draggable()
         .on('contextmenu', this.removePointHandler)

@@ -3,7 +3,7 @@
 <head>
     <title>Supervisely Applications: Batched Smart Tool</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/svg.select.js@3.0.1/dist/svg.select.min.css"/>
-    <link rel="stylesheet" href="https://supervise.ly/apps-designer.bundle.css"/>
+    <!--    <link rel="stylesheet" href="https://supervise.ly/apps-designer.bundle.css"/>-->
 
 
     <style>
@@ -37,16 +37,21 @@
 
 <body style="font-family: Verdana">
 
-
 <script src="https://supervise.ly/apps-designer.bundle.js"></script>
+<script>
+    window.Vue = sly.Vue;
+</script>
+
+
+<!--<script src="https://supervise.ly/apps-designer.bundle.js"></script>-->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsoneditor@9.7.0/dist/jsoneditor.min.css">
 <script src="https://cdn.jsdelivr.net/npm/jsoneditor@9.7.0/dist/jsoneditor.min.js"></script>
 
 
 <!--<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>-->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.15.7/theme-chalk/index.min.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.15.7/index.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fast-json-patch@3.1.0/dist/fast-json-patch.min.js"></script>
+<!--<link href="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.15.7/theme-chalk/index.min.css" rel="stylesheet">-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.15.7/index.min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/fast-json-patch@3.1.0/dist/fast-json-patch.min.js"></script>-->
 
 <script src="https://cdn.jsdelivr.net/npm/svg.js@2.7.1/dist/svg.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/svg.select.js@3.0.1/dist/svg.select.min.js"></script>
@@ -56,15 +61,18 @@
 <script src="https://rawgit.com/nodeca/pako/1.0.11/dist/pako.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuidv4.min.js"></script>
 
-<script src="https://supervisely-ecosystem.github.io/supervisely-app-frontend-js/SlyApp.js"></script>
+
+<!--<script src="https://supervisely-ecosystem.github.io/supervisely-app-frontend-js/SlyApp.js" type="module"></script>-->
+
+<script src="/static/SlyApp.js" type="module"></script>
 <script src="/static/smarttool.js"></script>
 
 
 <div id="sly-app">
     <sly-app>
         <template v-slot="{ post, state, data }">
-<!--            <json-viewer :value="{'state': state, 'data': data}"-->
-<!--                         style="position: fixed; top: 0; right: 0"></json-viewer>-->
+            <json-viewer :value="{'state': state, 'data': data}"
+                         style="position: fixed; top: 0; right: 0"></json-viewer>
 
             <div style="display: flex; flex-direction: column; margin: 20px 0; width: 50%;
                         border: #c1c1c1 2px solid; border-radius: 20px;
@@ -73,43 +81,54 @@
 
                     <h3>Batched Smart Tool [demo]</h3>
                     <div>
-                        <el-button type="primary" class="regular" size="small" style="margin: 15px 5px;"
-                                   @click="post('/get_image_from_dataset')">LOAD IMAGE
-                        </el-button>
+                        <!--                        <el-button type="primary" class="regular" size="small" style="margin: 15px 5px;"-->
+                        <!--                                   @click="post('/get_image_from_dataset')">LOAD IMAGE-->
+                        <!--                        </el-button>-->
+
+                        <!--                        <el-button type="primary" class="regular" size="small" style="margin: 15px 5px;"-->
+                        <!--                                   @click="post('/update_masks')">UPDATE MASKS-->
+                        <!--                        </el-button>-->
+
+                        <!--                        <el-button v-if="state.finished === false" type="primary" class="regular" size="small"-->
+                        <!--                                   style="margin: 15px 5px;"-->
+                        <!--                                   @click="post('/upload_to_project')">UPLOAD TO PROJECT-->
+                        <!--                        </el-button>-->
+                        <!--                        <a v-else href="https://supervisely-dev.deepsystems.io/projects/9100/datasets" target="_blank">-->
+                        <!--                            <el-button type="success" class="regular" size="small" style="margin: 15px 5px;">-->
+                        <!--                                OPEN PROJECT-->
+                        <!--                            </el-button>-->
+                        <!--                        </a>-->
 
                         <el-button type="primary" class="regular" size="small" style="margin: 15px 5px;"
-                                   @click="post('/update_masks')">UPDATE MASKS
+                                   @click="post('/custom-post-req/1')">CUSTOM POST
                         </el-button>
 
-                        <el-button v-if="state.finished === false" type="primary" class="regular" size="small"
-                                   style="margin: 15px 5px;"
-                                   @click="post('/upload_to_project')">UPLOAD TO PROJECT
-                        </el-button>
-                        <a v-else href="https://supervisely-dev.deepsystems.io/projects/9100/datasets" target="_blank">
-                            <el-button type="success" class="regular" size="small" style="margin: 15px 5px;">
-                                OPEN PROJECT
-                            </el-button>
-                        </a>
+                        <el-input-number size="small" :value="state.windowsCount"
+                                         @change="state.windowsCount=$event; post('/windows-count-changed/');"></el-input-number>
 
                     </div>
 
                 </div>
 
 
-                <div style="width: 100%; margin-bottom: 10px">
-                    <div> {{{sly_tqdm.to_html(identifier = 'progress_1') | safe }}}</div>
-                </div>
+<!--                <div style="width: 100%; margin-bottom: 10px">-->
+<!--                    <div> {{{sly_tqdm.to_html(identifier = 'progress_1') | safe }}}</div>-->
+<!--                </div>-->
             </div>
 
-
-            <div id="smart-tool-clickers-container"
-                 style="display: flex; width:100%;
+            <div
+                    style="display: flex; width:100%;
                      flex-direction: row;
                      flex-wrap: wrap">
-                {% for i in range(30) %}
-                {{{smart_tool.to_html(identifier = i) | safe }}}
-                {% endfor %}
+
+                    <div v-for="widget in state.widgets.SmartTool">
+                        {{{smart_tool.to_undefined_html()}}}
+                    </div>
+
             </div>
+
+
+<!--                        <p>{{state.widgets}}</p>-->
 
             <div style="display: flex">
                 <div>
@@ -134,52 +153,6 @@
 
 
 <script>
-    Vue.component('vue-smart-seg-widget', {
-        props: ['data', 'post'],
-        template: `
-          <div style="width: 250px; height:250px; border: #77b4ff solid 1px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    position: relative">
-
-
-          <div style="display: flex; align-items: center; justify-content: space-between;
-                          position: absolute">
-
-            <el-switch
-                style="margin: 10px 10px"
-                v-model="data.isActive"
-                on-text=""
-                off-text="">
-            </el-switch>
-          </div>
-
-          <smarttool-editor
-              style="width: 100%; height: 100%;"
-              :mask="data.mask"
-              :image-url="data.imageUrl"
-              :bbox.sync="data.bbox"
-              @update:bbox="data.bbox = $event; update_annotation()"
-              :positive-points="data.positivePoints"
-              @update:positive-points="data.positivePoints = $event; update_annotation()"
-              :negative-points="data.negativePoints"
-              @update:negative-points="data.negativePoints = $event; update_annotation()"
-          ></smarttool-editor>
-          </div>
-
-        `,
-        methods: {
-            async update_annotation() {
-                await this.post('/update_annotation', {
-                        'identifier': this.data.identifier
-                    }
-                )
-            }
-        }
-    })
-
-
     Vue.component('json-viewer', {
         props: ['value'],
         template: `

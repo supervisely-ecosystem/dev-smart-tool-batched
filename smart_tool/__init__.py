@@ -1,7 +1,7 @@
-from ._smart_tool import smart_tool
+from .smart_tool import SmartTool
 
-__all__ = ['smart_tool', '__version__']
-
-version_info = 0, 0, 1
-
-__version__ = '.'.join(map(str, version_info))
+# __all__ = ['smart_tool', '__version__']
+#
+# version_info = 0, 0, 1
+#
+# __version__ = '.'.join(map(str, version_info))
