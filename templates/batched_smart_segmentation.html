@@ -1,0 +1,97 @@
+<sly-card title="Batched Smart Tool" subtitle="annotate batch of images">
+
+    <div style="display: flex; flex-direction: row;">
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0px 5px; padding-bottom: 15px; width: 100%">
+
+            <div style="display: flex">
+                <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
+                    <p style="font-size: 12px; color: #5a6772; margin: 1px 0">Smart Tools <b
+                            style="color: #ef23f1;">number</b>
+                    </p>
+                    <el-input-number size="small" :value="state.windowsCount"
+                                     @change="state.windowsCount=$event; post('/windows-count-changed/');"
+                                     :min="0" :max="1000"
+                                     style="width: 140px; margin: 2px 3px"
+                    >
+
+                    </el-input-number>
+
+                </div>
+                <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
+                    <p style="font-size: 12px; color: #5a6772; margin: 1px 0">Smart Tools <b
+                            style="color: #00c7ff;">size</b>
+                    </p>
+                    <el-input-number size="small" :value="state.toolSize"
+                                     @change="state.toolSize=$event;"
+                                     :min="1" :max="100"
+                                     style="width: 140px; margin: 2px 3px"
+                                     :disabled="true"
+                    >
+
+                    </el-input-number>
+
+                </div>
+            </div>
+
+            <div style="display: flex">
+                <el-button type="primary" class="regular" size="small" style="margin: 15px 5px;"
+                           @click="post('/update_masks')">UPDATE MASKS
+                </el-button>
+
+                <el-button v-if="state.finished === false" type="primary" class="regular" size="small"
+                           style="margin: 15px 5px;"
+                           @click="post('/upload_to_project')">UPLOAD TO PROJECT
+                </el-button>
+                <a v-else href="https://supervisely-dev.deepsystems.io/projects/9100/datasets" target="_blank">
+                    <el-button type="success" class="regular" size="small" style="margin: 15px 5px;">
+                        OPEN PROJECT
+                    </el-button>
+                </a>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div style="display: flex; width:100%; flex-direction: row; flex-wrap: wrap; justify-content: center;">
+
+        <div v-for="widget in state.widgets.SmartTool">
+
+            {{{smart_tool.to_undefined_html()}}}
+
+        </div>
+
+    </div>
+
+    <div style="display: flex; flex-direction: row; justify-content: space-between;" v-if="state.windowsCount > 0">
+        <div style="display: flex; align-items: center; margin-top: 15px;" >
+
+            <el-button type="success" class="regular" size="small" style="margin: 0 2px;"
+                       @click="post('/change-all-buttons/True')">ALL ON
+            </el-button>
+
+
+            <el-button type="warning" class="regular" size="small" style="margin: 0 2px;"
+                       @click="post('/change-all-buttons/False')">ALL OFF
+            </el-button>
+        </div>
+        <div style="display: flex; align-items: center; margin-top: 15px;">
+            <el-button type="danger" :plain="true" class="regular" size="small" style="margin: 0 2px;"
+                       @click="post('/clean-points/')">CLEAN POINTS
+            </el-button>
+        </div>
+        <div style="display: flex; align-items: center; margin-top: 15px;">
+            <el-button type="primary" class="regular" size="small" style="margin: 0 2px;"
+                       @click="post('/next-batch/')">NEXT BATCH
+            </el-button>
+        </div>
+    </div>
+
+</sly-card>
+<!--    <sly-select-project-->
+<!--            :workspace-id="418"-->
+<!--            :project-id.sync="state.dstProjectId"-->
+<!--            :options="{showLabel: false, availableTypes: ['images']}"-->
+<!--    >-->
+<!--    </sly-select-project>-->

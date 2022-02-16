@@ -1,0 +1,51 @@
+<sly-card title="Select input project" subtitle="select and download input project">
+
+    <div style="display: flex; flex-direction: column;">
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0 5px">
+
+
+            <div>
+
+
+                <!--                        <el-button type="primary" class="regular" size="small" style="margin: 15px 5px;"-->
+                <!--                                   @click="post('/update_masks')">UPDATE MASKS-->
+                <!--                        </el-button>-->
+
+                <!--                        <el-button v-if="state.finished === false" type="primary" class="regular" size="small"-->
+                <!--                                   style="margin: 15px 5px;"-->
+                <!--                                   @click="post('/upload_to_project')">UPLOAD TO PROJECT-->
+                <!--                        </el-button>-->
+                <!--                        <a v-else href="https://supervisely-dev.deepsystems.io/projects/9100/datasets" target="_blank">-->
+                <!--                            <el-button type="success" class="regular" size="small" style="margin: 15px 5px;">-->
+                <!--                                OPEN PROJECT-->
+                <!--                            </el-button>-->
+                <!--                        </a>-->
+
+                <div style="display: flex; justify-content: center; align-items: center">
+                    <p style="margin-right: 8px; padding-top: 2px"><b>Project ID:</b></p>
+                    <el-input-number size="small" :value="state.projectId"
+                                     @change="state.projectId=$event;"
+                                     :min="0" ></el-input-number>
+                    <el-button type="primary" class="regular" size="small" style="margin: 15px 15px;"
+                               @click="post('/download-project/'+ state.projectId)">select project
+                    </el-button>
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <div style="width: 100%; margin-bottom: 10px">
+            <div> {{{sly_tqdm.to_html(identifier = 'download_project') | safe }}}</div>
+        </div>
+    </div>
+</sly-card>
+<!--    <sly-select-project-->
+<!--            :workspace-id="418"-->
+<!--            :project-id.sync="state.dstProjectId"-->
+<!--            :options="{showLabel: false, availableTypes: ['images']}"-->
+<!--    >-->
+<!--    </sly-select-project>-->

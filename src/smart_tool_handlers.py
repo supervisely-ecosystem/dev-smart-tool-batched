@@ -8,28 +8,9 @@ import sly_globals as g
 from supervisely.app import DataJson
 
 
-def add_point_to_active_cards(origin_identifier, updated_point, points_type):
-    new_connected_points = set()
-
-    for widget in g.grid_controller.widgets.values():
-        if widget.is_active and widget.identifier != origin_identifier:
-            point_id = widget.update_by_relative_coordinates(updated_point, points_type)
-
-            if point_id is not None:
-                new_connected_points.add(point_id)
-
-    origin_widget = g.grid_controller.get_widget_by_id(widget_id=origin_identifier)
-    new_connected_points.add(updated_point['id'])
-
-    for widget in g.grid_controller.widgets.values():
-        if widget.is_active:
-            widget.add_connected_point(connected_points_ids=new_connected_points)
-
-
-def remove_point_from_connected_cards(origin_identifier, point_to_remove, points_type):
-    for widget in g.grid_controller.widgets.values():
-        if widget.identifier != origin_identifier:
-            widget.remove_connected_point(point_to_remove, points_type)
+# ------------------
+# HANDLERS CODE PART
+# ------------------
 
 
 def points_updated(identifier: str,
@@ -65,5 +46,47 @@ def points_updated(identifier: str,
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
 
-def change_all_buttons():
-    return None
+def change_all_buttons(is_active: bool,
+                       request: Request,
+                       state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+
+    for widget in g.grid_controller.widgets.values():
+        widget.is_active = is_active
+
+    g.grid_controller.update_remote_fields(state=state, data=DataJson())
+
+
+def clean_points(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    for widget in g.grid_controller.widgets.values():
+        widget.clean_points()
+
+    g.grid_controller.update_remote_fields(state=state, data=DataJson())
+
+
+# ------------------
+# CLASSIC CODE PART
+# ------------------
+
+
+def add_point_to_active_cards(origin_identifier, updated_point, points_type):
+    new_connected_points = set()
+
+    for widget in g.grid_controller.widgets.values():
+        if widget.is_active and widget.identifier != origin_identifier:
+            point_id = widget.update_by_relative_coordinates(updated_point, points_type)
+
+            if point_id is not None:
+                new_connected_points.add(point_id)
+
+    new_connected_points.add(updated_point['id'])
+
+    for widget in g.grid_controller.widgets.values():
+        if widget.is_active:
+            widget.add_connected_point(connected_points_ids=new_connected_points)
+
+
+def remove_point_from_connected_cards(origin_identifier, point_to_remove, points_type):
+    for widget in g.grid_controller.widgets.values():
+        if widget.identifier != origin_identifier:
+            widget.remove_connected_point(point_to_remove, points_type)
+

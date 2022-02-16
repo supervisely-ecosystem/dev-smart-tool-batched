@@ -25,12 +25,11 @@ class SmartTool:
         self.app = app
         self.identifier = self.get_widget_identifier(state, data)
 
-        # self.image_url = None
-        self.image_url = 'https://supervisely-dev.deepsystems.io/image-converter/convert/h5un6l2bnaz1vj8a9qgms4-public/images/original/7/h/Vo/9DJXpviU3WfWBv3b8rz6umnz6qnuRvBdU7xFbYKqK1uihMqNNCkAlqMViGM7jxp0CeoswqkpffSwC1XUoV80MdXMkhETuGfDkvSGKj4Nst2S6wJUyT5b8fTHCm2U.jpg?1589882430061'
+        self.image_url = None
         self.image_hash = None
         self.positive_points = []
         self.negative_points = []
-        self.bbox = [[200, 200], [400, 400]]
+        self.bbox = []
         self.mask = None
         self.is_active = True
 
@@ -97,7 +96,6 @@ class SmartTool:
                 connected_point_id = list(set(existing_points_ids).intersection(connected_points))[0]
                 index = existing_points_ids.index(connected_point_id)
                 existing_points[index]['position'] = [[x_real, y_real]]
-
                 break
 
         else:  # create new point
@@ -110,14 +108,20 @@ class SmartTool:
         existing_points = self.__getattribute__(f'{points_type}_points')
         existing_points_ids = [point['id'] for point in existing_points]
 
-        for connected_points in self._connected_points:  # change existing point
+        for connected_points_index, connected_points in enumerate(self._connected_points):  # change existing point
             if removed_point['id'] in connected_points and len(set(existing_points_ids).intersection(connected_points)) > 0:
                 connected_point_id = list(set(existing_points_ids).intersection(connected_points))[0]
                 index = existing_points_ids.index(connected_point_id)
 
-                print(f'remove point {existing_points=}\n{index=}')
-
                 existing_points.pop(index)
+                self._connected_points.pop(connected_points_index)
+
+                break
+
+    def clean_points(self):
+        self.positive_points = []
+        self.negative_points = []
+        self._connected_points = []
 
     # @TODO: move next methods to Factory Class
 
@@ -127,7 +131,9 @@ class SmartTool:
 
     def update_local_fields(self, state, data):
         new_widget_data = self.get_widget_data_from_remote(state=state, data=data)
+        self.update_fields_by_data(new_widget_data)
 
+    def update_fields_by_data(self, new_widget_data):
         self.image_url = new_widget_data.get('imageUrl', '')
         self.image_hash = new_widget_data.get('imageHash', '')
         self.positive_points = new_widget_data.get('positivePoints', [])

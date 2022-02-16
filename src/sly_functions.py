@@ -10,38 +10,8 @@ import supervisely
 from sly_tqdm import sly_tqdm
 
 
-async def get_widget_arguments_from_request(request):
-    content = await request.json()
-    payload = content.get('payload', {})
-    # identifier = payload.get('identifier')
-    return payload
 
 
-def get_bboxes_from_annotation(image_annotations):
-    bboxes = []
-    for label in image_annotations.labels:
-        if label.geometry.geometry_name() == 'rectangle':
-            bbox = label.geometry.to_bbox()
-            bboxes.append(bbox)
-
-    return bboxes
-
-
-def get_data_to_render(image_info, bboxes):
-    data_to_render = []
-
-    for bbox in bboxes:
-        data_to_render.append({
-            'imageUrl': f'{image_info.full_storage_url}',
-            'imageHash': f'{image_info.hash}',
-            'bbox': [[bbox.left, bbox.top], [bbox.right, bbox.bottom]],
-            'positivePoints': [],
-            'negativePoints': [],
-            'mask': None,
-            'isActive': True
-        })
-
-    return data_to_render
 
 
 def get_mask_from_processing_server(current_card, processing_session_id):
@@ -81,40 +51,6 @@ def get_mask_from_processing_server(current_card, processing_session_id):
         }
     else:
         return None
-
-
-
-
-def add_rel_points_to_all_active_cards(state, rel_coordinates, origin_identifier):
-    updated_cards = {}
-
-    for card_id, current_card in state['widgets'].items():
-        bbox = current_card.get('bbox', [])
-        if len(bbox) > 1 and card_id != origin_identifier and current_card.get('isActive', False):
-            width, height = get_box_size(current_card)
-            x_real = int(rel_coordinates['x'] * width + current_card['bbox'][0][0])
-            y_real = int(rel_coordinates['y'] * height + current_card['bbox'][0][1])
-
-            point_id = f'{uuid.uuid4()}'
-            g.relative_points.add(point_id)
-
-            current_card[rel_coordinates['refers']].append({'position': [[x_real, y_real]],
-                                                            'id': point_id})
-
-            state['widgets'][card_id] = current_card
-
-            updated_cards[card_id] = current_card
-
-    return updated_cards
-
-
-
-def get_smart_segmentation_tool_cards(state):
-    smart_segmentation_tool_cards = {}
-    for card_id, current_card in state['widgets'].items():
-        if len(current_card.get('bbox', [])) > 1:
-            smart_segmentation_tool_cards[card_id] = current_card
-    return smart_segmentation_tool_cards
 
 
 def update_masks(state):

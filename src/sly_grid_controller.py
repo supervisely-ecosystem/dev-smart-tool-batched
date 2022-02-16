@@ -31,12 +31,18 @@ class GridController:
 
     def _add(self, app, state, data):
         widget = self._origin_widget_class(app, state, data)
+
+        if not g.bboxes_to_process.empty():
+            new_data = g.bboxes_to_process.get()
+            widget.update_fields_by_data(new_data)
+
         self.widgets[widget.identifier] = widget
 
     def _remove(self, app, state, data):
         identifiers = list(self.widgets.keys())
         if len(identifiers) > 0:
             last_object = self.widgets.pop(identifiers[-1])
+            g.bboxes_to_process.queue.appendleft(last_object.get_data_to_send())
             last_object.remove_remote_fields(state=state, data=data)
 
 

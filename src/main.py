@@ -3,6 +3,7 @@ from asgiref.sync import async_to_sync
 from fastapi import Request, Depends
 
 import supervisely  # 🤖 general
+from src import select_project
 from supervisely.app import DataJson
 
 import sly_functions as f
@@ -26,28 +27,7 @@ def windows_count_changed(request: Request,
                           state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     windows_count = state['windowsCount']
     g.grid_controller.change_count(actual_count=windows_count, app=g.app, state=state, data=DataJson())
-
-
-@g.app.post("/get_image_from_dataset")
-async def get_image_from_dataset(request: Request,
-                                 state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=9131))
-    images_in_dataset = g.api.image.get_list(dataset_id=43964)
-
-    selected_image = images_in_dataset[0]
-
-    image_ann_json = g.api.annotation.download(selected_image.id)
-
-    image_annotation = supervisely.Annotation.from_json(image_ann_json.annotation, project_meta)
-
-    bboxes = f.get_bboxes_from_annotation(image_annotation)
-    data_to_render = f.get_data_to_render(selected_image, bboxes)
-
-    for identifier in range(len(data_to_render)):
-        # for identifier in range(len(data_to_render)):
-        smart_tool.update_data(identifier=f'{identifier}', data_to_upload=data_to_render[identifier], state=state)
-
-    await state.synchronize_changes()
+    g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
     # print(images_in_dataset)
 
@@ -57,7 +37,6 @@ def update_annotation(request: Request,
                       state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     f.update_masks(state)
     # state.synchronize_changes()
-
 
 
 def get_remote_dataset_id():
@@ -79,25 +58,13 @@ def upload_to_project(request: Request,
     async_to_sync(state.synchronize_changes)()
 
 
-@g.app.post("/change_all_buttons")
-async def change_all_buttons(request: Request,
-                             state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    widget_arguments = await f.get_widget_arguments_from_request(request)
-    mode = widget_arguments.get('mode')
-
-    smart_segmentation_tool_cards = f.get_smart_segmentation_tool_cards(state)
-
-    for card_id, current_card in smart_segmentation_tool_cards.items():
-        current_card['isActive'] = True if mode == 'on' else False
-        state['widgets'][card_id] = current_card
-
-    await state.synchronize_changes()
-
-
 if __name__ == "__main__":
+    g.app.add_api_route('/download-project/{identifier}', select_project.download_project, methods=["POST"])
+
+    g.app.add_api_route('/change-all-buttons/{is_active}', smart_tool_handlers.change_all_buttons, methods=["POST"])
+    g.app.add_api_route('/clean-points/', smart_tool_handlers.clean_points, methods=["POST"])
 
     g.app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', smart_tool_handlers.points_updated, methods=["POST"])
     g.app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', smart_tool_handlers.points_updated, methods=["POST"])
-    g.app.add_api_route('/change_all_buttons/{flag}', smart_tool_handlers.change_all_buttons, methods=["POST"])
 
     uvicorn.run(g.app, host="0.0.0.0", port=8000)
