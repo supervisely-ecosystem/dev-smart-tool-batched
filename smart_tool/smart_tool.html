@@ -48,11 +48,11 @@
             :mask="widget.mask"
             :image-url="widget.imageUrl"
             :bbox.sync="widget.bbox"
-            @update:bbox="widget.bbox = $event; post('/widgets/smarttool/bbox-updated/widget.identifier')"
+            @update:bbox="widget.bbox = $event; post('/widgets/smarttool/bbox-updated/' + widget.identifier)"
             :positive-points="widget.positivePoints"
-            @update:positive-points="widget.positivePoints = $event; post('/widgets/smarttool/positive-updated/widget.identifier')"
+            @update:positive-points="widget.positivePoints = $event; post('/widgets/smarttool/positive-updated/' + widget.identifier)"
             :negative-points="widget.negativePoints"
-            @update:negative-points="widget.negativePoints = $event; post('/widgets/smarttool/negative-updated/widget.identifier')">
+            @update:negative-points="widget.negativePoints = $event; post('/widgets/smarttool/negative-updated/' + widget.identifier)">
 
     </smarttool-editor>
 </div>

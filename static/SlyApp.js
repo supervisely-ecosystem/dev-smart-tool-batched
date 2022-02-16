@@ -2,6 +2,41 @@ document.head.innerHTML += `<link type="text/css" rel="stylesheet" href="https:/
 
 import * as jsonpatch from 'https://cdn.jsdelivr.net/npm/fast-json-patch@3.1.0/index.mjs';
 import throttle from 'https://cdn.jsdelivr.net/npm/lodash-es@4.17.21/throttle.js';
+const vuePatchOptsSet = new Set(['add', 'remove']);
+
+function applyPatch(document, patch) {
+  let curDocument = document;
+
+  patch.forEach((operation) => {
+    if (vuePatchOptsSet.has(operation.op)) {
+      const pathParts = operation.path.split('/');
+      const propName = pathParts.splice(-1)[0];
+
+      let parentObject;
+
+      if (pathParts.length > 1) {
+        parentObject = jsonpatch.getValueByPointer(curDocument, pathParts.join('/'));
+      } else {
+        parentObject = curDocument;
+      }
+
+      if (Array.isArray(parentObject) || typeof parentObject !== 'object') {
+        curDocument = jsonpatch.applyOperation(document, operation).newDocument;
+        return;
+      };
+
+      if (operation.op === 'add') {
+        Vue.set(parentObject, propName, operation.value);
+      } else {
+        Vue.delete(parentObject, propName);
+      }
+    } else {
+      curDocument = jsonpatch.applyOperation(document, operation).newDocument;
+    }
+  });
+
+  return curDocument;
+}
 
 Vue.component('sly-app', {
   props: {
@@ -72,12 +107,8 @@ Vue.component('sly-app', {
 
     merge(payload) {
       if (payload.state) {
-        console.log('before merge state:');
-        console.dir(payload.state);
-        console.dir(this.state);
-        this.state = Object.assign({}, jsonpatch.applyPatch(this.state, payload.state).newDocument);
-        console.log('after merge state:');
-        console.dir(this.state);
+        // this.state = Object.assign({}, jsonpatch.applyPatch(this.state, payload.state).newDocument);
+        this.state = applyPatch(this.state, payload.state);
       }
 
       if (payload.data) {

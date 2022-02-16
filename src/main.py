@@ -29,23 +29,11 @@ def read_index(request: Request):
 def windows_count_changed(request: Request,
                           state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     windows_count = state['windowsCount']
+    g.grid_controller.change_count(actual_count=windows_count, app=g.app, state=state, data=DataJson())
 
-    smart_tools = []
-    for _ in range(windows_count):
-        smart_tools.append(SmartTool(app=g.app, state=state, data=DataJson()))
 
-    w.smart_tool_widgets = smart_tools
 
-    async_to_sync(state.synchronize_changes)()
 
-    # return g.templates_env.TemplateResponse('index.html', {'request': request,
-    #                                                        'sly_tqdm': sly_tqdm,
-    #                                                        'smart_tool_widgets': smart_tools})
-
-    # return ({'smart_tool_widgets': w.smart_tool_widgets})
-    # return g.templates_env.TemplateResponse('index.html', {'request': request,
-    #                                                        'sly_tqdm': sly_tqdm,
-    #                                                        'smart_tool_widgets': w.smart_tool_widgets})
 
 
 @g.app.post("/get_image_from_dataset")
@@ -79,7 +67,7 @@ def update_annotation(request: Request,
     # state.synchronize_changes()
 
 
-@g.app.post("/update_annotation_{1-10}")
+@g.app.post("/update_annotation")
 async def update_annotation(request: Request,
                             state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     widget_arguments = await f.get_widget_arguments_from_request(request)

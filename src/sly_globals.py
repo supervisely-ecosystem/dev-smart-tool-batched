@@ -9,6 +9,8 @@ from starlette.staticfiles import StaticFiles
 
 import supervisely
 from sly_tqdm import sly_tqdm
+from smart_tool import SmartTool
+from src.sly_widgets import GridController
 from supervisely.app import DataJson, LastStateJson
 from supervisely.app.fastapi import create, Jinja2Templates
 
@@ -39,6 +41,8 @@ DataJson(
 
     }
 )
+
+grid_controller = GridController(SmartTool)
 
 templates_env = Jinja2Templates(directory="../templates")
 # templates_env.get_template('index.html').render(smart_tool=Smart, sly_tqdm=sly_tqdm)
