@@ -10,9 +10,11 @@ from starlette.staticfiles import StaticFiles
 import supervisely
 from sly_tqdm import sly_tqdm
 from smart_tool import SmartTool
-from src.sly_widgets import GridController
 from supervisely.app import DataJson, LastStateJson
 from supervisely.app.fastapi import create, Jinja2Templates
+
+from src.sly_grid_controller import GridController
+
 
 app_dir = str(Path(sys.argv[0]).parents[1])
 print(f"App root directory: {app_dir}")

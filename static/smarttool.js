@@ -147,10 +147,17 @@ Vue.component('smarttool-editor', {
     };
   },
   watch: {
+    positivePoints: {
+      handler () {
+        console.log('------------');
+        this.pointsChanged(this.positivePoints, true);
+      },
+      deep: true,
+    },
+
 
     mask: {
       async handler () {
-        console.log('smarttool watcher activated 1', this.mask);
         if (!this.mask) return;
         const buf = await base64BitmapToRaw(this.mask.data);
         const annImageUrl = URL.createObjectURL(new Blob([buf]));
@@ -158,16 +165,13 @@ Vue.component('smarttool-editor', {
         const canvasImg = canvasTintImage(image, this.mask.color);
 
         this.maskEl.load(canvasImg.toDataURL())
-            .attr({
-              width: image.width,
-              height: image.height,
-            })
-            .move(...this.mask.origin);
-
-        console.log('smarttool watcher activated 2', this.mask)
-        },
-        deep: true,
-
+          .attr({
+            width: image.width,
+            height: image.height,
+          })
+          .move(...this.mask.origin);
+      },
+      deep: true,
     },
 
     bbox() {
@@ -178,18 +182,21 @@ Vue.component('smarttool-editor', {
       this.sceneEl.viewbox(getViewBox(this.bboxEl.bbox()))
     },
 
-    positivePoints() {
-      this.pointsChanged(this.positivePoints, true);
-    },
-
-    negativePoints() {
-      this.pointsChanged(this.negativePoints, false);
+    negativePoints: {
+      handler() {
+        this.pointsChanged(this.negativePoints, false);
+      },
+      deep: true,
     },
   },
   methods: {
     pointsChanged(points, isPositive) {
       points.forEach((point) => {
-        if (this.pointsMap.has(point.id)) return;
+        const pt = this.pointsMap.get(point.id);
+        if (pt) {
+          pt.point.move(point.position[0][0], point.position[0][1])
+          return;
+        }
 
         this.addPoint({
           id: point.id,
@@ -358,4 +365,4 @@ Vue.component('smarttool-editor', {
 
     this.init();
   }
-})
+});

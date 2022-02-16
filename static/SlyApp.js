@@ -2,7 +2,7 @@ document.head.innerHTML += `<link type="text/css" rel="stylesheet" href="https:/
 
 import * as jsonpatch from 'https://cdn.jsdelivr.net/npm/fast-json-patch@3.1.0/index.mjs';
 import throttle from 'https://cdn.jsdelivr.net/npm/lodash-es@4.17.21/throttle.js';
-const vuePatchOptsSet = new Set(['add', 'remove']);
+const vuePatchOptsSet = new Set(['add', 'remove', 'replace']);
 
 function applyPatch(document, patch) {
   let curDocument = document;
@@ -20,12 +20,12 @@ function applyPatch(document, patch) {
         parentObject = curDocument;
       }
 
-      if (Array.isArray(parentObject) || typeof parentObject !== 'object') {
+      if (typeof parentObject !== 'object') {
         curDocument = jsonpatch.applyOperation(document, operation).newDocument;
         return;
       };
 
-      if (operation.op === 'add') {
+      if (operation.op === 'add' || operation.op === 'replace') {
         Vue.set(parentObject, propName, operation.value);
       } else {
         Vue.delete(parentObject, propName);

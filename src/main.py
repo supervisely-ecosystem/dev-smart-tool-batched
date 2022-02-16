@@ -1,21 +1,17 @@
 import uvicorn  # 🪐 server tools
 from asgiref.sync import async_to_sync
-from pydantic import BaseModel
-from starlette.responses import FileResponse
-from fastapi import Request, WebSocket, Depends
-
-import os  # 🔧 system tools
-import time
+from fastapi import Request, Depends
 
 import supervisely  # 🤖 general
-from supervisely.app import StateJson, DataJson
+from supervisely.app import DataJson
 
-import sly_globals as g
 import sly_functions as f
-import sly_widgets as w
+import sly_globals as g
+import smart_tool_handlers
 
-from smart_tool import SmartTool  # 🤖 widgets
+
 from sly_tqdm import sly_tqdm
+from smart_tool import SmartTool  # 🤖 widgets
 
 
 @g.app.get("/")
@@ -30,10 +26,6 @@ def windows_count_changed(request: Request,
                           state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     windows_count = state['windowsCount']
     g.grid_controller.change_count(actual_count=windows_count, app=g.app, state=state, data=DataJson())
-
-
-
-
 
 
 @g.app.post("/get_image_from_dataset")
@@ -66,28 +58,6 @@ def update_annotation(request: Request,
     f.update_masks(state)
     # state.synchronize_changes()
 
-
-@g.app.post("/update_annotation")
-async def update_annotation(request: Request,
-                            state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    widget_arguments = await f.get_widget_arguments_from_request(request)
-
-    identifier = widget_arguments.get('identifier')
-
-    if identifier is not None:
-        changed_card = state['widgets'][f'{identifier}']
-
-        new_relative_point = f.get_new_relative_point_coordinates(changed_card)  # coordinates from 0 to 1
-        if new_relative_point is not None:
-            updated_cards = f.add_rel_points_to_all_active_cards(state, new_relative_point,
-                                                                 origin_identifier=identifier)
-
-        mask = f.get_mask_from_processing_server(current_card=changed_card,
-                                                 processing_session_id=state['processingServerSessionId'])
-        if mask is not None:
-            state['widgets'][f'{identifier}']['mask'] = mask
-
-        await state.synchronize_changes()
 
 
 def get_remote_dataset_id():
@@ -125,7 +95,8 @@ async def change_all_buttons(request: Request,
 
 
 if __name__ == "__main__":
-    # g.app.add_api_route('/custom-post-req/{identifier}', test_method, methods=["POST"])
-
+    # g.app.add_api_route('/widgets/smarttool/bbox-updated/{identifier}', smart_tool_handlers.bbox_updated, methods=["POST"])
+    g.app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', smart_tool_handlers.points_updated, methods=["POST"])
+    g.app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', smart_tool_handlers.points_updated, methods=["POST"])
 
     uvicorn.run(g.app, host="0.0.0.0", port=8000)

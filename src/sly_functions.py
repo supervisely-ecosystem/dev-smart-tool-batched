@@ -83,11 +83,6 @@ def get_mask_from_processing_server(current_card, processing_session_id):
         return None
 
 
-def get_box_size(current_card):
-    box_width = current_card['bbox'][1][0] - current_card['bbox'][0][0]
-    box_height = current_card['bbox'][1][1] - current_card['bbox'][0][1]
-
-    return box_width, box_height
 
 
 def add_rel_points_to_all_active_cards(state, rel_coordinates, origin_identifier):
@@ -112,20 +107,6 @@ def add_rel_points_to_all_active_cards(state, rel_coordinates, origin_identifier
 
     return updated_cards
 
-
-def get_new_relative_point_coordinates(current_card):
-    box_width, box_height = get_box_size(current_card)
-
-    for refers_flag in ['positivePoints', 'negativePoints']:
-        for positive_point in current_card[refers_flag]:
-            if positive_point['id'] not in g.relative_points:
-                g.relative_points.add(positive_point['id'])
-
-                return {
-                    'x': (positive_point['position'][0][0] - current_card['bbox'][0][0]) / box_width,
-                    'y': (positive_point['position'][0][1] - current_card['bbox'][0][1]) / box_height,
-                    'refers': refers_flag
-                }
 
 
 def get_smart_segmentation_tool_cards(state):
