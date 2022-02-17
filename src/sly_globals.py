@@ -31,15 +31,20 @@ api = supervisely.Api.from_env()
 
 LastStateJson(
     {
+        'projectsInWorkspace': [{'key': project.id, 'label': f'{project.name}:{project.id}'} for project in
+                                api.project.get_list(workspace_id=418)],
         'currentState': 0,
 
         'windowsCount': 0,
         'toolSize': 20,
 
-        'processingServerSessionId': 13303,
-        'projectId': 9131,
+        'processingServerSessionId': 13469,
+        'projectId': None,
 
         'widgets': {},
+
+        'selectProjectLoading': False,
+        'updatingMasks': False,
 
     }
 )
@@ -58,11 +63,10 @@ DataJson(
     }
 )
 
-grid_controller = GridController(SmartTool)
-
 templates_env = Jinja2Templates(directory="../templates")
 
 bboxes_to_process = Queue(maxsize=999999)
+grid_controller = GridController(SmartTool)
 
 
 @app.get('/favicon.ico')

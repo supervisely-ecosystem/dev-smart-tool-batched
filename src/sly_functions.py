@@ -54,7 +54,7 @@ def get_mask_from_processing_server(current_card, processing_session_id):
 
 
 def update_masks(state):
-    actual_cards = get_smart_segmentation_tool_cards(state)
+
     for card_id, current_card in sly_tqdm(actual_cards.items(), identifier='progress_1', message='updating masks'):
         mask = get_mask_from_processing_server(current_card=current_card,
                                                processing_session_id=state['processingServerSessionId'])

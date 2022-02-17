@@ -37,6 +37,8 @@ class SmartTool:
 
         self.update_remote_fields(state, data)
 
+        self.needs_an_update = True
+
     def get_updated_points(self, state, data, points_type='positive'):
         new_widget_data = self.get_widget_data_from_remote(state=state, data=data)
 
@@ -84,6 +86,8 @@ class SmartTool:
         self._connected_points.append(connected_points_ids)
 
     def update_by_relative_coordinates(self, updated_point, points_type='positive'):
+        self.needs_an_update = True
+
         box_width, box_height = self.get_box_size()
         x_real = int(updated_point['relative']['x'] * box_width + self.bbox[0][0])
         y_real = int(updated_point['relative']['y'] * box_height + self.bbox[0][1])

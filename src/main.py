@@ -33,8 +33,7 @@ def windows_count_changed(request: Request,
 
 
 @g.app.post("/update_masks")
-def update_annotation(request: Request,
-                      state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+def update_annotation(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     f.update_masks(state)
     # state.synchronize_changes()
 
@@ -63,6 +62,8 @@ if __name__ == "__main__":
 
     g.app.add_api_route('/change-all-buttons/{is_active}', smart_tool_handlers.change_all_buttons, methods=["POST"])
     g.app.add_api_route('/clean-points/', smart_tool_handlers.clean_points, methods=["POST"])
+    g.app.add_api_route('/update-masks/', smart_tool_handlers.update_masks, methods=["POST"])
+    g.app.add_api_route('/next-batch/', smart_tool_handlers.next_batch, methods=["POST"])
 
     g.app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', smart_tool_handlers.points_updated, methods=["POST"])
     g.app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', smart_tool_handlers.points_updated, methods=["POST"])

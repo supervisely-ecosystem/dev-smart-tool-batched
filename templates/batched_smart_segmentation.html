@@ -36,14 +36,10 @@
 
             <div style="display: flex">
                 <el-button type="primary" class="regular" size="small" style="margin: 15px 5px;"
-                           @click="post('/update_masks')">UPDATE MASKS
+                           @click="state.updatingMasks=true; post('/update-masks/')">UPDATE MASKS
                 </el-button>
 
-                <el-button v-if="state.finished === false" type="primary" class="regular" size="small"
-                           style="margin: 15px 5px;"
-                           @click="post('/upload_to_project')">UPLOAD TO PROJECT
-                </el-button>
-                <a v-else href="https://supervisely-dev.deepsystems.io/projects/9100/datasets" target="_blank">
+                <a href="https://supervisely-dev.deepsystems.io/projects/9100/datasets" target="_blank">
                     <el-button type="success" class="regular" size="small" style="margin: 15px 5px;">
                         OPEN PROJECT
                     </el-button>
@@ -65,7 +61,7 @@
     </div>
 
     <div style="display: flex; flex-direction: row; justify-content: space-between;" v-if="state.windowsCount > 0">
-        <div style="display: flex; align-items: center; margin-top: 15px;" >
+        <div style="display: flex; align-items: center; margin-top: 20px;" >
 
             <el-button type="success" class="regular" size="small" style="margin: 0 2px;"
                        @click="post('/change-all-buttons/True')">ALL ON

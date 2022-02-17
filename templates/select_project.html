@@ -23,12 +23,21 @@
                 <!--                        </a>-->
 
                 <div style="display: flex; justify-content: center; align-items: center">
-                    <p style="margin-right: 8px; padding-top: 2px"><b>Project ID:</b></p>
-                    <el-input-number size="small" :value="state.projectId"
-                                     @change="state.projectId=$event;"
-                                     :min="0" ></el-input-number>
+
+                    <el-select v-model="state.projectId" placeholder="Select">
+                        <el-option
+                                v-for="item in state.projectsInWorkspace"
+                                :key="item.key"
+                                :label="item.label"
+                                :value="item.key">
+                        </el-option>
+                    </el-select>
+<!--                    <el-input-number size="small" :value="state.projectId"-->
+<!--                                     @change="state.projectId=$event;"-->
+<!--                                     :min="0"></el-input-number>-->
                     <el-button type="primary" class="regular" size="small" style="margin: 15px 15px;"
-                               @click="post('/download-project/'+ state.projectId)">select project
+                               @click="state.selectProjectLoading=true; post('/download-project/'+ state.projectId)"
+                    :loading="state.selectProjectLoading">select project
                     </el-button>
                 </div>
 
@@ -38,9 +47,9 @@
         </div>
 
 
-        <div style="width: 100%; margin-bottom: 10px">
-            <div> {{{sly_tqdm.to_html(identifier = 'download_project') | safe }}}</div>
-        </div>
+<!--        <div style="width: 100%; margin-bottom: 10px">-->
+<!--            <div> {{{sly_tqdm.to_html(identifier = 'download_project') | safe }}}</div>-->
+<!--        </div>-->
     </div>
 </sly-card>
 <!--    <sly-select-project-->
