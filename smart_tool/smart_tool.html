@@ -41,7 +41,9 @@
                 style="margin: 10px 10px"
                 v-model="widget.isActive"
                 on-text=""
-                off-text="">
+                off-text=""
+                :disabled="widget.bbox.length === 0"
+        >
         </el-switch>
     </div>
     <smarttool-editor

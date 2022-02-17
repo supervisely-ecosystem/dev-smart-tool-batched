@@ -45,6 +45,7 @@ LastStateJson(
 
         'selectProjectLoading': False,
         'updatingMasks': False,
+        'queueIsEmpty': False
 
     }
 )
@@ -67,6 +68,11 @@ templates_env = Jinja2Templates(directory="../templates")
 
 bboxes_to_process = Queue(maxsize=999999)
 grid_controller = GridController(SmartTool)
+
+output_project_meta = None
+output_dataset_id = None
+
+imagehash2imageinfo = {}
 
 
 @app.get('/favicon.ico')

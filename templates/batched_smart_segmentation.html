@@ -61,7 +61,7 @@
     </div>
 
     <div style="display: flex; flex-direction: row; justify-content: space-between;" v-if="state.windowsCount > 0">
-        <div style="display: flex; align-items: center; margin-top: 20px;" >
+        <div style="display: flex; align-items: center; margin-top: 20px;">
 
             <el-button type="success" class="regular" size="small" style="margin: 0 2px;"
                        @click="post('/change-all-buttons/True')">ALL ON
@@ -79,7 +79,8 @@
         </div>
         <div style="display: flex; align-items: center; margin-top: 15px;">
             <el-button type="primary" class="regular" size="small" style="margin: 0 2px;"
-                       @click="post('/next-batch/')">NEXT BATCH
+                       @click="state.updatingMasks=true; post('/next-batch/')"
+                       :disabled="state.queueIsEmpty">NEXT BATCH
             </el-button>
         </div>
     </div>

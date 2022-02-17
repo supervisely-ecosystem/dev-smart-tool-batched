@@ -4,7 +4,9 @@ from fastapi import Request, WebSocket, Depends
 import supervisely
 from smart_tool import SmartTool
 
+import sly_functions as f
 import sly_globals as g
+
 from supervisely.app import DataJson
 
 
@@ -52,7 +54,8 @@ def change_all_buttons(is_active: bool,
                        request: Request,
                        state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     for widget in g.grid_controller.widgets.values():
-        widget.is_active = is_active
+        if len(widget.bbox) > 0:
+            widget.is_active = is_active
 
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
@@ -75,11 +78,30 @@ def update_masks(state: supervisely.app.StateJson = Depends(supervisely.app.Stat
 
 
 def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    # 1 - load data from widgets
-    # 2 - upload data to project
-    # 3 - load new data to widgets
+    state['queueIsEmpty'] = g.bboxes_to_process.empty()
 
-    return
+    # 1 - load data from widgets
+
+    g.grid_controller.update_local_fields(state=state, data=DataJson())
+    widgets_data = []
+    for widget in g.grid_controller.widgets.values():
+        widgets_data.append(widget.get_data_to_send())
+
+    # 2 - upload data to project
+    f.upload_images_to_dataset(dataset_id=g.output_dataset_id, data_to_upload=widgets_data)
+
+    # 3 - load new data to widgets
+    g.grid_controller.clean_all(state=state, data=DataJson())
+    g.grid_controller.change_count(actual_count=state['windowsCount'], app=g.app, state=state, data=DataJson())
+    #
+    # for widget in g.grid_controller.widgets.values():
+    #     if not g.bboxes_to_process.empty():
+    #         new_data = g.bboxes_to_process.get()
+    #         widget.update_fields_by_data(new_data)
+
+    state['updatingMasks'] = False
+
+    g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
 
 # ------------------
@@ -96,8 +118,6 @@ def update_local_masks(response):
                 'origin': [data['origin']['x'], data['origin']['y']],
                 'color': '#77e377'
             }
-        else:
-            widget.mask = None
 
 
 def add_point_to_active_cards(origin_identifier, updated_point, points_type):

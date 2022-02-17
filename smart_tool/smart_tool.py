@@ -37,7 +37,7 @@ class SmartTool:
 
         self.update_remote_fields(state, data)
 
-        self.needs_an_update = True
+        self.needs_an_update = False
 
     def get_updated_points(self, state, data, points_type='positive'):
         new_widget_data = self.get_widget_data_from_remote(state=state, data=data)

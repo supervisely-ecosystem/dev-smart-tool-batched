@@ -29,33 +29,6 @@ def windows_count_changed(request: Request,
     g.grid_controller.change_count(actual_count=windows_count, app=g.app, state=state, data=DataJson())
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
-    # print(images_in_dataset)
-
-
-@g.app.post("/update_masks")
-def update_annotation(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    f.update_masks(state)
-    # state.synchronize_changes()
-
-
-def get_remote_dataset_id():
-    remote_dataset = g.api.dataset.create(project_id=9100, name="main", change_name_if_conflict=True)
-    print(f'Dataset created {remote_dataset.name=}')
-    return remote_dataset.id
-
-
-@g.app.post("/upload_to_project")
-def upload_to_project(request: Request,
-                      state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    remote_dataset_id = get_remote_dataset_id()
-
-    smart_segmentation_tool_cards = f.get_smart_segmentation_tool_cards(state)
-    f.upload_images_to_dataset(dataset_id=remote_dataset_id,
-                               smart_segmentation_tool_cards=smart_segmentation_tool_cards)
-
-    state['finished'] = True
-    async_to_sync(state.synchronize_changes)()
-
 
 if __name__ == "__main__":
     g.app.add_api_route('/download-project/{identifier}', select_project.download_project, methods=["POST"])

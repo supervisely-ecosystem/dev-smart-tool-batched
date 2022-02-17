@@ -31,8 +31,10 @@ class GridController:
 
     def _add(self, app, state, data):
         widget = self._origin_widget_class(app, state, data)
+        widget.is_active = False
 
         if not g.bboxes_to_process.empty():
+            widget.is_active = True
             new_data = g.bboxes_to_process.get()
             widget.update_fields_by_data(new_data)
 
@@ -45,5 +47,10 @@ class GridController:
             g.bboxes_to_process.queue.appendleft(last_object.get_data_to_send())
             last_object.remove_remote_fields(state=state, data=data)
 
+    def clean_all(self, state, data):
+        identifiers = list(self.widgets.keys())
+        while len(identifiers) > 0:
+            last_object = self.widgets.pop(identifiers[-1])
+            last_object.remove_remote_fields(state=state, data=data)
 
-
+            identifiers = list(self.widgets.keys())
