@@ -1,5 +1,6 @@
 import os
 import shutil
+from queue import Queue
 
 from asgiref.sync import async_to_sync
 from fastapi import Request, Depends
@@ -11,6 +12,8 @@ from sly_tqdm import sly_tqdm
 
 
 # HANDLERS PART
+from supervisely.app import DataJson
+
 
 def download_project(identifier: str,
                      request: Request,
@@ -23,6 +26,9 @@ def download_project(identifier: str,
     # supervisely.download_project(api=g.api, project_id=identifier, dest_dir=g.local_project_dir,
     #                              progress_cb=pbar.update)
     #
+    g.grid_controller.clean_all(state=state, data=DataJson())
+    state['queueIsEmpty'] = False
+    g.bboxes_to_process = Queue(maxsize=999999)
 
     project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=identifier))
     project_datasets = g.api.dataset.get_list(project_id=identifier)
@@ -32,12 +38,14 @@ def download_project(identifier: str,
         for current_image in images_in_dataset:
             image_to_crops(selected_image=current_image, project_meta=project_meta)
 
-
     g.output_project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=9100))
     g.output_dataset_id = f.get_remote_dataset_id()
 
-
     state['currentState'] = 1
+    state['selectProjectLoading'] = False
+
+    state['windowsCount'] = 0
+
     async_to_sync(state.synchronize_changes)()
 
 # ------------------
