@@ -10,7 +10,6 @@ import sly_globals as g
 import sly_functions as f
 from sly_tqdm import sly_tqdm
 
-
 # HANDLERS PART
 from supervisely.app import DataJson
 
@@ -41,6 +40,9 @@ def download_project(identifier: str,
     g.output_project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=9100))
     g.output_dataset_id = f.get_remote_dataset_id()
 
+    g.selected_object_class = state['selectedClassName']
+    g.imagehash2imageinfo = {}
+
     state['currentState'] = 1
     state['selectProjectLoading'] = False
 
@@ -48,9 +50,9 @@ def download_project(identifier: str,
 
     async_to_sync(state.synchronize_changes)()
 
-# ------------------
-# CLASSIC CODE PART
-# ------------------
+    # ------------------
+    # CLASSIC CODE PART
+    # ------------------
 
 
 def get_bboxes_from_annotation(image_annotations):
@@ -92,4 +94,3 @@ def image_to_crops(selected_image, project_meta):
     bboxes = get_bboxes_from_annotation(image_annotation)
     data_to_render = get_data_to_render(selected_image, bboxes)
     put_data_to_queue(data_to_render)
-

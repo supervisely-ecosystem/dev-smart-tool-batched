@@ -24,10 +24,12 @@ def get_supervisely_label_by_widget_data(widget_data, current_class_name="batche
                                       origin=supervisely.PointLocation(row=widget_data['mask']['origin'][1],
                                                                        col=widget_data['mask']['origin'][0]))
 
-        obj_class_id = g.output_project_meta.obj_classes.get(current_class_name)
+        # @TODO add normal class selection
+        current_class_name = g.selected_object_class if g.selected_object_class is not None else current_class_name
+        obj_class = g.output_project_meta.obj_classes.get(current_class_name)
 
         label = supervisely.Label(geometry=geometry,
-                                  obj_class=obj_class_id)
+                                  obj_class=obj_class)
 
         return label
 
@@ -46,7 +48,8 @@ def upload_images_to_dataset(dataset_id, data_to_upload):
         if len(labels) > 0:
             image_info = g.imagehash2imageinfo.get(image_hash)
             if image_info is None:
-                image_info = g.api.image.upload_hash(dataset_id=dataset_id, name=f'{image_hash[:5]}.png', hash=image_hash)
+                image_info = g.api.image.upload_hash(dataset_id=dataset_id, name=f'{image_hash[:5]}.png',
+                                                     hash=image_hash)
                 g.imagehash2imageinfo[image_hash] = image_info
 
                 annotation = supervisely.Annotation(img_size=(image_info.height, image_info.width),

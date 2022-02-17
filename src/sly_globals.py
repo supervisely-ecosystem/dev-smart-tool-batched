@@ -29,8 +29,15 @@ app.mount("/static", StaticFiles(directory="../static"), name="static")
 
 api = supervisely.Api.from_env()
 
+output_project_meta = supervisely.ProjectMeta.from_json(api.project.get_meta(id=9100))
+output_dataset_id = None
+
 LastStateJson(
     {
+        'selectedClassName': None,
+        'availableClasses': [{'key': project_class.name, 'label': f'{project_class.name}'} for project_class in
+                             output_project_meta.obj_classes],
+
         'projectsInWorkspace': [{'key': project.id, 'label': f'{project.name}:{project.id}'} for project in
                                 api.project.get_list(workspace_id=418)],
         'currentState': 0,
@@ -69,10 +76,9 @@ templates_env = Jinja2Templates(directory="../templates")
 bboxes_to_process = Queue(maxsize=999999)
 grid_controller = GridController(SmartTool)
 
-output_project_meta = None
-output_dataset_id = None
-
 imagehash2imageinfo = {}
+
+selected_object_class = None
 
 
 @app.get('/favicon.ico')

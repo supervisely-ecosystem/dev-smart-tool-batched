@@ -24,7 +24,7 @@
 
                 <div style="display: flex; justify-content: center; align-items: center">
 
-                    <el-select v-model="state.projectId" placeholder="Select">
+                    <el-select v-model="state.projectId" placeholder="Select project">
                         <el-option
                                 v-for="item in state.projectsInWorkspace"
                                 :key="item.key"
@@ -32,12 +32,21 @@
                                 :value="item.key">
                         </el-option>
                     </el-select>
-<!--                    <el-input-number size="small" :value="state.projectId"-->
-<!--                                     @change="state.projectId=$event;"-->
-<!--                                     :min="0"></el-input-number>-->
+
+                    <el-select style="margin-left: 5px" v-model="state.selectedClassName" placeholder="Select class">
+                        <el-option
+                                v-for="item in state.availableClasses"
+                                :key="item.key"
+                                :label="item.label"
+                                :value="item.key">
+                        </el-option>
+                    </el-select>
+                    <!--                    <el-input-number size="small" :value="state.projectId"-->
+                    <!--                                     @change="state.projectId=$event;"-->
+                    <!--                                     :min="0"></el-input-number>-->
                     <el-button type="primary" class="regular" size="small" style="margin: 15px 15px;"
                                @click="state.selectProjectLoading=true; post('/download-project/'+ state.projectId)"
-                    :loading="state.selectProjectLoading">select project
+                               :loading="state.selectProjectLoading">select project
                     </el-button>
                 </div>
 
@@ -47,9 +56,9 @@
         </div>
 
 
-<!--        <div style="width: 100%; margin-bottom: 10px">-->
-<!--            <div> {{{sly_tqdm.to_html(identifier = 'download_project') | safe }}}</div>-->
-<!--        </div>-->
+        <!--        <div style="width: 100%; margin-bottom: 10px">-->
+        <!--            <div> {{{sly_tqdm.to_html(identifier = 'download_project') | safe }}}</div>-->
+        <!--        </div>-->
     </div>
 </sly-card>
 <!--    <sly-select-project-->
