@@ -19,12 +19,12 @@ def get_remote_dataset_id():
 
 def get_supervisely_label_by_widget_data(widget_data, current_class_name="batched_smart_tool"):
     if widget_data.get('mask') is not None:
+        # @TODO add normal class selection
         mask_np = supervisely.Bitmap.base64_2_data(widget_data['mask']['data'])
         geometry = supervisely.Bitmap(data=mask_np,
                                       origin=supervisely.PointLocation(row=widget_data['mask']['origin'][1],
                                                                        col=widget_data['mask']['origin'][0]))
 
-        # @TODO add normal class selection
         current_class_name = g.selected_object_class if g.selected_object_class is not None else current_class_name
         obj_class = g.output_project_meta.obj_classes.get(current_class_name)
 
@@ -59,5 +59,4 @@ def upload_images_to_dataset(dataset_id, data_to_upload):
             else:
                 g.api.annotation.append_labels(image_info.id, labels)
             # print()
-
     return hash2annotation

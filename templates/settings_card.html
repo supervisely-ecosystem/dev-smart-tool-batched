@@ -1,0 +1,40 @@
+<sly-card title="Select input project" subtitle="select and download input project">
+
+    <div style="display: flex; flex-direction: column;">
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0 5px">
+
+            <div>
+                <div style="display: flex; justify-content: center; align-items: center">
+
+
+                    <sly-select-project
+                            :workspace-id="418"
+                            :project-id.sync="state.inputProjectId"
+                            :options="{showLabel: false, availableTypes: ['images']}"
+                    >
+                    </sly-select-project>
+
+                    <el-select style="margin-left: 5px" v-model="state.selectedClassName" placeholder="Select class">
+                        <el-option
+                                v-for="item in state.availableClasses"
+                                :key="item.key"
+                                :label="item.label"
+                                :value="item.key">
+                        </el-option>
+                    </el-select>
+                    <!--                    <el-input-number size="small" :value="state.projectId"-->
+                    <!--                                     @change="state.projectId=$event;"-->
+                    <!--                                     :min="0"></el-input-number>-->
+                    <el-button type="primary" class="regular" size="small" style="margin: 15px 15px;"
+                               @click="state.selectProjectLoading=true; post('/download-project/'+ state.inputProjectId)"
+                               :loading="state.selectProjectLoading">select project
+                    </el-button>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</sly-card>

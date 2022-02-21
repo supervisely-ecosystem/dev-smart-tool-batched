@@ -10,7 +10,7 @@ import markupsafe
 from asgiref.sync import async_to_sync
 from jinja2 import Environment
 
-from supervisely.app import StateJson, LastStateJson, DataJson
+from supervisely.app import StateJson, DataJson
 from supervisely.app.jinja2 import create_env
 
 
@@ -127,7 +127,7 @@ class SmartTool:
         self.negative_points = []
         self._connected_points = []
 
-    # @TODO: move next methods to Factory Class
+    # @TODO: move next methods to Parent Class
 
     def get_widget_data_from_remote(self, state, data):
         new_widgets = state["widgets"].get(f'{self.__class__.__name__}', {})  # get widget_data from state

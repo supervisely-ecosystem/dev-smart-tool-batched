@@ -1,44 +1,43 @@
 import uvicorn  # 🪐 server tools
 from asgiref.sync import async_to_sync
 from fastapi import Request, Depends
+from starlette.middleware.cors import CORSMiddleware
 
 import supervisely  # 🤖 general
-from src import select_project
 from supervisely.app import DataJson
 
-import sly_functions as f
-import sly_globals as g
-import smart_tool_handlers
-
+import src.sly_functions as f
+import src.sly_globals as g
 
 from sly_tqdm import sly_tqdm
 from smart_tool import SmartTool  # 🤖 widgets
+
+import src.batched_smart_tool as batched_smart_tool
+import src.settings_card as settings_card
+import src.grid_controller as grid_controller
 
 
 @g.app.get("/")
 def read_index(request: Request):
     return g.templates_env.TemplateResponse('index.html', {'request': request,
-                                                           'sly_tqdm': sly_tqdm,
                                                            'smart_tool': SmartTool})
 
 
-@g.app.post("/windows-count-changed/")
-def windows_count_changed(request: Request,
-                          state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    windows_count = state['windowsCount']
-    g.grid_controller.change_count(actual_count=windows_count, app=g.app, state=state, data=DataJson())
-    g.grid_controller.update_remote_fields(state=state, data=DataJson())
-
+# @TODO:
 
 if __name__ == "__main__":
-    g.app.add_api_route('/download-project/{identifier}', select_project.download_project, methods=["POST"])
+    g.app.add_api_route('/download-project/{identifier}', settings_card.download_project, methods=["POST"])
 
-    g.app.add_api_route('/change-all-buttons/{is_active}', smart_tool_handlers.change_all_buttons, methods=["POST"])
-    g.app.add_api_route('/clean-points/', smart_tool_handlers.clean_points, methods=["POST"])
-    g.app.add_api_route('/update-masks/', smart_tool_handlers.update_masks, methods=["POST"])
-    g.app.add_api_route('/next-batch/', smart_tool_handlers.next_batch, methods=["POST"])
+    g.app.add_api_route('/windows-count-changed/', grid_controller.windows_count_changed, methods=["POST"])
 
-    g.app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', smart_tool_handlers.points_updated, methods=["POST"])
-    g.app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', smart_tool_handlers.points_updated, methods=["POST"])
+    g.app.add_api_route('/change-all-buttons/{is_active}', batched_smart_tool.change_all_buttons, methods=["POST"])
+    g.app.add_api_route('/clean-points/', batched_smart_tool.clean_points, methods=["POST"])
+    g.app.add_api_route('/update-masks/', batched_smart_tool.update_masks, methods=["POST"])
+    g.app.add_api_route('/next-batch/', batched_smart_tool.next_batch, methods=["POST"])
 
-    uvicorn.run(g.app, host="0.0.0.0", port=8000)
+    g.app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', batched_smart_tool.points_updated,
+                        methods=["POST"])
+    g.app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', batched_smart_tool.points_updated,
+                        methods=["POST"])
+
+    uvicorn.run(g.app, host="127.0.0.1", port=8000)

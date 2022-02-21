@@ -163,6 +163,7 @@ Vue.component('smarttool-editor', {
           .move(...this.mask.origin);
       },
       deep: true,
+      immediate: true
     },
 
     bbox() {

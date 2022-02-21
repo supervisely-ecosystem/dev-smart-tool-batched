@@ -62,23 +62,22 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuidv4.min.js"></script>
 
 
-<!--<script src="https://supervisely-ecosystem.github.io/supervisely-app-frontend-js/SlyApp.js" type="module"></script>-->
-
-<script src="/static/SlyApp.js" type="module"></script>
+<script src="https://supervisely-ecosystem.github.io/supervisely-app-frontend-js/SlyApp.js" type="module"></script>
+<!--<script src="/static/SlyApp.js" type="module"></script>-->
 <script src="/static/smarttool.js"></script>
 
 
 <div id="sly-app">
     <sly-app>
         <template v-slot="{ post, state, data }">
-<!--            <json-viewer :value="{'state': state, 'data': data}"-->
-<!--                         style="position: fixed; top: 0; right: 0; z-index: 9999"></json-viewer>-->
+            <json-viewer :value="{'state': state, 'data': data}"
+                         style="position: fixed; top: 0; right: 0; z-index: 9999"></json-viewer>
 
             <div v-if="state.currentState === 0">
-                {% include 'select_project.html' %}
+                {% include 'settings_card.html' %}
             </div>
             <div v-if="state.currentState === 1">
-                {% include 'batched_smart_segmentation.html' %}
+                {% include 'batched_smart_tool.html' %}
             </div>
 
         </template>
@@ -116,7 +115,6 @@
             this.editor.set(this.value);
 
         }
-
     })
     ;
 </script>
