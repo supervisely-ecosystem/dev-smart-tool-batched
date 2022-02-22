@@ -26,6 +26,8 @@ class GridController:
         widget = self._origin_widget_class(app, state, data)
         widget.is_active = False
 
+        print(f'actual_q: {images_queue.queue=}')
+
         if not images_queue.empty():
             widget.is_active = True
             new_data = images_queue.get()
