@@ -6,10 +6,12 @@ import jinja2
 from asgiref.sync import async_to_sync
 from starlette.templating import Jinja2Templates
 
-import sly_globals as g
 import supervisely
 from sly_tqdm import sly_tqdm
+import src.sly_globals as g
 
+
+# import src.settings_card as settings_card
 
 def get_remote_dataset_id():
     remote_dataset = g.api.dataset.create(project_id=9100, name="annotated", change_name_if_conflict=True)
@@ -23,6 +25,8 @@ def get_supervisely_label_by_widget_data(widget_data, current_class_name="batche
         geometry = supervisely.Bitmap(data=mask_np,
                                       origin=supervisely.PointLocation(row=widget_data['mask']['origin'][1],
                                                                        col=widget_data['mask']['origin'][0]))
+
+        # settings_card.get_object_class_by_name(state)
 
         label = supervisely.Label(geometry=geometry,
                                   obj_class=g.output_class_object)

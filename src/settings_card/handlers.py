@@ -36,6 +36,7 @@ def select_input_project(identifier: str,
         for current_image, current_annotation in zip(images_in_dataset, annotations_in_dataset):
             local_functions.put_crops_to_queue(selected_image=current_image,
                                                img_annotation_json=current_annotation,
+                                               current_dataset=current_dataset,
                                                project_meta=project_meta)
 
     state['currentStep'] = 2

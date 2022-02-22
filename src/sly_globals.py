@@ -34,12 +34,9 @@ app.mount("/static", StaticFiles(directory=os.path.join(app_root_directory, 'sta
 api = supervisely.Api.from_env()
 
 
-StateJson(
-    {
-        'currentState': 0,  # 0 — setting page, 1 — batched smart tool page
-        'widgets': {},
-    }
-)
+StateJson()['widgets'] = {}
+
+
 
 DataJson(
     {

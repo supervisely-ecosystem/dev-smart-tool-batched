@@ -142,7 +142,7 @@ class SmartTool:
     def update_fields_by_data(self, new_widget_data):
         self.image_url = new_widget_data.get('imageUrl', '')
         self.image_hash = new_widget_data.get('imageHash', '')
-        self.image_hash = new_widget_data.get('datasetName', '')
+        self.dataset_name = new_widget_data.get('datasetName', '')
         self.positive_points = new_widget_data.get('positivePoints', [])
         self.negative_points = new_widget_data.get('negativePoints', [])
         self.bbox = new_widget_data.get('bbox', [])
@@ -154,7 +154,7 @@ class SmartTool:
             'identifier': f'{self.identifier}',
             'imageUrl': self.image_url,
             'imageHash': self.image_hash,
-            'dataset_name': self.dataset_name,
+            'datasetName': self.dataset_name,
             'positivePoints': self.positive_points,
             'negativePoints': self.negative_points,
             'bbox': self.bbox,

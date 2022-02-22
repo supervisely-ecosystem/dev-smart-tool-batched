@@ -1,15 +1,16 @@
 {
-    "name": "[dev] Progress Bars",
+    "name": "[beta] Batch Smart Tool",
     "type": "app",
     "version": "2.0.0",
     "categories": [
       "development"
     ],
-    "description": "Progress bars widget",
+    "description": "batch smart tool annotator",
     "docker_image": "supervisely/base-py-sdk:6.4.3",
     "entrypoint": "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000",
     "port": 8000, 
     "task_location": "application_sessions",
-    "icon": "https://img.icons8.com/fluency/96/000000/progressbar-95.png",
-    "icon_background": "#FFFFFF"
+    "icon_background": "#FFFFFF",
+    "icon_cover": false,
+    "icon": "https://imgur.com/LHD0OCt.png"
   }

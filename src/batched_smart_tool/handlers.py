@@ -4,7 +4,6 @@ import supervisely
 from smart_tool import SmartTool
 from supervisely.app import DataJson
 
-
 import src.sly_functions as f
 import src.sly_globals as g
 
@@ -31,8 +30,9 @@ def points_updated(identifier: str,
         for points_type in ['positive', 'negative']:
             removed_points_by_type = removed_points[points_type]
             for removed_point in removed_points_by_type:
-                local_functions.remove_point_from_connected_cards(origin_identifier=identifier, point_to_remove=removed_point,
-                                                  points_type=points_type)
+                local_functions.remove_point_from_connected_cards(origin_identifier=identifier,
+                                                                  point_to_remove=removed_point,
+                                                                  points_type=points_type)
 
         # add new point to active cards
         for points_type in ['positive', 'negative']:
@@ -40,7 +40,7 @@ def points_updated(identifier: str,
             for updated_point in updated_points_by_type:
                 updated_point['relative'] = widget.get_relative_coordinates(updated_point)
                 local_functions.add_point_to_active_cards(origin_identifier=identifier, updated_point=updated_point,
-                                          points_type=points_type)
+                                                          points_type=points_type)
 
     # update all remote state by local objects
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
@@ -86,12 +86,14 @@ def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJ
 
     # 2 - upload data to project
     for current_dataset_name, widget_data in widgets_data_by_datasets.items():
-        ds_id = f.get_dataset_id_by_name(current_dataset_name, state['outputProject']['id'])
-        f.upload_images_to_dataset(dataset_id=ds_id, data_to_upload=widget_data)
+        if isinstance(current_dataset_name, str):
+            ds_id = f.get_dataset_id_by_name(current_dataset_name, state['outputProject']['id'])
+            f.upload_images_to_dataset(dataset_id=ds_id, data_to_upload=widget_data)
 
     # 3 - load new data to widgets
     g.grid_controller.clean_all(state=state, data=DataJson())
-    g.grid_controller.change_count(actual_count=state['windowsCount'], app=g.app, state=state, data=DataJson())
+    g.grid_controller.change_count(actual_count=state['windowsCount'], app=g.app, state=state, data=DataJson(),
+                                   images_queue=g.bboxes_to_process)
 
     state['updatingMasks'] = False
 

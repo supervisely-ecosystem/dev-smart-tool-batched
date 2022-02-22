@@ -14,13 +14,14 @@ def get_bboxes_from_annotation(image_annotations):
     return bboxes
 
 
-def get_data_to_render(image_info, bboxes):
+def get_data_to_render(image_info, bboxes, current_dataset):
     data_to_render = []
 
     for bbox in bboxes:
         data_to_render.append({
             'imageUrl': f'{image_info.full_storage_url}',
             'imageHash': f'{image_info.hash}',
+            'datasetName': f'{current_dataset.name}',
             'bbox': [[bbox.left, bbox.top], [bbox.right, bbox.bottom]],
             'positivePoints': [],
             'negativePoints': [],
@@ -41,11 +42,11 @@ def get_annotations_for_dataset(dataset_id, images):
     return g.api.annotation.download_batch(dataset_id=dataset_id, image_ids=images_ids)
 
 
-def put_crops_to_queue(selected_image, img_annotation_json, project_meta):
+def put_crops_to_queue(selected_image, img_annotation_json, current_dataset, project_meta):
     image_annotation = supervisely.Annotation.from_json(img_annotation_json.annotation, project_meta)
 
     bboxes = get_bboxes_from_annotation(image_annotation)
-    data_to_render = get_data_to_render(selected_image, bboxes)
+    data_to_render = get_data_to_render(selected_image, bboxes, current_dataset)
     put_data_to_queue(data_to_render)
 
 
