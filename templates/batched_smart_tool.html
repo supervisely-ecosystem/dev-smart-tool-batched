@@ -1,7 +1,7 @@
 <sly-card title="Batched Smart Tool" subtitle="annotate batch of images">
-    <div slot="header" style="display: flex; padding: 5px 0;">
+    <div slot="header" style="display: flex; padding-bottom: 10px;">
 
-        <div v-if="state.selectedClassName" style="margin: 0 8px;
+        <div v-if="state.outputClass.name" style="margin: 0 4px;
 
                                             border: solid rgb(168,136,182) 1px;
                                             color: rgb(168,136,182);
@@ -11,11 +11,19 @@
                                             transition: .5s box-shadow, .5s opacity, .5s background !important;
                                             text-transform: uppercase;
                                             font-size: 13px;">
-            SELECTED CLASS: {{state.selectedClassName}}
+            SELECTED CLASS: {{state.outputClass.name}}
         </div>
-        <el-button size='small' @click="state.currentState=0">
-            back to projects
+        <el-button size='small' @click="state.currentStep=3"
+        style="margin: 0 4px">
+            back to settings
         </el-button>
+
+        <a :href="`https://supervisely-dev.deepsystems.io/projects/${state.outputProject.id}/datasets`" target="_blank">
+            <el-button type="success" class="regular" size="small"
+                       style="margin: 0 4px; padding: 10px 18px">
+                OPEN OUTPUT PROJECT
+            </el-button>
+        </a>
     </div>
 
     <div style="display: flex; flex-direction: row;">
@@ -44,7 +52,7 @@
                                      @change="state.toolSize=$event;"
                                      :min="1" :max="100"
                                      style="width: 140px; margin: 2px 3px"
-                                     :disabled="true"
+
                     >
 
                     </el-input-number>
@@ -57,11 +65,7 @@
                            @click="state.updatingMasks=true; post('/update-masks/')">UPDATE MASKS
                 </el-button>
 
-                <a href="https://supervisely-dev.deepsystems.io/projects/9100/datasets" target="_blank">
-                    <el-button type="success" class="regular" size="small" style="margin: 15px 5px;">
-                        OPEN PROJECT
-                    </el-button>
-                </a>
+
             </div>
 
 
@@ -70,7 +74,7 @@
 
     <div style="display: flex; width:100%; flex-direction: row; flex-wrap: wrap; justify-content: center;">
 
-        <div v-for="widget in state.widgets.SmartTool">
+        <div v-for="widget in state.widgets.SmartTool" :style="{flex: `0 0 ${state.toolSize}%`}">
 
             {{{smart_tool.to_undefined_html()}}}
 

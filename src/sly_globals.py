@@ -56,9 +56,9 @@ templates_env = Jinja2Templates(directory=os.path.join(app_root_directory, 'temp
 bboxes_to_process = Queue(maxsize=int(1e6))
 grid_controller = GridController(SmartTool)
 
-imagehash2imageinfo = {}
+imagehash2imageinfo_by_datasets = {}
 
-selected_object_class = None
+output_class_object = None
 
 
 @app.get('/favicon.ico')

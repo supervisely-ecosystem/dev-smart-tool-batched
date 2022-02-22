@@ -10,6 +10,8 @@ from supervisely.app import DataJson, StateJson
 
 import src.settings_card.functions as local_functions
 
+import src.grid_controller.handlers as grid_controller_handlers
+
 
 def connect_to_model(identifier: str,
                      request: Request,
@@ -44,5 +46,21 @@ def select_input_project(identifier: str,
 def select_output_project(identifier: str,
                           request: Request,
                           state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+
+    if state['outputProject']['mode'] == 'new':
+        local_functions.create_new_project_by_name(state)
+
     state['currentStep'] = 3
+    async_to_sync(state.synchronize_changes)()
+
+
+def select_output_class(identifier: str,
+                        request: Request,
+                        state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+
+    g.output_class_object = local_functions.get_object_class_by_name(state)
+
+    state['currentStep'] = 4
+
+    grid_controller_handlers.windows_count_changed(request=request, state=state)
     async_to_sync(state.synchronize_changes)()

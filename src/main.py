@@ -29,6 +29,7 @@ if __name__ == "__main__":
     g.app.add_api_route('/connect-to-model/{identifier}', settings_card.connect_to_model, methods=["POST"])
     g.app.add_api_route('/select-input-project/{identifier}', settings_card.select_input_project, methods=["POST"])
     g.app.add_api_route('/select-output-project/{identifier}', settings_card.select_output_project, methods=["POST"])
+    g.app.add_api_route('/select-output-class/{identifier}', settings_card.select_output_class, methods=["POST"])
 
     g.app.add_api_route('/windows-count-changed/', grid_controller.windows_count_changed, methods=["POST"])
 

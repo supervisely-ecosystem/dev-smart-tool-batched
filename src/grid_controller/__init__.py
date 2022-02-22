@@ -3,4 +3,5 @@ from supervisely.app import StateJson
 from .classes import *
 from .handlers import *
 
-StateJson()['windowsCount'] = 0
+StateJson()['windowsCount'] = 12
+StateJson()['toolSize'] = 16

@@ -31,11 +31,12 @@
 {% else %}
 
 <div v-loading="state.updatingMasks"
-        style="width: 250px; height:250px; border: #77b4ff solid 1px;
+        style="width: 100%; height:100%; border: #77b4ff solid 1px;
                         display: flex;
                         flex-direction: column;
                         align-items: center;
-                        position: relative">
+                        position: relative;
+                        box-sizing: border-box">
     <div style="display: flex; align-items: center; justify-content: space-between; position: absolute">
         <el-switch
                 style="margin: 10px 10px"

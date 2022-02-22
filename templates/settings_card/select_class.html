@@ -2,7 +2,7 @@
 
           :disabled="{disabled: state.currentStep <= 1, message: 'complete previous'}"
 >
-    <sly-field title="Select Class name"
+    <sly-field title="Select Class Name"
                description="select class name to label objects"
                style="margin-left: 5px;">
         <sly-icon
@@ -26,9 +26,9 @@
 
         </div>
         <div v-else style="overflow: hidden">
-            <sly-select-class :project-id="state.outputClass.id"
+            <sly-select-class :project-id="state.outputProject.id"
                               :classes.sync="state.outputClass.name"
-                              :options="{showLabel: false}"
+                              :options="{showLabel: false, availableShapes: ['bitmap']}"
             >
             </sly-select-class>
         </div>
@@ -37,7 +37,7 @@
                 class="regular"
                 type="primary"
                 size="small"
-                :disabled="state.currentStep != 3 || (state.outputClass.mode === 'existing' && !state.outputClass.id) || (state.outputClass.mode === 'new' && !state.outputClass.name)"
+                :disabled="state.currentStep != 3 || (state.outputClass.mode === 'existing' && !state.outputClass.name) || (state.outputClass.mode === 'new' && !state.outputClass.name)"
                 :loading="state.outputClass.loading"
                 @click="post('/select-output-class/'+ state.outputClass.id)"
         >

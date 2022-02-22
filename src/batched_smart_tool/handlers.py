@@ -65,8 +65,8 @@ def clean_points(state: supervisely.app.StateJson = Depends(supervisely.app.Stat
 
 def update_masks(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     data_to_process = local_functions.get_data_to_process()
-    response = g.api.task.send_request(state['processingServerSessionId'], "smart_segmentation_batched", data={},
-                                       context={'data_to_process': data_to_process}, timeout=60)
+    response = g.api.task.send_request(int(state['processingServerSessionId']), "smart_segmentation_batched", data={},
+                                       context={'data_to_process': data_to_process}, timeout=5)
     local_functions.update_local_masks(response)
 
     state['updatingMasks'] = False
@@ -77,23 +77,21 @@ def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJ
     state['queueIsEmpty'] = g.bboxes_to_process.empty()
 
     # 1 - load data from widgets
-
     g.grid_controller.update_local_fields(state=state, data=DataJson())
-    widgets_data = []
+
+    widgets_data_by_datasets = {}
     for widget in g.grid_controller.widgets.values():
-        widgets_data.append(widget.get_data_to_send())
+        widget_data = widget.get_data_to_send()
+        widgets_data_by_datasets.setdefault(widget.dataset_name, []).append(widget_data)
 
     # 2 - upload data to project
-    f.upload_images_to_dataset(dataset_id=g.output_dataset_id, data_to_upload=widgets_data)
+    for current_dataset_name, widget_data in widgets_data_by_datasets.items():
+        ds_id = f.get_dataset_id_by_name(current_dataset_name, state['outputProject']['id'])
+        f.upload_images_to_dataset(dataset_id=ds_id, data_to_upload=widget_data)
 
     # 3 - load new data to widgets
     g.grid_controller.clean_all(state=state, data=DataJson())
     g.grid_controller.change_count(actual_count=state['windowsCount'], app=g.app, state=state, data=DataJson())
-    #
-    # for widget in g.grid_controller.widgets.values():
-    #     if not g.bboxes_to_process.empty():
-    #         new_data = g.bboxes_to_process.get()
-    #         widget.update_fields_by_data(new_data)
 
     state['updatingMasks'] = False
 
