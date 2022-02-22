@@ -6,7 +6,7 @@
       "development"
     ],
     "description": "batch smart tool annotator",
-    "docker_image": "supervisely/base-py-sdk:6.4.3",
+    "docker_image": "supervisely/base-py-sdk:6.7.10",
     "entrypoint": "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000",
     "port": 8000, 
     "task_location": "application_sessions",
