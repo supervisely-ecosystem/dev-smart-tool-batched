@@ -35,9 +35,13 @@ def put_data_to_queue(data_to_render):
         g.bboxes_to_process.put(current_item)
 
 
-def image_to_crops(selected_image, project_meta):
-    image_ann_json = g.api.annotation.download(selected_image.id)
-    image_annotation = supervisely.Annotation.from_json(image_ann_json.annotation, project_meta)
+def get_annotations_for_dataset(dataset_id, images):
+    images_ids = [image_info.id for image_info in images]
+    return g.api.annotation.download_batch(dataset_id=dataset_id, image_ids=images_ids)
+
+
+def put_crops_to_queue(selected_image, img_annotation_json, project_meta):
+    image_annotation = supervisely.Annotation.from_json(img_annotation_json.annotation, project_meta)
 
     bboxes = get_bboxes_from_annotation(image_annotation)
     data_to_render = get_data_to_render(selected_image, bboxes)

@@ -1,0 +1,69 @@
+<sly-card style="width: 340px; overflow: hidden"
+          :disabled="{disabled: state.currentStep <= 1, message: 'complete previous'}">
+
+
+    <div style="display: flex">
+
+        <div>
+            <sly-field title="Select output project"
+                       description="select project to store labeled data"
+                       style="margin-left: 5px;"
+            >
+                <sly-icon
+                        v-if="state.currentStep <= 2"
+                        slot="icon" :options="{ color: '#ffffff', bgColor: '#fe5a1d', rounded: false }">
+                    <i class="zmdi zmdi-collection-image-o"></i>
+                </sly-icon>
+                <sly-icon
+                        v-else
+                        slot="icon" :options="{ color: '#ffffff', bgColor: '#51c21d', rounded: false }">
+                    <i class="zmdi zmdi-collection-image-o"></i>
+                </sly-icon>
+
+            </sly-field>
+
+
+            <el-radio-group v-model="state.outputProject.mode" style="margin-bottom: 10px" size="small"
+                            :disabled="state.currentStep != 2">
+                <el-radio-button label="new"></el-radio-button>
+                <el-radio-button label="existing"></el-radio-button>
+            </el-radio-group>
+
+
+            <div style="display: flex">
+                <div v-if="state.outputProject.mode === 'new'">
+                    <el-input placeholder="Project name" v-model="state.outputProject.name"
+                              :disabled="state.currentStep != 2">
+
+                    </el-input>
+
+                </div>
+                <div v-else style="overflow: hidden">
+                    <sly-select-project
+                            :workspace-id="data.workspaceId"
+                            :project-id.sync="state.outputProject.id"
+                            :options="{showLabel: false, availableTypes: ['images']}"
+                            :disabled="state.currentStep != 2"
+                    >
+                    </sly-select-project>
+                </div>
+                <el-button
+                        style="width: 120px; margin-left: 10px"
+                        class="regular"
+                        type="primary"
+                        size="small"
+                        :disabled="state.currentStep != 2 || (state.outputProject.mode === 'existing' && !state.outputProject.id) || (state.outputProject.mode === 'new' && !state.outputProject.name)"
+                        :loading="state.outputProject.loading"
+                        @click="state.selectProjectLoading=true; post('/select-output-project/'+ state.outputProject.id)"
+                >
+                    select
+                </el-button>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</sly-card>

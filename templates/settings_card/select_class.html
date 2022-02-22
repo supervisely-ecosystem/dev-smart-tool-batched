@@ -1,0 +1,48 @@
+<sly-card style="width: 340px; overflow: hidden"
+
+          :disabled="{disabled: state.currentStep <= 1, message: 'complete previous'}"
+>
+    <sly-field title="Select Class name"
+               description="select class name to label objects"
+               style="margin-left: 5px;">
+        <sly-icon
+                slot="icon" :options="{ color: '#ffffff', bgColor: '#fe5a1d', rounded: false }">
+            <i class="zmdi zmdi-flower-alt"></i>
+        </sly-icon>
+    </sly-field>
+
+
+    <el-radio-group v-model="state.outputClass.mode" style="margin-bottom: 10px" size="small"
+                    :disabled="state.currentStep != 3">
+        <el-radio-button label="new"></el-radio-button>
+        <el-radio-button label="existing"></el-radio-button>
+    </el-radio-group>
+
+    <div style="display: flex">
+        <div v-if="state.outputClass.mode === 'new'">
+            <el-input placeholder="Class name" v-model="state.outputClass.name"
+                      :disabled="state.currentStep != 3">
+            </el-input>
+
+        </div>
+        <div v-else style="overflow: hidden">
+            <sly-select-class :project-id="state.outputClass.id"
+                              :classes.sync="state.outputClass.name"
+                              :options="{showLabel: false}"
+            >
+            </sly-select-class>
+        </div>
+        <el-button
+                style="width: 120px; margin-left: 10px"
+                class="regular"
+                type="primary"
+                size="small"
+                :disabled="state.currentStep != 3 || (state.outputClass.mode === 'existing' && !state.outputClass.id) || (state.outputClass.mode === 'new' && !state.outputClass.name)"
+                :loading="state.outputClass.loading"
+                @click="post('/select-output-class/'+ state.outputClass.id)"
+        >
+            select
+        </el-button>
+    </div>
+
+</sly-card>

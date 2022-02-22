@@ -1,0 +1,44 @@
+<sly-card style="width: 340px; overflow: hidden"
+          :disabled="{disabled: state.currentStep <= 0, message: 'complete previous'}">
+
+
+    <sly-field title="Select input project"
+               description="select project to label "
+               style="margin-left: 5px;"
+    >
+        <sly-icon
+                v-if="state.currentStep <= 1"
+                slot="icon" :options="{ color: '#ffffff', bgColor: '#fe5a1d', rounded: false }">
+            <i class="zmdi zmdi-collection-folder-image"></i>
+        </sly-icon>
+        <sly-icon
+                v-else
+                slot="icon" :options="{ color: '#ffffff', bgColor: '#51c21d', rounded: false }">
+            <i class="zmdi zmdi-collection-folder-image"></i>
+        </sly-icon>
+
+
+    </sly-field>
+
+
+    <div class="fflex" style="overflow: hidden">
+        <sly-select-project
+                :workspace-id="data.workspaceId"
+                :project-id.sync="state.inputProject.id"
+                :options="{showLabel: false, availableTypes: ['images']}"
+                :disabled="state.currentStep != 1">
+        </sly-select-project>
+        <el-button
+                style="width: 120px; margin-left: 10px"
+                class="regular"
+                type="primary"
+                size="small"
+                :disabled="state.currentStep != 1 || !state.inputProject.id"
+                :loading="state.inputProject.loading"
+                @click="state.inputProject.loading=true; post('/select-input-project/' + state.inputProject.id)">
+            select
+        </el-button>
+    </div>
+
+
+</sly-card>

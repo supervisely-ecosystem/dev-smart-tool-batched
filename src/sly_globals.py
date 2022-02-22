@@ -18,24 +18,20 @@ from supervisely.app.fastapi import create, Jinja2Templates
 
 from src.grid_controller import GridController
 
+app_root_directory = str(Path(__file__).parent.absolute().parents[0])
+sys.path.append(app_root_directory)
+print(f"App root directory: {app_root_directory}")
+local_project_dir = os.path.join(app_root_directory, 'local_project')
+
 
 app = FastAPI()
 
 sly_app = create()
 
 app.mount("/sly", sly_app)
-app.mount("/static", StaticFiles(directory="../static"), name="static")
+app.mount("/static", StaticFiles(directory=os.path.join(app_root_directory, 'static')), name="static")
 
 api = supervisely.Api.from_env()
-
-app_dir = str(Path(sys.argv[0]).parents[1])
-print(f"App root directory: {app_dir}")
-local_project_dir = os.path.join(app_dir, 'local_project')
-
-
-class EnvVariables:
-    TEAM_ID = os.environ['context.teamId']
-    WORKSPACE_ID = os.environ['context.workspaceId']
 
 
 StateJson(
@@ -47,16 +43,17 @@ StateJson(
 
 DataJson(
     {
-        'teamId': EnvVariables.TEAM_ID,
-        'workspaceId': EnvVariables.WORKSPACE_ID,
+        'teamId': os.environ['context.teamId'],
+        'workspaceId': os.environ['context.workspaceId'],
 
         'widgets': {},
     }
 )
 
-templates_env = Jinja2Templates(directory="../templates")
+templates_env = Jinja2Templates(directory=os.path.join(app_root_directory, 'templates'))
 
-bboxes_to_process = Queue(maxsize=512)
+
+bboxes_to_process = Queue(maxsize=int(1e6))
 grid_controller = GridController(SmartTool)
 
 imagehash2imageinfo = {}
@@ -66,4 +63,4 @@ selected_object_class = None
 
 @app.get('/favicon.ico')
 def favicon():
-    return FileResponse('../static/favicon.png')
+    return FileResponse(os.path.join(app_root_directory, 'static', 'favicon.png'))

@@ -4,7 +4,7 @@ from fastapi import Request, Depends
 from starlette.middleware.cors import CORSMiddleware
 
 import supervisely  # 🤖 general
-from supervisely.app import DataJson
+from supervisely.app import DataJson, StateJson
 
 import src.sly_functions as f
 import src.sly_globals as g
@@ -23,10 +23,12 @@ def read_index(request: Request):
                                                            'smart_tool': SmartTool})
 
 
-# @TODO:
+# @TODO: ...
 
 if __name__ == "__main__":
-    g.app.add_api_route('/download-project/{identifier}', settings_card.download_project, methods=["POST"])
+    g.app.add_api_route('/connect-to-model/{identifier}', settings_card.connect_to_model, methods=["POST"])
+    g.app.add_api_route('/select-input-project/{identifier}', settings_card.select_input_project, methods=["POST"])
+    g.app.add_api_route('/select-output-project/{identifier}', settings_card.select_output_project, methods=["POST"])
 
     g.app.add_api_route('/windows-count-changed/', grid_controller.windows_count_changed, methods=["POST"])
 
@@ -35,9 +37,7 @@ if __name__ == "__main__":
     g.app.add_api_route('/update-masks/', batched_smart_tool.update_masks, methods=["POST"])
     g.app.add_api_route('/next-batch/', batched_smart_tool.next_batch, methods=["POST"])
 
-    g.app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', batched_smart_tool.points_updated,
-                        methods=["POST"])
-    g.app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', batched_smart_tool.points_updated,
-                        methods=["POST"])
+    g.app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', batched_smart_tool.points_updated, methods=["POST"])
+    g.app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', batched_smart_tool.points_updated, methods=["POST"])
 
     uvicorn.run(g.app, host="127.0.0.1", port=8000)

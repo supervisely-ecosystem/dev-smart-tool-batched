@@ -67,11 +67,14 @@
 <script src="/static/smarttool.js"></script>
 
 
+
+
 <div id="sly-app">
     <sly-app>
         <template v-slot="{ post, state, data }">
             <json-viewer :value="{'state': state, 'data': data}"
                          style="position: fixed; top: 0; right: 0; z-index: 9999"></json-viewer>
+
 
             <div v-if="state.currentState === 0">
                 {% include 'settings_card.html' %}
