@@ -19,9 +19,9 @@ from supervisely.app.fastapi import create, Jinja2Templates
 from src.grid_controller import GridController
 
 app_root_directory = str(Path(__file__).parent.absolute().parents[0])
-sys.path.append(app_root_directory)
 print(f"App root directory: {app_root_directory}")
-local_project_dir = os.path.join(app_root_directory, 'local_project')
+# sys.path.append(app_root_directory)
+# local_project_dir = os.path.join(app_root_directory, 'local_project')
 
 
 app = FastAPI()
