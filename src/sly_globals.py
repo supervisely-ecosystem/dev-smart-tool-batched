@@ -37,7 +37,6 @@ api = supervisely.Api.from_env()
 StateJson()['widgets'] = {}
 
 
-
 DataJson(
     {
         'teamId': os.environ['context.teamId'],
@@ -51,6 +50,8 @@ templates_env = Jinja2Templates(directory=os.path.join(app_root_directory, 'temp
 
 
 bboxes_to_process = Queue(maxsize=int(1e6))
+processing_queue_backup = None
+
 grid_controller = GridController(SmartTool)
 
 imagehash2imageinfo_by_datasets = {}

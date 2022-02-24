@@ -9,6 +9,8 @@ import src.sly_globals as g
 
 import src.batched_smart_tool.functions as local_functions
 
+from loguru import logger
+
 
 def points_updated(identifier: str,
                    request: Request,
@@ -65,15 +67,19 @@ def clean_points(state: supervisely.app.StateJson = Depends(supervisely.app.Stat
 
 def update_masks(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     data_to_process = local_functions.get_data_to_process()
-    response = g.api.task.send_request(int(state['processingServerSessionId']), "smart_segmentation_batched", data={},
-                                       context={'data_to_process': data_to_process}, timeout=5)
-    local_functions.update_local_masks(response)
+    try:
+        response = g.api.task.send_request(int(state['processingServerSessionId']), "smart_segmentation_batched", data={},
+                                           context={'data_to_process': data_to_process}, timeout=60)
+        local_functions.update_local_masks(response)
+    except Exception as ex:
+        logger.error('Exception while updating masks:', ex)
 
     state['updatingMasks'] = False
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
 
 def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    logger.info(f'Items in queue left: {len(g.bboxes_to_process.queue)}')
     state['queueIsEmpty'] = g.bboxes_to_process.empty()
 
     # 1 - load data from widgets
@@ -84,13 +90,7 @@ def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJ
         widget_data = widget.get_data_to_send()
         widgets_data_by_datasets.setdefault(widget.dataset_name, []).append(widget_data)
 
-    # 2 - upload data to project
-    for current_dataset_name, widget_data in widgets_data_by_datasets.items():
-        if isinstance(current_dataset_name, str):
-            ds_id = f.get_dataset_id_by_name(current_dataset_name, state['outputProject']['id'])
-            f.upload_images_to_dataset(dataset_id=ds_id, data_to_upload=widget_data)
-
-    # 3 - load new data to widgets
+    # 2 - load new data to widgets
     g.grid_controller.clean_all(state=state, data=DataJson())
     g.grid_controller.change_count(actual_count=state['windowsCount'], app=g.app, state=state, data=DataJson(),
                                    images_queue=g.bboxes_to_process)
@@ -98,3 +98,9 @@ def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJ
     state['updatingMasks'] = False
 
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
+
+    # 3 - upload data to project
+    for current_dataset_name, widget_data in widgets_data_by_datasets.items():
+        if isinstance(current_dataset_name, str):
+            ds_id = f.get_dataset_id_by_name(current_dataset_name, state['outputProject']['id'])
+            f.upload_images_to_dataset(dataset_id=ds_id, data_to_upload=widget_data)

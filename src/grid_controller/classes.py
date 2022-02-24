@@ -1,3 +1,5 @@
+from loguru import logger
+
 
 class GridController:
     def __init__(self, origin_widget_class):
@@ -25,8 +27,6 @@ class GridController:
     def _add(self, app, state, data, images_queue):
         widget = self._origin_widget_class(app, state, data)
         widget.is_active = False
-
-        print(f'actual_q: {images_queue.queue=}')
 
         if not images_queue.empty():
             widget.is_active = True

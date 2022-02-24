@@ -1,3 +1,8 @@
+import functools
+
+
+import numpy as np
+
 import supervisely
 
 import src.sly_globals as g
@@ -60,7 +65,8 @@ def create_new_project_by_name(state):
 
 def create_new_object_meta_by_name(output_class_name):
     objects = supervisely.ObjClassCollection(
-        [supervisely.ObjClass(name=output_class_name, geometry_type=supervisely.Bitmap)])
+        [supervisely.ObjClass(name=output_class_name, geometry_type=supervisely.Bitmap,
+                              color=list(np.random.choice(range(256), size=3)))])
 
     return supervisely.ProjectMeta(obj_classes=objects, project_type=supervisely.ProjectType.IMAGES)
 
@@ -82,3 +88,33 @@ def get_object_class_by_name(state):
         obj_class = output_project_meta.obj_classes.get(output_class_name, None)
 
     return obj_class
+
+
+def cache_existing_images(state):
+    output_project_id = state['outputProject']['id']
+    datasets_in_output_project = g.api.dataset.get_list(project_id=output_project_id)
+
+    for current_dataset in datasets_in_output_project:
+        images_info = g.api.image.get_list(dataset_id=current_dataset.id)
+
+        g.imagehash2imageinfo_by_datasets[current_dataset.id] = {image_info.hash: image_info for image_info in
+                                                                 images_info}
+
+    return state
+
+
+# @functools.lru_cache(maxsize=2)
+def refill_queues_by_input_project_data(project_id):
+    project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=project_id))
+    project_datasets = g.api.dataset.get_list(project_id=project_id)
+
+    for current_dataset in project_datasets:
+        images_in_dataset = g.api.image.get_list(dataset_id=current_dataset.id)
+        annotations_in_dataset = get_annotations_for_dataset(dataset_id=current_dataset.id,
+                                                             images=images_in_dataset)
+
+        for current_image, current_annotation in zip(images_in_dataset, annotations_in_dataset):
+            put_crops_to_queue(selected_image=current_image,
+                               img_annotation_json=current_annotation,
+                               current_dataset=current_dataset,
+                               project_meta=project_meta)

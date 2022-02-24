@@ -13,11 +13,6 @@ import src.sly_globals as g
 
 # import src.settings_card as settings_card
 
-def get_remote_dataset_id():
-    remote_dataset = g.api.dataset.create(project_id=9100, name="annotated", change_name_if_conflict=True)
-    print(f'Dataset created {remote_dataset.name=}')
-    return remote_dataset.id
-
 
 def get_supervisely_label_by_widget_data(widget_data, current_class_name="batched_smart_tool"):
     if widget_data.get('mask') is not None:

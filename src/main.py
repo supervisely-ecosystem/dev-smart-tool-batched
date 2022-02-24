@@ -25,7 +25,7 @@ def read_index(request: Request):
                                                            'smart_tool': SmartTool})
 
 
-# @TODO: ...
+# @TODO: add connect to model verification
 
 
 app.add_api_route('/connect-to-model/{identifier}', settings_card.connect_to_model, methods=["POST"])
@@ -43,4 +43,4 @@ app.add_api_route('/next-batch/', batched_smart_tool.next_batch, methods=["POST"
 app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', batched_smart_tool.points_updated, methods=["POST"])
 app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', batched_smart_tool.points_updated, methods=["POST"])
 
-# uvicorn.run(app, host="127.0.0.1", port=8000)
+uvicorn.run(app, host="127.0.0.1", port=8000)
