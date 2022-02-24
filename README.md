@@ -1,34 +1,38 @@
-# Development
+<div align="center" markdown>
+<img src="https://github.com/supervisely-ecosystem/dev-smart-tool-batched/releases/download/v0.0.1/batch_smart_tool_demo.gif?raw=true" style="width: 100%;"/>
 
-For local development/debugging use `localhost:8000`.
+# Batched Smart Tool
 
-Create venv:
-```bash
-python3 -m venv venv
-```
+<p align="center">
+  <a href="#Overview">Overview</a> •
+  <a href="#Usage">Usage</a>
+</p>
 
-Activate vevn and install requirements:
-```bash
-source venv/bin/activate
-pip3 install -r requirements.txt
-```
 
-How to run app from terminal using venv on local machine during debugging:
+[![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/dev-smart-tool-batched)
+[![](https://img.shields.io/badge/slack-chat-green.svg?logo=slack)](https://supervise.ly/slack)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/supervisely-ecosystem/dev-smart-tool-batched)
+[![views](https://app.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/dev-smart-tool-batched&counter=views&label=views)](https://supervise.ly)
+[![used by teams](https://app.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/dev-smart-tool-batched&counter=downloads&label=used%20by%20teams)](https://supervise.ly)
+[![runs](https://app.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/dev-smart-tool-batched&counter=runs&label=runs&123)](https://supervise.ly)
 
-```
-cd src && python3 main.py
-```
+</div>
 
-[comment]: <> (```bash)
+# Overview
 
-[comment]: <> (uvicorn src.main:app --host localhost --port 8000)
+Application allows to annotate objects with Smart Tool using batch way.
 
-[comment]: <> (```)
+Application key points:  
+- Multiclass annotation
+- Connected green / red points between cards
+- Flexible settings
 
-# Deployment
+# Usage
 
-Agent uses application configuration from `config.json`. 
+1. Prepare Images Project with roughly assigned Rectangles
 
-`entrypoint` field - full command that agent will execute in container spawned from dockerimage defined in field `dockerimage`.
+<img src="https://github.com/supervisely-ecosystem/dev-smart-tool-batched/releases/download/v0.0.1/prepare-project.gif?raw=true" style="width: 100%;"/>
 
-`port` - deployment port (we recommend to use 8000 by default like in fastapi)
+2. Launch [RITM interactive segmentation smart tool](https://ecosystem.supervise.ly/apps/supervisely-ecosystem%252Fritm-interactive-segmentation%252Fsupervisely)
+
+<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/ritm-interactive-segmentation/supervisely" src="https://i.imgur.com/eWmFwQ9.png" width="600px" style='padding-bottom: 20px'/>  

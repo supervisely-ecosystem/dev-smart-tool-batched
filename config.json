@@ -1,11 +1,11 @@
 {
-    "name": "[beta] Batch Smart Tool",
+    "name": "Batched Smart Tool [beta]",
     "type": "app",
     "version": "2.0.0",
     "categories": [
       "development"
     ],
-    "description": "batch smart tool annotator",
+    "description": "batched smart labeling tool",
     "docker_image": "supervisely/base-py-sdk:6.7.10",
     "entrypoint": "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000",
     "port": 8000, 
