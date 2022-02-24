@@ -6,6 +6,7 @@
 <p align="center">
   <a href="#Overview">Overview</a> •
   <a href="#Usage">Usage</a>
+  <a href="#how-to-run">How to run</a>
 </p>
 
 
@@ -20,7 +21,7 @@
 
 # Overview
 
-Application allows to annotate objects with Smart Tool using batch way.
+Application allows you to label objects with **Smart Tool using batch way**.
 
 Application key points:  
 - Multiclass annotation
@@ -35,7 +36,23 @@ Application key points:
 
 2. Launch [RITM interactive segmentation smart tool](https://ecosystem.supervise.ly/apps/supervisely-ecosystem%252Fritm-interactive-segmentation%252Fsupervisely)
 
-<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/ritm-interactive-segmentation/supervisely" src="https://i.imgur.com/eWmFwQ9.png" width="600px" style='padding-bottom: 20px'/>  
+<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/ritm-interactive-segmentation/supervisely" src="https://i.imgur.com/eWmFwQ9.png" width="600px" style='padding-bottom: 0'/>  
 
 
 3. Launch **Batched Smart Tool** and start labeling
+
+
+
+# How to run
+
+1. Add [Batched Smart Tool](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/dev-smart-tool-batched) to your Team
+
+<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/dev-smart-tool-batched" src="https://imgur.com/KkM6dO0.png" width="350px">
+
+
+2. Launch from `Plugins & Apps`
+
+<img src="https://imgur.com/bidnbEa.png" style="width: 100%;"/>
+
+
+
