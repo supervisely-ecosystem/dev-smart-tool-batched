@@ -1,6 +1,7 @@
 import copy
 import uuid
 
+from asgiref.sync import async_to_sync
 from fastapi import Request, Depends
 
 import supervisely
@@ -134,3 +135,6 @@ def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJ
         if isinstance(current_dataset_name, str):
             ds_id = f.get_dataset_id_by_name(current_dataset_name, state['outputProject']['id'])
             f.upload_images_to_dataset(dataset_id=ds_id, data_to_upload=widget_data)
+
+    state['batchInUpload'] = False
+    async_to_sync(state.synchronize_changes)()

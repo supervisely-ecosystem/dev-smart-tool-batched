@@ -14,7 +14,8 @@
             SELECTED CLASS: {{state.outputClass.name}}
         </div>
         <el-button size='small' @click="state.currentStep=3"
-                   style="margin: 0 4px">
+                   style="margin: 0 4px"
+                   :disabled="state.batchInUpload">
             back to settings
         </el-button>
 
@@ -106,8 +107,8 @@
             </div>
             <div style="display: flex; align-items: center; margin-top: 15px;">
                 <el-button type="primary" class="regular" size="small" style="margin: 0 2px;"
-                           @click="state.updatingMasks=true; post('/next-batch/')"
-                           :disabled="state.queueIsEmpty">NEXT BATCH
+                           @click="state.batchInUpload=true; state.updatingMasks=true; post('/next-batch/')"
+                           :disabled="state.queueIsEmpty || state.batchInUpload">NEXT BATCH
                 </el-button>
             </div>
         </div>
