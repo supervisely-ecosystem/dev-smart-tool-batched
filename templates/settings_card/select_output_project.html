@@ -30,7 +30,7 @@
             </el-radio-group>
 
 
-            <div style="display: flex">
+            <div style="display: flex; overflow: hidden">
                 <div v-if="state.outputProject.mode === 'new'">
                     <el-input placeholder="Project name" v-model="state.outputProject.name"
                               :disabled="state.currentStep != 2">
@@ -38,7 +38,7 @@
                     </el-input>
 
                 </div>
-                <div v-else style="overflow: hidden">
+                <div v-else style="overflow: hidden; ">
                     <sly-select-project
                             :workspace-id="data.workspaceId"
                             :project-id.sync="state.outputProject.id"
@@ -54,7 +54,7 @@
                         size="small"
                         :disabled="state.currentStep != 2 || (state.outputProject.mode === 'existing' && !state.outputProject.id) || (state.outputProject.mode === 'new' && !state.outputProject.name)"
                         :loading="state.outputProject.loading"
-                        @click="state.selectProjectLoading=true; post('/select-output-project/'+ state.outputProject.id)"
+                        @click="state.outputProject.loading=true; post('/select-output-project/'+ state.outputProject.id)"
                 >
                     select
                 </el-button>

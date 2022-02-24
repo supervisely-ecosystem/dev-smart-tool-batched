@@ -45,8 +45,7 @@ class SmartTool:
         new_widget_data = self.get_widget_data_from_remote(state=state, data=data)
 
         if new_widget_data is not None:
-            last_points_coordinates = [tuple(point['position'][0]) for point in
-                                       self.__getattribute__(f'{points_type}_points')]
+            last_points_coordinates = [tuple(point['position'][0]) for point in self.__getattribute__(f'{points_type}_points')]
             new_points_coordinates = [tuple(point['position'][0]) for point in new_widget_data[f'{points_type}Points']]
 
             updated_points = list(set(new_points_coordinates) - set(last_points_coordinates))

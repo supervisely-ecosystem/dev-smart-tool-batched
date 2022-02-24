@@ -1,3 +1,6 @@
+import copy
+import uuid
+
 from fastapi import Request, Depends
 
 import supervisely
@@ -13,7 +16,6 @@ from loguru import logger
 
 
 def points_updated(identifier: str,
-                   request: Request,
                    state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     widget: SmartTool = g.grid_controller.get_widget_by_id(widget_id=identifier)
     widget.needs_an_update = True
@@ -65,10 +67,38 @@ def clean_points(state: supervisely.app.StateJson = Depends(supervisely.app.Stat
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
 
+def assign_base_points(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    widget: SmartTool = list(g.grid_controller.widgets.values())[0]
+
+    x0, y0, x1, y1 = widget.bbox[0][0], widget.bbox[0][1], widget.bbox[1][0] - 1, widget.bbox[1][1] - 1
+
+    # new negative points on corners
+    widget.negative_points.append({'position': [[x0, y0]], 'id': f'{uuid.uuid4()}'})
+    widget.negative_points.append({'position': [[x0, y1]], 'id': f'{uuid.uuid4()}'})
+    widget.negative_points.append({'position': [[x1, y0]], 'id': f'{uuid.uuid4()}'})
+    widget.negative_points.append({'position': [[x1, y1]], 'id': f'{uuid.uuid4()}'})
+
+    # new negative points on corners
+    center_x, center_y = int((x0 + x1) / 2), int((y0 + y1) / 2)
+    widget.positive_points.append({'position': [[center_x, center_y]], 'id': f'{uuid.uuid4()}'})
+
+    # widget.needs_an_update = True
+    state['widgets'].setdefault(f'{widget.__class__.__name__}', {})[f'{widget.identifier}'] = \
+        copy.deepcopy(widget.get_data_to_send())
+
+    # widget.update_remote_fields(state=state, data=DataJson())  # update main card
+    for _ in range(4):
+        widget.negative_points.pop()
+    widget.positive_points.pop()
+
+    points_updated(identifier=widget.identifier, state=state)   # update main card
+
+
 def update_masks(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     data_to_process = local_functions.get_data_to_process()
     try:
-        response = g.api.task.send_request(int(state['processingServerSessionId']), "smart_segmentation_batched", data={},
+        response = g.api.task.send_request(int(state['processingServerSessionId']), "smart_segmentation_batched",
+                                           data={},
                                            context={'data_to_process': data_to_process}, timeout=60)
         local_functions.update_local_masks(response)
     except Exception as ex:

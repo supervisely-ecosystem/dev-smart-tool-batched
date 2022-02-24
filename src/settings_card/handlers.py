@@ -48,6 +48,7 @@ def select_output_project(identifier: str,
         local_functions.cache_existing_images(state)
 
     state['currentStep'] = 3
+    state['outputProject']['loading'] = False
     async_to_sync(state.synchronize_changes)()
 
 

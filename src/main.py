@@ -37,6 +37,7 @@ app.add_api_route('/windows-count-changed/', grid_controller.windows_count_chang
 
 app.add_api_route('/change-all-buttons/{is_active}', batched_smart_tool.change_all_buttons, methods=["POST"])
 app.add_api_route('/clean-points/', batched_smart_tool.clean_points, methods=["POST"])
+app.add_api_route('/assign-base-points/', batched_smart_tool.assign_base_points, methods=["POST"])
 app.add_api_route('/update-masks/', batched_smart_tool.update_masks, methods=["POST"])
 app.add_api_route('/next-batch/', batched_smart_tool.next_batch, methods=["POST"])
 
