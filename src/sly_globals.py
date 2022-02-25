@@ -1,5 +1,6 @@
 import os
 import sys
+from loguru import logger
 from pathlib import Path
 
 from asgiref.sync import async_to_sync
@@ -19,9 +20,10 @@ from supervisely.app.fastapi import create, Jinja2Templates
 from src.grid_controller import GridController
 
 app_root_directory = str(Path(__file__).parent.absolute().parents[0])
-print(f"App root directory: {app_root_directory}")
+logger.info(f"App root directory: {app_root_directory}")
 # sys.path.append(app_root_directory)
 # local_project_dir = os.path.join(app_root_directory, 'local_project')
+logger.info(f'PYTHONPATH: {os.environ["PYTHONPATH"]}')
 
 
 app = FastAPI()

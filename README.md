@@ -5,7 +5,7 @@
 
 <p align="center">
   <a href="#Overview">Overview</a> •
-  <a href="#Usage">Usage</a>
+  <a href="#Usage">Usage</a> •
   <a href="#how-to-run">How to run</a>
 </p>
 
@@ -30,7 +30,7 @@ Application key points:
 
 # Usage
 
-1. Prepare Images Project with roughly assigned Rectangles
+1. Prepare **Images Project** with roughly assigned **Rectangles**
 
 <img src="https://github.com/supervisely-ecosystem/dev-smart-tool-batched/releases/download/v0.0.1/prepare-project.gif?raw=true" style="width: 100%;"/>
 
