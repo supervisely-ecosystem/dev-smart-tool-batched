@@ -6,13 +6,10 @@
                         flex-direction: column;
                         align-items: center;
                         position: relative">
-    <div style="display: flex; align-items: center; justify-content: space-between; position: absolute">
-        <el-switch
-                style="margin: 10px 10px"
-                v-model="state.widgets['{{{identifier}}}'].isActive"
-                on-text=""
-                off-text="">
-        </el-switch>
+    <div style="display: flex; align-items: center; justify-content: start; position: absolute; width: 100%">
+        <el-checkbox v-model="state.widgets['{{{identifier}}}'].isActive"
+                     style="padding: 5px"></el-checkbox>
+
     </div>
     <smarttool-editor
             style="width: 100%; height: 100%;"
@@ -31,21 +28,15 @@
 {% else %}
 
 <div v-loading="state.updatingMasks"
-        style="width: 100%; height:100%; border: #77b4ff solid 1px;
+     style="width: 100%; height:100%; border: #77b4ff solid 1px;
                         display: flex;
                         flex-direction: column;
                         align-items: center;
                         position: relative;
                         box-sizing: border-box">
-    <div style="display: flex; align-items: center; justify-content: space-between; position: absolute">
-        <el-switch
-                style="margin: 10px 10px"
-                v-model="widget.isActive"
-                on-text=""
-                off-text=""
-                :disabled="widget.scaledBbox.length === 0"
-        >
-        </el-switch>
+    <div style="display: flex; align-items: center; justify-content: start; position: absolute; width: 100%">
+
+        <el-checkbox v-model="widget.isActive" style="padding: 5px"></el-checkbox>
     </div>
     <smarttool-editor
             v-if="widget.imageUrl"

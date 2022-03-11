@@ -138,10 +138,12 @@ class SmartTool:
 
                 break
 
-    def clean_points(self):
+    def clean_up(self):
         self.positive_points = []
         self.negative_points = []
         self._connected_points = []
+
+        self.mask = None
 
     # @TODO: move next methods to Parent Class
 

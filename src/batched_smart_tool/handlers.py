@@ -55,15 +55,15 @@ def change_all_buttons(is_active: bool,
                        request: Request,
                        state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     for widget in g.grid_controller.widgets.values():
-        if len(widget.bbox) > 0:
+        if len(widget.scaled_bbox) > 0:
             widget.is_active = is_active
 
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
 
-def clean_points(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+def clean_up(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     for widget in g.grid_controller.widgets.values():
-        widget.clean_points()
+        widget.clean_up()
 
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
@@ -151,8 +151,10 @@ def bboxes_padding_changed(request: Request,
 def bbox_updated(identifier: str,
                  state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
 
-    bboxes_padding = state['bboxesPadding']
+    bboxes_padding = state['bboxesPadding'] / 100
     updated_widget: SmartTool = g.grid_controller.get_widget_by_id(widget_id=identifier)
+
+    updated_widget.update_local_fields(state=state, data=DataJson())
 
     scaled_width, scaled_height = updated_widget.get_bbox_size(updated_widget.scaled_bbox)
     original_width, original_height = int(scaled_width / (1 + bboxes_padding)), int(scaled_height / (1 + bboxes_padding))
@@ -160,7 +162,7 @@ def bbox_updated(identifier: str,
     div_width, div_height = (scaled_width - original_width) // 2, (scaled_height - original_height) // 2
 
     updated_widget.original_bbox[0][0] = updated_widget.scaled_bbox[0][0] + div_width
-    updated_widget.original_bbox[0][1] = updated_widget.scaled_bbox[0][0] + div_height
+    updated_widget.original_bbox[0][1] = updated_widget.scaled_bbox[0][1] + div_height
     updated_widget.original_bbox[1][0] = updated_widget.scaled_bbox[1][0] - div_width
     updated_widget.original_bbox[1][1] = updated_widget.scaled_bbox[1][1] - div_height
 
