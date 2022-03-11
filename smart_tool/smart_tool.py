@@ -46,6 +46,14 @@ class SmartTool:
 
         self.needs_an_update = False
 
+    @property
+    def is_empty(self):
+        if len(self.original_bbox) > 0:
+            return False
+        return True
+
+
+
     def get_updated_points(self, state, data, points_type='positive'):
         new_widget_data = self.get_widget_data_from_remote(state=state, data=data)
 

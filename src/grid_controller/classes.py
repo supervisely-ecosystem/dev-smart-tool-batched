@@ -15,7 +15,8 @@ class GridController:
 
     def change_padding(self, actual_padding):
         for widget in self.widgets.values():
-            widget.add_bbox_padding(padding_coefficient=actual_padding)
+            if not widget.is_empty:
+                widget.add_bbox_padding(padding_coefficient=actual_padding)
 
     def get_widget_by_id(self, widget_id):
         return self.widgets[widget_id]
@@ -36,6 +37,7 @@ class GridController:
             widget.is_active = True
             new_data = images_queue.get()
             widget.update_fields_by_data(new_data)
+            widget.add_bbox_padding(padding_coefficient=state['bboxesPadding'])
 
         self.widgets[widget.identifier] = widget
 

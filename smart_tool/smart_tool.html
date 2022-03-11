@@ -6,9 +6,11 @@
                         flex-direction: column;
                         align-items: center;
                         position: relative">
-    <div style="display: flex; align-items: center; justify-content: start; position: absolute; width: 100%">
+    <div style="display: flex; align-items: center; justify-content: space-between; position: absolute; width: 100%">
         <el-checkbox v-model="state.widgets['{{{identifier}}}'].isActive"
-                     style="padding: 5px"></el-checkbox>
+                     style="padding: 5px"
+                     :disabled="state.widgets['{{{identifier}}}'].scaledBbox.length == 0"
+        ></el-checkbox>
 
     </div>
     <smarttool-editor
@@ -34,9 +36,13 @@
                         align-items: center;
                         position: relative;
                         box-sizing: border-box">
-    <div style="display: flex; align-items: center; justify-content: start; position: absolute; width: 100%">
+    <div style="display: flex; align-items: center; justify-content: space-between; position: absolute; width: 100%">
 
-        <el-checkbox v-model="widget.isActive" style="padding: 5px"></el-checkbox>
+        <el-checkbox v-model="widget.isActive"
+                     style="padding: 5px"
+                     :disabled="widget.scaledBbox.length == 0"
+
+        ></el-checkbox>
     </div>
     <smarttool-editor
             v-if="widget.imageUrl"
