@@ -13,6 +13,10 @@ class GridController:
         while actual_count < len(self.widgets):
             self._remove(app, state, data, images_queue)
 
+    def change_padding(self, actual_padding):
+        for widget in self.widgets.values():
+            widget.add_bbox_padding(padding_coefficient=actual_padding)
+
     def get_widget_by_id(self, widget_id):
         return self.widgets[widget_id]
 

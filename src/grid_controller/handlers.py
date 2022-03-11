@@ -12,3 +12,4 @@ def windows_count_changed(request: Request,
     g.grid_controller.change_count(actual_count=windows_count, app=g.app, state=state, data=DataJson(),
                                    images_queue=g.bboxes_to_process)
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
+

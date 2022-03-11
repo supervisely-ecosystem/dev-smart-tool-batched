@@ -35,6 +35,9 @@ app.add_api_route('/select-output-class/{identifier}', settings_card.select_outp
 
 app.add_api_route('/windows-count-changed/', grid_controller.windows_count_changed, methods=["POST"])
 
+app.add_api_route('/bbox-updated/{identifier}', batched_smart_tool.bbox_updated, methods=["POST"])
+app.add_api_route('/bboxes-padding-changed/', batched_smart_tool.bboxes_padding_changed, methods=["POST"])
+
 app.add_api_route('/change-all-buttons/{is_active}', batched_smart_tool.change_all_buttons, methods=["POST"])
 app.add_api_route('/clean-points/', batched_smart_tool.clean_points, methods=["POST"])
 app.add_api_route('/assign-base-points/', batched_smart_tool.assign_base_points, methods=["POST"])
@@ -44,4 +47,4 @@ app.add_api_route('/next-batch/', batched_smart_tool.next_batch, methods=["POST"
 app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', batched_smart_tool.points_updated, methods=["POST"])
 app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', batched_smart_tool.points_updated, methods=["POST"])
 
-# uvicorn.run(app, host="127.0.0.1", port=8000)
+uvicorn.run(app, host="127.0.0.1", port=8000)

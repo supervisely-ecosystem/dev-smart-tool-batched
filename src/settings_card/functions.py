@@ -26,8 +26,10 @@ def get_data_to_render(image_info, bboxes, current_dataset):
         data_to_render.append({
             'imageUrl': f'{image_info.full_storage_url}',
             'imageHash': f'{image_info.hash}',
+            'imageSize': [image_info.width, image_info.height],
             'datasetName': f'{current_dataset.name}',
-            'bbox': [[bbox.left, bbox.top], [bbox.right, bbox.bottom]],
+            'originalBbox': [[bbox.left, bbox.top], [bbox.right, bbox.bottom]],
+            'scaledBbox': [[bbox.left, bbox.top], [bbox.right, bbox.bottom]],
             'positivePoints': [],
             'negativePoints': [],
             'mask': None,

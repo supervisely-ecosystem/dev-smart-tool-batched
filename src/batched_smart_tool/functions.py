@@ -47,12 +47,12 @@ def get_data_to_process():
                 {
                     "crop": [
                         {
-                            "x": widget_data['bbox'][0][0],
-                            "y": widget_data['bbox'][0][1]
+                            "x": widget_data['scaledBbox'][0][0],
+                            "y": widget_data['scaledBbox'][0][1]
                         },
                         {
-                            "x": widget_data['bbox'][1][0],
-                            "y": widget_data['bbox'][1][1]
+                            "x": widget_data['scaledBbox'][1][0],
+                            "y": widget_data['scaledBbox'][1][1]
                         }
                     ],
                     "positive": [

@@ -18,8 +18,8 @@
             style="width: 100%; height: 100%;"
             :mask="state.widgets['{{{identifier}}}'].mask"
             :image-url="state.widgets['{{{identifier}}}'].imageUrl"
-            :bbox.sync="state.widgets['{{{identifier}}}'].bbox"
-            @update:bbox="state.widgets['{{{identifier}}}'].bbox = $event; post('/widgets/smarttool/bbox-updated/{{{identifier}}}')"
+            :bbox.sync="state.widgets['{{{identifier}}}'].scaledBbox"
+            @update:bbox="state.widgets['{{{identifier}}}'].scaledBbox = $event; post('/widgets/smarttool/bbox-updated/{{{identifier}}}')"
             :positive-points="state.widgets['{{{identifier}}}'].positivePoints"
             @update:positive-points="state.widgets['{{{identifier}}}'].positivePoints = $event; post('/widgets/smarttool/positive-updated/{{{identifier}}}')"
             :negative-points="state.widgets['{{{identifier}}}'].negativePoints"
@@ -43,7 +43,7 @@
                 v-model="widget.isActive"
                 on-text=""
                 off-text=""
-                :disabled="widget.bbox.length === 0"
+                :disabled="widget.scaledBbox.length === 0"
         >
         </el-switch>
     </div>
@@ -52,8 +52,8 @@
             style="width: 100%; height: 100%;"
             :mask="widget.mask"
             :image-url="widget.imageUrl"
-            :bbox.sync="widget.bbox"
-            @update:bbox="widget.bbox = $event; post('/widgets/smarttool/bbox-updated/' + widget.identifier)"
+            :bbox.sync="widget.scaledBbox"
+            @update:bbox="widget.scaledBbox = $event; post('/widgets/smarttool/bbox-updated/' + widget.identifier)"
             :positive-points="widget.positivePoints"
             @update:positive-points="widget.positivePoints = $event; post('/widgets/smarttool/positive-updated/' + widget.identifier)"
             :negative-points="widget.negativePoints"

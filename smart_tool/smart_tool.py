@@ -27,11 +27,16 @@ class SmartTool:
 
         self.image_url = None
         self.image_hash = None
+        self.image_size = None
+
         self.dataset_name = None
 
         self.positive_points = []
         self.negative_points = []
-        self.bbox = []
+
+        self.original_bbox = []
+        self.scaled_bbox = []
+
         self.mask = None
         self.is_active = True
 
@@ -70,17 +75,27 @@ class SmartTool:
 
         return []
 
-    def get_box_size(self):
-        box_width = self.bbox[1][0] - self.bbox[0][0]
-        box_height = self.bbox[1][1] - self.bbox[0][1]
-
+    def get_bbox_size(self, current_bbox):
+        box_width = current_bbox[1][0] - current_bbox[0][0]
+        box_height = current_bbox[1][1] - current_bbox[0][1]
         return box_width, box_height
 
+    def add_bbox_padding(self, padding_coefficient=0):
+        padding_coefficient /= 100
+
+        original_w, original_h = self.get_bbox_size(current_bbox=self.original_bbox)
+        additional_w, additional_h = int(original_w * padding_coefficient // 2), int(original_h * padding_coefficient // 2),
+
+        self.scaled_bbox[0][0] = self.original_bbox[0][0] - additional_w if self.original_bbox[0][0] - additional_w > 0 else 0
+        self.scaled_bbox[0][1] = self.original_bbox[0][1] - additional_h if self.original_bbox[0][1] - additional_h > 0 else 0
+        self.scaled_bbox[1][0] = self.original_bbox[1][0] + additional_w if self.original_bbox[1][0] + additional_w < self.image_size[0] else self.image_size[0]
+        self.scaled_bbox[1][1] = self.original_bbox[1][1] + additional_h if self.original_bbox[1][1] + additional_h < self.image_size[1] else self.image_size[1]
+
     def get_relative_coordinates(self, abs_coordinates):
-        box_width, box_height = self.get_box_size()
+        box_width, box_height = self.get_bbox_size(current_bbox=self.scaled_bbox)
         return {
-            'x': (abs_coordinates['position'][0][0] - self.bbox[0][0]) / box_width,
-            'y': (abs_coordinates['position'][0][1] - self.bbox[0][1]) / box_height,
+            'x': (abs_coordinates['position'][0][0] - self.scaled_bbox[0][0]) / box_width,
+            'y': (abs_coordinates['position'][0][1] - self.scaled_bbox[0][1]) / box_height,
         }
 
     def add_connected_point(self, connected_points_ids):
@@ -89,9 +104,9 @@ class SmartTool:
     def update_by_relative_coordinates(self, updated_point, points_type='positive'):
         self.needs_an_update = True
 
-        box_width, box_height = self.get_box_size()
-        x_real = int(updated_point['relative']['x'] * box_width + self.bbox[0][0])
-        y_real = int(updated_point['relative']['y'] * box_height + self.bbox[0][1])
+        box_width, box_height = self.get_bbox_size(current_bbox=self.scaled_bbox)
+        x_real = int(updated_point['relative']['x'] * box_width + self.scaled_bbox[0][0])
+        y_real = int(updated_point['relative']['y'] * box_height + self.scaled_bbox[0][1])
 
         existing_points = self.__getattribute__(f'{points_type}_points')
         existing_points_ids = [point['id'] for point in existing_points]
@@ -141,10 +156,12 @@ class SmartTool:
     def update_fields_by_data(self, new_widget_data):
         self.image_url = new_widget_data.get('imageUrl', '')
         self.image_hash = new_widget_data.get('imageHash', '')
+        self.image_size = new_widget_data.get('imageSize', '')
         self.dataset_name = new_widget_data.get('datasetName', '')
         self.positive_points = new_widget_data.get('positivePoints', [])
         self.negative_points = new_widget_data.get('negativePoints', [])
-        self.bbox = new_widget_data.get('bbox', [])
+        self.original_bbox = new_widget_data.get('originalBbox', [])
+        self.scaled_bbox = new_widget_data.get('scaledBbox', [])
         self.mask = new_widget_data.get('mask', None)
         self.is_active = new_widget_data.get('isActive', True)
 
@@ -153,10 +170,12 @@ class SmartTool:
             'identifier': f'{self.identifier}',
             'imageUrl': self.image_url,
             'imageHash': self.image_hash,
+            'imageSize': self.image_size,
             'datasetName': self.dataset_name,
             'positivePoints': self.positive_points,
             'negativePoints': self.negative_points,
-            'bbox': self.bbox,
+            'originalBbox': self.original_bbox,
+            'scaledBbox': self.scaled_bbox,
             'mask': self.mask,
             'isActive': self.is_active
         }

@@ -71,7 +71,8 @@ def clean_points(state: supervisely.app.StateJson = Depends(supervisely.app.Stat
 def assign_base_points(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     widget: SmartTool = list(g.grid_controller.widgets.values())[0]
 
-    x0, y0, x1, y1 = widget.bbox[0][0], widget.bbox[0][1], widget.bbox[1][0] - 1, widget.bbox[1][1] - 1
+    x0, y0, x1, y1 = widget.scaled_bbox[0][0], widget.scaled_bbox[0][1], \
+                     widget.scaled_bbox[1][0] - 1, widget.scaled_bbox[1][1] - 1
 
     # new negative points on corners
     widget.negative_points.append({'position': [[x0, y0]], 'id': f'{uuid.uuid4()}'})
@@ -92,7 +93,7 @@ def assign_base_points(state: supervisely.app.StateJson = Depends(supervisely.ap
         widget.negative_points.pop()
     widget.positive_points.pop()
 
-    points_updated(identifier=widget.identifier, state=state)   # update main card
+    points_updated(identifier=widget.identifier, state=state)  # update main card
 
 
 def update_masks(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
@@ -138,3 +139,29 @@ def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJ
 
     state['batchInUpload'] = False
     async_to_sync(state.synchronize_changes)()
+
+
+def bboxes_padding_changed(request: Request,
+                           state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    bboxes_padding = state['bboxesPadding']
+    g.grid_controller.change_padding(actual_padding=bboxes_padding)
+    g.grid_controller.update_remote_fields(state=state, data=DataJson())
+
+
+def bbox_updated(identifier: str,
+                 state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+
+    bboxes_padding = state['bboxesPadding']
+    updated_widget: SmartTool = g.grid_controller.get_widget_by_id(widget_id=identifier)
+
+    scaled_width, scaled_height = updated_widget.get_bbox_size(updated_widget.scaled_bbox)
+    original_width, original_height = int(scaled_width / (1 + bboxes_padding)), int(scaled_height / (1 + bboxes_padding))
+
+    div_width, div_height = (scaled_width - original_width) // 2, (scaled_height - original_height) // 2
+
+    updated_widget.original_bbox[0][0] = updated_widget.scaled_bbox[0][0] + div_width
+    updated_widget.original_bbox[0][1] = updated_widget.scaled_bbox[0][0] + div_height
+    updated_widget.original_bbox[1][0] = updated_widget.scaled_bbox[1][0] - div_width
+    updated_widget.original_bbox[1][1] = updated_widget.scaled_bbox[1][1] - div_height
+
+    updated_widget.update_remote_fields(state=state, data=DataJson())
