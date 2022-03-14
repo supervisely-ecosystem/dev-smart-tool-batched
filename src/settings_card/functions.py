@@ -1,4 +1,6 @@
+import copy
 import functools
+from queue import Queue
 
 
 import numpy as np
@@ -14,16 +16,22 @@ def get_bboxes_from_annotation(image_annotations):
     for label in image_annotations.labels:
         if label.geometry.geometry_name() == 'rectangle':
             bbox = label.geometry.to_bbox()
-            bboxes.append(bbox)
+            bboxes.append({
+                'label': label.obj_class.name,
+                'bbox': bbox
+            })
 
     return bboxes
 
 
 def get_data_to_render(image_info, bboxes, current_dataset):
-    data_to_render = []
+    data_to_render = {}
 
-    for bbox in bboxes:
-        data_to_render.append({
+    for bbox_item in bboxes:
+        label = bbox_item['label']
+        bbox = bbox_item['bbox']
+
+        data_to_render.setdefault(label, []).append({
             'imageUrl': f'{image_info.full_storage_url}',
             'imageHash': f'{image_info.hash}',
             'imageSize': [image_info.width, image_info.height],
@@ -40,8 +48,9 @@ def get_data_to_render(image_info, bboxes, current_dataset):
 
 
 def put_data_to_queue(data_to_render):
-    for current_item in data_to_render:
-        g.bboxes_to_process.put(current_item)
+    for label, items in data_to_render.items():
+        for item in items:
+            g.classes2queues.setdefault(label, Queue(maxsize=int(1e6))).put(item)
 
 
 def get_annotations_for_dataset(dataset_id, images):
@@ -58,8 +67,10 @@ def put_crops_to_queue(selected_image, img_annotation_json, current_dataset, pro
 
 
 def create_new_project_by_name(state):
+    project_name = f'{g.api.project.get_info_by_id(g.input_project_id).name}_BST'
+
     created_project = g.api.project.create(workspace_id=DataJson()['workspaceId'],
-                                           name=state['outputProject']['name'],
+                                           name=project_name,
                                            change_name_if_conflict=True)
 
     state['outputProject']['id'] = created_project.id
@@ -74,20 +85,18 @@ def create_new_object_meta_by_name(output_class_name):
 
 
 def get_object_class_by_name(state):
-    output_class_name = state['outputClass']['name']
-
     output_project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=state['outputProject']['id']))
-    obj_class = output_project_meta.obj_classes.get(output_class_name, None)
+    obj_class = output_project_meta.obj_classes.get(g.output_class_name, None)
 
     while obj_class is None or obj_class.geometry_type is not supervisely.Bitmap:
         if obj_class is not None and obj_class.geometry_type is not supervisely.Bitmap:
-            output_class_name += '_smart_tool'
+            g.output_class_name += '_smart_tool'
 
-        updated_meta = output_project_meta.merge(create_new_object_meta_by_name(output_class_name))
+        updated_meta = output_project_meta.merge(create_new_object_meta_by_name(g.output_class_name))
         g.api.project.update_meta(id=state['outputProject']['id'], meta=updated_meta.to_json())
 
         output_project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=state['outputProject']['id']))
-        obj_class = output_project_meta.obj_classes.get(output_class_name, None)
+        obj_class = output_project_meta.obj_classes.get(g.output_class_name, None)
 
     return obj_class
 
@@ -120,3 +129,12 @@ def refill_queues_by_input_project_data(project_id):
                                img_annotation_json=current_annotation,
                                current_dataset=current_dataset,
                                project_meta=project_meta)
+
+
+def select_input_project(identifier: str, state):
+    g.grid_controller.clean_all(state=state, data=DataJson())
+    refill_queues_by_input_project_data(project_id=identifier)
+
+    classes = list(g.classes2queues.keys())
+    if len(classes) > 0:
+        g.selected_queue = g.classes2queues[classes[0]]

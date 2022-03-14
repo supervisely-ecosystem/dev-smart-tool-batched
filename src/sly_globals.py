@@ -8,8 +8,6 @@ from fastapi import FastAPI
 from starlette.responses import FileResponse
 from starlette.staticfiles import StaticFiles
 
-from queue import Queue
-
 import supervisely
 from sly_tqdm import sly_tqdm
 from smart_tool import SmartTool
@@ -51,14 +49,18 @@ DataJson(
 templates_env = Jinja2Templates(directory=os.path.join(app_root_directory, 'templates'))
 
 
-bboxes_to_process = Queue(maxsize=int(1e6))
-processing_queue_backup = None
+# selected_queue = Queue(maxsize=int(1e6))
+selected_queue = None
+classes2queues = {}
 
 grid_controller = GridController(SmartTool)
 
 imagehash2imageinfo_by_datasets = {}
 
+output_class_name = None
 output_class_object = None
+
+input_project_id = os.getenv('modal.state.slyProjectId')
 
 
 @app.get('/favicon.ico')

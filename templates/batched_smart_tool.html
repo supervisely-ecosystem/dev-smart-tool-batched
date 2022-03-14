@@ -1,37 +1,84 @@
 <sly-card title="Batched Smart Tool" subtitle="annotate batch of images">
-    <div slot="header" style="display: flex; padding-bottom: 10px;">
+    <div slot="header" style="display: flex; padding-bottom: 10px; align-items: center; justify-content: center">
+        <el-popover
+                ref="popover2"
+                placement="bottom"
+                title="Title"
+                width="200"
 
-        <div v-if="state.outputClass.name" style="margin: 0 4px;
+                trigger="manual"
+                content="this is content, this is content, this is content">
+        </el-popover>
 
-                                            border: solid rgb(168,136,182) 1px;
-                                            color: rgb(168,136,182);
-                                            font-weight: 500;
-                                            border-radius: 0px;
-                                            padding: 9px 18px;
-                                            transition: .5s box-shadow, .5s opacity, .5s background !important;
-                                            text-transform: uppercase;
-                                            font-size: 13px;">
-            SELECTED CLASS: {{state.outputClass.name}}
+        <div style="padding: 0 10px; display: flex; justify-content: center; align-items: center;
+                        border-right: solid black 1px">
+            <sly-icon
+                    style="margin-top: 17px;"
+                    v-if="state.currentStep === 0"
+                    slot="icon" :options="{ color: '#ffffff', bgColor: '#fe5a1d', rounded: false }">
+                <i class="zmdi zmdi-memory"></i>
+            </sly-icon>
+            <sly-icon
+                    v-else
+                    style="margin-top: 17px;"
+                    slot="icon" :options="{ color: '#ffffff', bgColor: '#32a852', rounded: false }">
+                <i class="zmdi zmdi-memory"></i>
+            </sly-icon>
+            <div
+
+                    class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
+                <p style="font-size: 12px; color: #5a6772; margin: 2px 0">Connect to Model</p>
+                <sly-select-app-session
+
+                        style="width: 128px"
+                        slot="title"
+                        :group-id="data.teamId"
+                        :app-session-id="state.processingServerSessionId"
+                        :options="data.connectorOptions"
+                        @update:app-session-id="state.processingServerSessionId=$event; post('/connect-to-model/' + state.processingServerSessionId)"
+                >
+                </sly-select-app-session>
+            </div>
         </div>
-        <el-button size='small' @click="state.currentStep=3"
-                   style="margin: 0 4px"
-                   :disabled="state.batchInUpload">
-            back to settings
-        </el-button>
 
-        <a :href="`https://supervisely-dev.deepsystems.io/projects/${state.outputProject.id}/datasets`" target="_blank">
-            <el-button type="success" class="regular" size="small"
-                       style="margin: 0 4px; padding: 10px 18px">
-                OPEN OUTPUT PROJECT
-            </el-button>
-        </a>
+        <div style="padding: 0 10px; display: flex; justify-content: center; align-items: center;">
+
+            <sly-icon
+                    style="margin-top: 17px; margin-left: 5px"
+                    slot="icon" :options="{ color: '#ffffff', bgColor: '#32a852', rounded: false }">
+                <i class="zmdi zmdi-flower-alt"></i>
+            </sly-icon>
+            <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
+                <p style="font-size: 12px; color: #5a6772; margin: 2px 0">Select Class</p>
+                <el-button
+                        v-popover:popover2
+                        :plain="true"
+                        style="width: 128px"
+                        type="success" class="regular" size="small"
+                        style="margin: 0 4px; padding: 10px 18px"
+                        @click="state.selectClassVisible=true"
+                >
+                    {{ state.outputClassName }}
+                </el-button>
+
+            </div>
+
+        </div>
+
+
+        <!--        <a :href="`https://supervisely-dev.deepsystems.io/projects/${state.outputProject.id}/datasets`" target="_blank">-->
+        <!--            <el-button type="success" class="regular" size="small"-->
+        <!--                       style="margin: 0 4px; padding: 10px 18px">-->
+        <!--                OPEN OUTPUT PROJECT-->
+        <!--            </el-button>-->
+        <!--        </a>-->
     </div>
 
     <div v-if="!state.queueIsEmpty">
 
         <div style="display: flex; flex-direction: row;">
 
-            <div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0px 5px; padding-bottom: 15px; width: 100%">
+            <div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0 5px; padding-bottom: 15px; width: 100%">
 
                 <div style="display: flex">
                     <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
@@ -49,14 +96,12 @@
                     </div>
                     <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
                         <p style="font-size: 12px; color: #5a6772; margin: 1px 0">Smart Tools <b
-                                style="color: #00c7ff;">size</b>
+                                style="color: #14b6e3;">size</b>
                         </p>
                         <el-input-number size="small" :value="state.toolSize"
                                          @change="state.toolSize=$event;"
                                          :min="1" :max="100"
-                                         style="width: 140px; margin: 2px 3px"
-
-                        >
+                                         style="width: 140px; margin: 2px 3px">
 
                         </el-input-number>
 
@@ -77,9 +122,6 @@
                 </div>
 
                 <div style="display: flex">
-                    <el-button type="primary" class="regular" size="small" style="margin: 15px 5px;"
-                               @click="state.updatingMasks=true; post('/update-masks/')">UPDATE MASKS
-                    </el-button>
 
 
                 </div>
@@ -98,16 +140,17 @@
         </div>
 
 
-        <div style="display: flex; flex-direction: row; justify-content: space-between;" v-if="state.windowsCount > 0">
+        <div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0 8px;"
+             v-if="state.windowsCount > 0">
             <div style="display: flex; align-items: center; margin-top: 20px;">
 
                 <el-button type="success" class="regular" size="small" style="margin: 0 2px;"
-                           @click="post('/change-all-buttons/True')">ALL ON
+                           @click="post('/change-all-buttons/True')"><i class="zmdi zmdi-check-square"></i>
                 </el-button>
 
 
                 <el-button type="warning" class="regular" size="small" style="margin: 0 2px;"
-                           @click="post('/change-all-buttons/False')">ALL OFF
+                           @click="post('/change-all-buttons/False')"><i class="zmdi zmdi-square-o"></i>
                 </el-button>
             </div>
             <div style="display: flex; align-items: center; margin-top: 15px;">
@@ -119,9 +162,17 @@
                 </el-button>
             </div>
             <div style="display: flex; align-items: center; margin-top: 15px;">
+                <el-button type="primary" class="regular" size="small" style="margin: 15px 5px;"
+                           @click="state.updatingMasks=true; post('/update-masks/')">
+                    <i class="zmdi zmdi-refresh-alt mr5"></i>
+                    UPDATE MASKS
+                </el-button>
+
                 <el-button type="primary" class="regular" size="small" style="margin: 0 2px;"
                            @click="state.batchInUpload=true; state.updatingMasks=true; post('/next-batch/')"
-                           :disabled="state.queueIsEmpty || state.batchInUpload">NEXT BATCH
+                           :disabled="state.queueIsEmpty || state.batchInUpload">
+                    <i class="zmdi zmdi-skip-next mr5"></i>
+                    NEXT BATCH
                 </el-button>
             </div>
         </div>

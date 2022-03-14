@@ -1,0 +1,28 @@
+<el-dialog title="Select Class" :visible.sync="state.selectClassVisible">
+
+    <el-radio-group v-model="state.queueMode" size="small" style="margin-bottom: 14px">
+        <el-radio-button label="objects"
+                         :disabled="data.objectsLeft === 0"></el-radio-button>
+        <el-radio-button label="images"></el-radio-button>
+    </el-radio-group>
+
+    <div v-if="state.queueMode === 'objects'">
+
+        {{{ classes_table.to_html() }}}
+
+    </div>
+    <div style="width: 100%; display: flex; align-items: center; justify-content: flex-end">
+        <el-button
+                :loading="state.updatingClass"
+                type="primary" class="regular" size="small" style="margin: 0 2px; margin-top: 17px"
+                @click="state.updatingClass=true; post('/select-output-class/')">
+            select
+        </el-button>
+    </div>
+
+    <!--  <el-table :data="data.selectClassTable">-->
+    <!--    <el-table-column property="date" label="" width="150"></el-table-column>-->
+    <!--    <el-table-column property="name" label="Name" width="200"></el-table-column>-->
+    <!--    <el-table-column property="address" label="Address"></el-table-column>-->
+    <!--  </el-table>-->
+</el-dialog>

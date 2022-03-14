@@ -11,7 +11,10 @@ from supervisely.app import DataJson
 import src.sly_functions as f
 import src.sly_globals as g
 
+import src.select_class.functions as sc_functions
+
 import src.batched_smart_tool.functions as local_functions
+
 
 from loguru import logger
 
@@ -111,8 +114,8 @@ def update_masks(state: supervisely.app.StateJson = Depends(supervisely.app.Stat
 
 
 def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    logger.info(f'Items in queue left: {len(g.bboxes_to_process.queue)}')
-    state['queueIsEmpty'] = g.bboxes_to_process.empty()
+    logger.info(f'Items in queue left: {len(g.selected_queue.queue)}')
+    state['queueIsEmpty'] = g.selected_queue.empty()
 
     # 1 - load data from widgets
     g.grid_controller.update_local_fields(state=state, data=DataJson())
@@ -125,7 +128,7 @@ def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJ
     # 2 - load new data to widgets
     g.grid_controller.clean_all(state=state, data=DataJson())
     g.grid_controller.change_count(actual_count=state['windowsCount'], app=g.app, state=state, data=DataJson(),
-                                   images_queue=g.bboxes_to_process)
+                                   images_queue=g.selected_queue)
 
     state['updatingMasks'] = False
 
@@ -138,6 +141,10 @@ def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJ
             f.upload_images_to_dataset(dataset_id=ds_id, data_to_upload=widget_data)
 
     state['batchInUpload'] = False
+
+    # 4 - update stats in table
+    sc_functions.update_classes_table()
+
     async_to_sync(state.synchronize_changes)()
 
 

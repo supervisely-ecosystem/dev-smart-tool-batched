@@ -52,8 +52,6 @@ class SmartTool:
             return False
         return True
 
-
-
     def get_updated_points(self, state, data, points_type='positive'):
         new_widget_data = self.get_widget_data_from_remote(state=state, data=data)
 
@@ -96,8 +94,8 @@ class SmartTool:
 
         self.scaled_bbox[0][0] = self.original_bbox[0][0] - additional_w if self.original_bbox[0][0] - additional_w > 0 else 0
         self.scaled_bbox[0][1] = self.original_bbox[0][1] - additional_h if self.original_bbox[0][1] - additional_h > 0 else 0
-        self.scaled_bbox[1][0] = self.original_bbox[1][0] + additional_w if self.original_bbox[1][0] + additional_w < self.image_size[0] else self.image_size[0]
-        self.scaled_bbox[1][1] = self.original_bbox[1][1] + additional_h if self.original_bbox[1][1] + additional_h < self.image_size[1] else self.image_size[1]
+        self.scaled_bbox[1][0] = self.original_bbox[1][0] + additional_w if self.original_bbox[1][0] + additional_w < self.image_size[0] else self.image_size[0] - 1
+        self.scaled_bbox[1][1] = self.original_bbox[1][1] + additional_h if self.original_bbox[1][1] + additional_h < self.image_size[1] else self.image_size[1] - 1
 
     def get_relative_coordinates(self, abs_coordinates):
         box_width, box_height = self.get_bbox_size(current_bbox=self.scaled_bbox)

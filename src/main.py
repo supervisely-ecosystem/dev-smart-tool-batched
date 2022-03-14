@@ -15,6 +15,8 @@ from smart_tool import SmartTool  # 🤖 widgets
 import src.batched_smart_tool as batched_smart_tool
 import src.settings_card as settings_card
 import src.grid_controller as grid_controller
+import src.select_class as select_class
+
 
 from src.sly_globals import app
 
@@ -25,13 +27,20 @@ def read_index(request: Request):
                                                            'smart_tool': SmartTool})
 
 
-# @TODO: add connect to model verification
+settings_card.select_input_project(identifier=f'{g.input_project_id}', state=StateJson())  # download input project
+settings_card.select_output_project(state=StateJson())  # init input project
+select_class.init_table_data()  # fill classes table
+
+if len(g.classes2queues) > 0:
+    settings_card.select_output_class(state=StateJson())  # selecting first class from table
+    DataJson()['objectsLeft'] = f.objects_left_number()
+
+grid_controller.handlers.windows_count_changed(state=StateJson())
 
 
 app.add_api_route('/connect-to-model/{identifier}', settings_card.connect_to_model, methods=["POST"])
-app.add_api_route('/select-input-project/{identifier}', settings_card.select_input_project, methods=["POST"])
 app.add_api_route('/select-output-project/{identifier}', settings_card.select_output_project, methods=["POST"])
-app.add_api_route('/select-output-class/{identifier}', settings_card.select_output_class, methods=["POST"])
+app.add_api_route('/select-output-class/', settings_card.select_output_class, methods=["POST"])
 
 app.add_api_route('/windows-count-changed/', grid_controller.windows_count_changed, methods=["POST"])
 
@@ -46,5 +55,8 @@ app.add_api_route('/next-batch/', batched_smart_tool.next_batch, methods=["POST"
 app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', batched_smart_tool.points_updated, methods=["POST"])
 app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', batched_smart_tool.points_updated, methods=["POST"])
 app.add_api_route('/widgets/smarttool/bbox-updated/{identifier}', batched_smart_tool.bbox_updated, methods=["POST"])
+
+
+# @TODO: add connect to model verification
 
 uvicorn.run(app, host="127.0.0.1", port=8000)

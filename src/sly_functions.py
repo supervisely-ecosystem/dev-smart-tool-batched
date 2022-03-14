@@ -68,3 +68,10 @@ def get_dataset_id_by_name(current_dataset_name, output_project_id):
 
     created_ds = g.api.dataset.create(project_id=output_project_id, name=current_dataset_name)
     return created_ds.id
+
+
+def objects_left_number():
+    obj_counter = 0
+    for queue in g.classes2queues.values():
+        obj_counter += len(queue.queue)
+    return obj_counter
