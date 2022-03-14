@@ -47,4 +47,4 @@ app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', batched_sm
 app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', batched_smart_tool.points_updated, methods=["POST"])
 app.add_api_route('/widgets/smarttool/bbox-updated/{identifier}', batched_smart_tool.bbox_updated, methods=["POST"])
 
-uvicorn.run(app, host="127.0.0.1", port=8000)
+# uvicorn.run(app, host="127.0.0.1", port=8000)
