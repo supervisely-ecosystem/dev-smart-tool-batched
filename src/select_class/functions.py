@@ -23,3 +23,5 @@ def update_classes_table():
         row[1] = len(queues[labels.index(label)].queue)
 
     classes_table.rows = actual_rows
+
+

@@ -12,6 +12,7 @@ import src.sly_globals as g
 
 
 # import src.settings_card as settings_card
+from supervisely.app import DataJson
 
 
 def get_supervisely_label_by_widget_data(widget_data, current_class_name="batched_smart_tool"):
@@ -75,3 +76,15 @@ def objects_left_number():
     for queue in g.classes2queues.values():
         obj_counter += len(queue.queue)
     return obj_counter
+
+
+def update_queues_stats(state):
+    state['selectClassVisible'] = False
+    state['outputClassName'] = g.output_class_name
+    state['updatingClass'] = False
+
+    DataJson()['objectsLeftTotal'] = objects_left_number()
+    DataJson()['objectsLeftQueue'] = len(g.selected_queue.queue)
+
+
+

@@ -1,4 +1,5 @@
 import os
+import queue
 import sys
 from loguru import logger
 from pathlib import Path
@@ -37,14 +38,9 @@ api = supervisely.Api.from_env()
 StateJson()['widgets'] = {}
 
 
-DataJson(
-    {
-        'teamId': os.environ['context.teamId'],
-        'workspaceId': os.environ['context.workspaceId'],
-
-        'widgets': {},
-    }
-)
+DataJson()['teamId'] = os.environ['context.teamId']
+DataJson()['workspaceId'] = os.environ['context.workspaceId']
+DataJson()['widgets'] = {}
 
 templates_env = Jinja2Templates(directory=os.path.join(app_root_directory, 'templates'))
 
@@ -52,6 +48,7 @@ templates_env = Jinja2Templates(directory=os.path.join(app_root_directory, 'temp
 # selected_queue = Queue(maxsize=int(1e6))
 selected_queue = None
 classes2queues = {}
+images_queue = queue.Queue(maxsize=int(1e6))
 
 grid_controller = GridController(SmartTool)
 

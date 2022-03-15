@@ -83,7 +83,7 @@
                 <div style="display: flex">
                     <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
                         <p style="font-size: 12px; color: #5a6772; margin: 1px 0">Smart Tools <b
-                                style="color: #ef23f1;">number</b>
+                                style="color: #ff6600;">number</b>
                         </p>
                         <el-input-number size="small" :value="state.windowsCount"
                                          @change="state.windowsCount=$event; post('/windows-count-changed/');"
@@ -96,7 +96,7 @@
                     </div>
                     <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
                         <p style="font-size: 12px; color: #5a6772; margin: 1px 0">Smart Tools <b
-                                style="color: #14b6e3;">size</b>
+                                style="color: #ff6600;">size (%)</b>
                         </p>
                         <el-input-number size="small" :value="state.toolSize"
                                          @change="state.toolSize=$event;"
@@ -108,7 +108,7 @@
                     </div>
                     <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
                         <p style="font-size: 12px; color: #5a6772; margin: 1px 0">BBoxes <b
-                                style="color: #ff6600;">additional padding</b>
+                                style="color: #ff6600;">additional padding (%)</b>
                         </p>
                         <el-input-number size="small" :value="state.bboxesPadding"
                                          @change="state.bboxesPadding=$event; post('/bboxes-padding-changed/');"
@@ -144,13 +144,14 @@
              v-if="state.windowsCount > 0">
             <div style="display: flex; align-items: center; margin-top: 20px;">
 
-                <el-button type="success" class="regular" size="small" style="margin: 0 2px;"
-                           @click="post('/change-all-buttons/True')"><i class="zmdi zmdi-check-square"></i>
+                <el-button :plain="true" type="success" class="regular" size="small" style="margin: 0 2px;"
+                           @click="post('/change-all-buttons/True')"><i class="zmdi zmdi-check-all mr5"></i> Select all
                 </el-button>
 
 
-                <el-button type="warning" class="regular" size="small" style="margin: 0 2px;"
-                           @click="post('/change-all-buttons/False')"><i class="zmdi zmdi-square-o"></i>
+                <el-button :plain="true" type="warning" class="regular" size="small" style="margin: 0 2px;"
+                           @click="post('/change-all-buttons/False')"><i class="zmdi zmdi-square-o mr5"></i> Deselect
+                    all
                 </el-button>
             </div>
             <div style="display: flex; align-items: center; margin-top: 15px;">
@@ -161,20 +162,31 @@
                            @click="post('/clean-up/')">CLEAN UP
                 </el-button>
             </div>
-            <div style="display: flex; align-items: center; margin-top: 15px;">
-                <el-button type="primary" class="regular" size="small" style="margin: 15px 5px;"
+
+            <div style="display: flex; align-items: flex-end; ">
+                <el-button type="primary" class="regular" size="small" style="margin: 5px 5px;"
                            @click="state.updatingMasks=true; post('/update-masks/')">
                     <i class="zmdi zmdi-refresh-alt mr5"></i>
                     UPDATE MASKS
                 </el-button>
 
-                <el-button type="primary" class="regular" size="small" style="margin: 0 2px;"
-                           @click="state.batchInUpload=true; state.updatingMasks=true; post('/next-batch/')"
-                           :disabled="state.queueIsEmpty || state.batchInUpload">
-                    <i class="zmdi zmdi-skip-next mr5"></i>
-                    NEXT BATCH
-                </el-button>
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 15px;">
+                    <div>
+                        <p style="font-size: 12px; color: #5a6772; margin: 2px 0">BBoxes left: <b
+                                style="color: #ff6600;">{{Object.keys(state.widgets.SmartTool).length + data.objectsLeftQueue}} </b>
+                        </p>
+
+                    </div>
+                    <el-button type="primary" class="regular" size="small" style="margin: 0 2px; margin-bottom: 5px"
+                               @click="state.batchInUpload=true; state.updatingMasks=true; post('/next-batch/')"
+                               :disabled="state.queueIsEmpty || state.batchInUpload">
+                        <i class="zmdi zmdi-skip-next mr5"></i>
+                        NEXT BATCH
+                    </el-button>
+                </div>
             </div>
+
+
         </div>
 
     </div>

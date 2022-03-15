@@ -33,9 +33,8 @@ select_class.init_table_data()  # fill classes table
 
 if len(g.classes2queues) > 0:
     settings_card.select_output_class(state=StateJson())  # selecting first class from table
-    DataJson()['objectsLeft'] = f.objects_left_number()
-
-grid_controller.handlers.windows_count_changed(state=StateJson())
+else:
+    grid_controller.handlers.windows_count_changed(state=StateJson())
 
 
 app.add_api_route('/connect-to-model/{identifier}', settings_card.connect_to_model, methods=["POST"])

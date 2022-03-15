@@ -11,5 +11,6 @@ StateJson()['updatingClass'] = False
 
 StateJson()['queueMode'] = 'objects'
 
-DataJson()['objectsLeft'] = 0
+DataJson()['objectsLeftTotal'] = 0
+DataJson()['objectsLeftQueue'] = 0
 

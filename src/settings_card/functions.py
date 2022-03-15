@@ -10,6 +10,8 @@ import supervisely
 import src.sly_globals as g
 from supervisely.app import DataJson
 
+import src.select_class.local_widgets as select_class_widgets
+
 
 def get_bboxes_from_annotation(image_annotations):
     bboxes = []
@@ -114,7 +116,20 @@ def cache_existing_images(state):
     return state
 
 
-# @functools.lru_cache(maxsize=2)
+def put_image_to_queue(selected_image, current_dataset):
+    bbox = {
+        'bbox': supervisely.Rectangle(top=0, left=0, bottom=selected_image.height - 1, right=selected_image.width - 1),
+        'label': 'image'
+    }
+
+    data_to_render = get_data_to_render(image_info=selected_image,
+                                        bboxes=[bbox],
+                                        current_dataset=current_dataset)['image']
+
+    for item in data_to_render:
+        g.images_queue.put(item)
+
+
 def refill_queues_by_input_project_data(project_id):
     project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=project_id))
     project_datasets = g.api.dataset.get_list(project_id=project_id)
@@ -130,6 +145,9 @@ def refill_queues_by_input_project_data(project_id):
                                current_dataset=current_dataset,
                                project_meta=project_meta)
 
+            put_image_to_queue(selected_image=current_image,
+                               current_dataset=current_dataset)
+
 
 def select_input_project(identifier: str, state):
     g.grid_controller.clean_all(state=state, data=DataJson())
@@ -138,3 +156,22 @@ def select_input_project(identifier: str, state):
     classes = list(g.classes2queues.keys())
     if len(classes) > 0:
         g.selected_queue = g.classes2queues[classes[0]]
+
+
+def update_output_class(state):
+    selected_row = select_class_widgets.classes_table.get_selected_row(state)
+
+    if state['queueMode'] == 'objects':
+        if selected_row is not None:
+            g.output_class_name = selected_row[0]
+        else:
+            g.output_class_name = list(g.classes2queues.keys())[0]
+    else:
+        g.output_class_name = 'image'
+
+
+def update_selected_queue(state):
+    if state['queueMode'] == 'objects':
+        g.selected_queue = g.classes2queues[g.output_class_name]
+    else:
+        g.selected_queue = g.images_queue

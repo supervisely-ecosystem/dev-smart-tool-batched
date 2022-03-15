@@ -14,6 +14,7 @@ import src.sly_globals as g
 import src.select_class.functions as sc_functions
 
 import src.batched_smart_tool.functions as local_functions
+import src.sly_functions as global_functions
 
 
 from loguru import logger
@@ -144,8 +145,10 @@ def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJ
 
     # 4 - update stats in table
     sc_functions.update_classes_table()
+    global_functions.update_queues_stats(state)
 
     async_to_sync(state.synchronize_changes)()
+    async_to_sync(DataJson().synchronize_changes)()
 
 
 def bboxes_padding_changed(request: Request,
