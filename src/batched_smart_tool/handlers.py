@@ -108,7 +108,7 @@ def update_masks(state: supervisely.app.StateJson = Depends(supervisely.app.Stat
                                            context={'data_to_process': data_to_process}, timeout=60)
         local_functions.update_local_masks(response)
     except Exception as ex:
-        logger.error('Exception while updating masks:', ex)
+        logger.error('Exception while updating masks:', ex, backtrace=True)
 
     state['updatingMasks'] = False
     g.grid_controller.update_remote_fields(state=state, data=DataJson())

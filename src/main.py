@@ -17,7 +17,6 @@ import src.settings_card as settings_card
 import src.grid_controller as grid_controller
 import src.select_class as select_class
 
-
 from src.sly_globals import app
 
 
@@ -28,17 +27,21 @@ def read_index(request: Request):
 
 
 settings_card.select_input_project(identifier=f'{g.input_project_id}', state=StateJson())  # download input project
-settings_card.select_output_project(state=StateJson())  # init input project
 select_class.init_table_data()  # fill classes table
 
-if len(g.classes2queues) > 0:
-    settings_card.select_output_class(state=StateJson())  # selecting first class from table
+output_project_id = settings_card.get_output_project_id()
+if output_project_id is not None:
+    StateJson()['outputProject']['dialogVisible'] = True
+    StateJson()['outputProject']['id'] = output_project_id
+    select_class.notification_box.description = select_class.notification_box.description.format(output_project_id,
+                                                                                                 f'{g.api.project.get_info_by_id(g.input_project_id).name}_BST')
 else:
-    grid_controller.handlers.windows_count_changed(state=StateJson())
+    settings_card.select_output_project(state=StateJson())
 
+grid_controller.handlers.windows_count_changed(state=StateJson())
 
 app.add_api_route('/connect-to-model/{identifier}', settings_card.connect_to_model, methods=["POST"])
-app.add_api_route('/select-output-project/{identifier}', settings_card.select_output_project, methods=["POST"])
+app.add_api_route('/select-output-project/', settings_card.select_output_project, methods=["POST"])
 app.add_api_route('/select-output-class/', settings_card.select_output_class, methods=["POST"])
 
 app.add_api_route('/windows-count-changed/', grid_controller.windows_count_changed, methods=["POST"])
@@ -51,11 +54,14 @@ app.add_api_route('/assign-base-points/', batched_smart_tool.assign_base_points,
 app.add_api_route('/update-masks/', batched_smart_tool.update_masks, methods=["POST"])
 app.add_api_route('/next-batch/', batched_smart_tool.next_batch, methods=["POST"])
 
-app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', batched_smart_tool.points_updated, methods=["POST"])
-app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', batched_smart_tool.points_updated, methods=["POST"])
+app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', batched_smart_tool.points_updated,
+                  methods=["POST"])
+app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', batched_smart_tool.points_updated,
+                  methods=["POST"])
 app.add_api_route('/widgets/smarttool/bbox-updated/{identifier}', batched_smart_tool.bbox_updated, methods=["POST"])
 
-
+# @TODO: load project after application started
 # @TODO: add connect to model verification
+# @TODO: dialog if masks not applied but next batch clicked
 
 uvicorn.run(app, host="127.0.0.1", port=8000)

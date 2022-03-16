@@ -65,13 +65,6 @@
 
         </div>
 
-
-        <!--        <a :href="`https://supervisely-dev.deepsystems.io/projects/${state.outputProject.id}/datasets`" target="_blank">-->
-        <!--            <el-button type="success" class="regular" size="small"-->
-        <!--                       style="margin: 0 4px; padding: 10px 18px">-->
-        <!--                OPEN OUTPUT PROJECT-->
-        <!--            </el-button>-->
-        <!--        </a>-->
     </div>
 
     <div v-if="!state.queueIsEmpty">
@@ -122,7 +115,15 @@
                 </div>
 
                 <div style="display: flex">
-
+                    <a :href="`https://supervisely-dev.deepsystems.io/projects/${state.outputProject.id}/datasets`"
+                       target="_blank">
+                        <el-button
+                                :plain="true"
+                                type="success" class="regular" size="small"
+                                style="margin: 0 0px; padding: 6px 10px">
+                            <i class="zmdi zmdi-arrow-right-top"></i>
+                        </el-button>
+                    </a>
 
                 </div>
 
@@ -173,7 +174,8 @@
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 15px;">
                     <div>
                         <p style="font-size: 12px; color: #5a6772; margin: 2px 0">BBoxes left: <b
-                                style="color: #ff6600;">{{Object.keys(state.widgets.SmartTool).length + data.objectsLeftQueue}} </b>
+                                style="color: #ff6600;">{{Object.keys(state.widgets.SmartTool).length +
+                            data.objectsLeftQueue}} </b>
                         </p>
 
                     </div>
@@ -190,16 +192,27 @@
         </div>
 
     </div>
-    <sly-field v-else
-               title="INFO: Queue is Empty"
-               description="there is no more items to annotate"
-               style="margin-bottom: 0; margin-left: 5px">
-        <sly-icon slot="icon" :options="{ color: '#4c9ef8', bgColor: '#e3f0ff', rounded: false }">
-            <i class="zmdi zmdi-info"></I>
-        </sly-icon>
-    </sly-field>
-
-
+    <div v-else style="display: flex; flex-direction: row; align-items: center; justify-content: space-between">
+        <sly-field
+                title="INFO: Queue is Empty"
+                description="there is no more items with to annotate"
+                style="margin-bottom: 0; margin-left: 5px">
+            <sly-icon slot="icon" :options="{ color: '#4c9ef8', bgColor: '#e3f0ff', rounded: false }">
+                <i class="zmdi zmdi-info"></I>
+            </sly-icon>
+        </sly-field>
+        <div style="display: flex">
+            <a :href="`https://supervisely-dev.deepsystems.io/projects/${state.outputProject.id}/datasets`"
+               target="_blank">
+                <el-button
+                        :plain="true"
+                        type="success" class="regular" size="small"
+                        style="margin: 0 0px; padding: 6px 10px">
+                    <i class="zmdi zmdi-arrow-right-top"></i>
+                </el-button>
+            </a>
+        </div>
+    </div>
 </sly-card>
 <!--    <sly-select-project-->
 <!--            :workspace-id="418"-->

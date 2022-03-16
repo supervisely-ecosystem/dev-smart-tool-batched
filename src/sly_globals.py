@@ -53,11 +53,13 @@ images_queue = queue.Queue(maxsize=int(1e6))
 grid_controller = GridController(SmartTool)
 
 imagehash2imageinfo_by_datasets = {}
+processed_geometries = []
 
 output_class_name = None
 output_class_object = None
 
 input_project_id = os.getenv('modal.state.slyProjectId')
+output_project_id = None
 
 
 @app.get('/favicon.ico')

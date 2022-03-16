@@ -21,21 +21,33 @@ import src.sly_functions as global_functions
 def connect_to_model(identifier: str,
                      request: Request,
                      state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    print('model connected')
+
     state['currentStep'] = 1
     async_to_sync(state.synchronize_changes)()
 
 
+def get_output_project_id():
+    for project in g.api.project.get_list(workspace_id=DataJson()['workspaceId']):
+        if project.name == f'{g.api.project.get_info_by_id(g.input_project_id).name}_BST':
+            return project.id
+
+
 def select_output_project(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     g.imagehash2imageinfo_by_datasets = {}  # reset output images cache
+    g.grid_controller.clean_all(state=state, data=DataJson(), images_queue=g.selected_queue)
 
-    # if state['outputProject']['mode'] == 'new':
-    local_functions.create_new_project_by_name(state)
-    # else:
-    #     local_functions.cache_existing_images(state)
+    if state['outputProject']['mode'] == 'new':
+        local_functions.create_new_project_by_name(state)
+    else:
+        state['outputProject']['id'] = get_output_project_id()
+        local_functions.cache_existing_images(state)
+        local_functions.remove_processed_geometries(state)
 
-    state['currentStep'] = 3
+    g.output_project_id = state['outputProject']['id']
+    select_output_class(state=state)  # selecting first class from table
+
     state['outputProject']['loading'] = False
+    state['outputProject']['dialogVisible'] = False
     async_to_sync(state.synchronize_changes)()
 
 

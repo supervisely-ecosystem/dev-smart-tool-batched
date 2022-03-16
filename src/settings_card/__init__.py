@@ -13,8 +13,9 @@ StateJson()['inputProject'] = {
 StateJson()['outputProject'] = {
     'id': None,
     'mode': 'new',
-    'name': None,
-    'loading': False
+    'name': f'{g.api.project.get_info_by_id(g.input_project_id).name}_BST',
+    'loading': False,
+    'dialogVisible': False
 }
 
 StateJson()['outputClass'] = {
@@ -31,4 +32,5 @@ DataJson()['connectorOptions'] = {
     "showLabel": False,
     "size": "small"
 }
+
 

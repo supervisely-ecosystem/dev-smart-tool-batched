@@ -10,7 +10,9 @@ import supervisely
 import src.sly_globals as g
 from supervisely.app import DataJson
 
-import src.select_class.local_widgets as select_class_widgets
+import src.select_class as select_class
+
+import src.sly_functions as global_functions
 
 
 def get_bboxes_from_annotation(image_annotations):
@@ -20,7 +22,8 @@ def get_bboxes_from_annotation(image_annotations):
             bbox = label.geometry.to_bbox()
             bboxes.append({
                 'label': label.obj_class.name,
-                'bbox': bbox
+                'bbox': bbox,
+                'sly_id': label.geometry.sly_id
             })
 
     return bboxes
@@ -31,6 +34,7 @@ def get_data_to_render(image_info, bboxes, current_dataset):
 
     for bbox_item in bboxes:
         label = bbox_item['label']
+        sly_id = bbox_item.get('sly_id')
         bbox = bbox_item['bbox']
 
         data_to_render.setdefault(label, []).append({
@@ -43,7 +47,8 @@ def get_data_to_render(image_info, bboxes, current_dataset):
             'positivePoints': [],
             'negativePoints': [],
             'mask': None,
-            'isActive': True
+            'isActive': True,
+            'slyId': sly_id
         })
 
     return data_to_render
@@ -159,7 +164,7 @@ def select_input_project(identifier: str, state):
 
 
 def update_output_class(state):
-    selected_row = select_class_widgets.classes_table.get_selected_row(state)
+    selected_row = select_class.classes_table.get_selected_row(state)
 
     if state['queueMode'] == 'objects':
         if selected_row is not None:
@@ -175,3 +180,20 @@ def update_selected_queue(state):
         g.selected_queue = g.classes2queues[g.output_class_name]
     else:
         g.selected_queue = g.images_queue
+
+
+def remove_processed_geometries(state):
+    custom_data = global_functions.get_project_custom_data(state['outputProject']['id'])
+    processed_geometries_ids = custom_data.get('processed_geometries', [])
+
+    for label, queue in g.classes2queues.items():
+        updated_queue = Queue(maxsize=int(1e6))
+        for item in queue.queue:
+            if item['slyId'] not in processed_geometries_ids:
+                updated_queue.put(item)
+
+        g.classes2queues[label] = updated_queue
+
+    select_class.update_classes_table()
+
+

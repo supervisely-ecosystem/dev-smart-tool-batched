@@ -25,6 +25,8 @@ class SmartTool:
         self.app = app
         self.identifier = self.get_widget_identifier(state, data)
 
+        self.sly_id = None
+
         self.image_url = None
         self.image_hash = None
         self.image_size = None
@@ -45,6 +47,8 @@ class SmartTool:
         self.update_remote_fields(state, data)
 
         self.needs_an_update = False
+
+
 
     @property
     def is_empty(self):
@@ -172,6 +176,7 @@ class SmartTool:
         self.scaled_bbox = new_widget_data.get('scaledBbox', [])
         self.mask = new_widget_data.get('mask', None)
         self.is_active = new_widget_data.get('isActive', True)
+        self.sly_id = new_widget_data.get('slyId', True)
 
     def get_data_to_send(self):
         return {
@@ -185,7 +190,8 @@ class SmartTool:
             'originalBbox': self.original_bbox,
             'scaledBbox': self.scaled_bbox,
             'mask': self.mask,
-            'isActive': self.is_active
+            'isActive': self.is_active,
+            'slyId': self.sly_id
         }
 
     def update_remote_fields(self, state, data):
