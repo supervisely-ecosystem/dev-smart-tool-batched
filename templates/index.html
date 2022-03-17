@@ -32,6 +32,24 @@
         .sly-smart-tool__point.negative:hover {
             stroke: red;
         }
+
+        *.el-button--success.is-plain {
+            border: 1px solid #94d1ff !important;
+        }
+
+        *.el-button--warning.is-plain {
+            border: 1px solid #94d1ff !important;
+        }
+
+        *.el-button--danger.is-plain {
+            border: 1px solid #94d1ff !important;
+        }
+
+        *.el-input__inner {
+            border: 1px solid #94d1ff !important;
+        }
+
+
     </style>
 </head>
 
@@ -74,13 +92,13 @@
 <div id="sly-app">
     <sly-app>
         <template v-slot="{ post, state, data }">
-<!--                        <json-viewer :value="{'state': state, 'data': data}"-->
-<!--                                     style="position: fixed; top: 0; right: 0; z-index: 9999"></json-viewer>-->
+            <!--                        <json-viewer :value="{'state': state, 'data': data}"-->
+            <!--                                     style="position: fixed; top: 0; right: 0; z-index: 9999"></json-viewer>-->
 
             {% include 'batched_smart_tool.html' %}
 
             {% include 'select_class.html' %}
-            {% include 'select_output_project.html' %}
+            {% include 'dialog_window.html' %}
         </template>
     </sly-app>
 </div>

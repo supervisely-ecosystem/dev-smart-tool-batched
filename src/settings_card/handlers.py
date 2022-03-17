@@ -17,13 +17,29 @@ import src.grid_controller.handlers as grid_controller_handlers
 
 import src.sly_functions as global_functions
 
+import src.dialog_window as dialog_window
+
 
 def connect_to_model(identifier: str,
                      request: Request,
                      state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    try:
+        response = g.api.task.send_request(int(state['processingServer']['sessionId']), "is_online",
+                                           data={},
+                                           context={}, timeout=1)
+        if response['is_online'] is not True:
+            raise ConnectionError
 
-    state['currentStep'] = 1
+        state['processingServer']['connected'] = True
+    except Exception as ex:
+        dialog_window.notification_box.title = 'Cannot connect to model.'
+        dialog_window.notification_box.description = 'Please choose another model.'
+        state['dialogWindow']['mode'] = 'modelConnection'
+        state['processingServer']['connected'] = False
+
+    state['processingServer']['loading'] = False
     async_to_sync(state.synchronize_changes)()
+    async_to_sync(DataJson().synchronize_changes)()
 
 
 def get_output_project_id():
@@ -47,8 +63,10 @@ def select_output_project(state: supervisely.app.StateJson = Depends(supervisely
     select_output_class(state=state)  # selecting first class from table
 
     state['outputProject']['loading'] = False
-    state['outputProject']['dialogVisible'] = False
+    state['dialogWindow']['mode'] = None
+
     async_to_sync(state.synchronize_changes)()
+    async_to_sync(DataJson().synchronize_changes)()
 
 
 def select_output_class(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):

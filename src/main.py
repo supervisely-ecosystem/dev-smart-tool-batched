@@ -16,6 +16,7 @@ import src.batched_smart_tool as batched_smart_tool
 import src.settings_card as settings_card
 import src.grid_controller as grid_controller
 import src.select_class as select_class
+import src.dialog_window as dialog_window
 
 from src.sly_globals import app
 
@@ -31,10 +32,10 @@ select_class.init_table_data()  # fill classes table
 
 output_project_id = settings_card.get_output_project_id()
 if output_project_id is not None:
-    StateJson()['outputProject']['dialogVisible'] = True
+    StateJson()['dialogWindow']['mode'] = 'outputProject'
     StateJson()['outputProject']['id'] = output_project_id
-    select_class.notification_box.description = select_class.notification_box.description.format(output_project_id,
-                                                                                                 f'{g.api.project.get_info_by_id(g.input_project_id).name}_BST')
+    dialog_window.notification_box.description = dialog_window.notification_box.description.format(output_project_id,
+                                                                                                   f'{g.api.project.get_info_by_id(g.input_project_id).name}_BST')
 else:
     settings_card.select_output_project(state=StateJson())
 
@@ -54,14 +55,15 @@ app.add_api_route('/assign-base-points/', batched_smart_tool.assign_base_points,
 app.add_api_route('/update-masks/', batched_smart_tool.update_masks, methods=["POST"])
 app.add_api_route('/next-batch/', batched_smart_tool.next_batch, methods=["POST"])
 
+app.add_api_route('/spawn-unsaved-mask-dialog/', dialog_window.spawn_unsaved_mask_dialog, methods=["POST"])
+
 app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', batched_smart_tool.points_updated,
                   methods=["POST"])
 app.add_api_route('/widgets/smarttool/positive-updated/{identifier}', batched_smart_tool.points_updated,
                   methods=["POST"])
 app.add_api_route('/widgets/smarttool/bbox-updated/{identifier}', batched_smart_tool.bbox_updated, methods=["POST"])
 
-# @TODO: load project after application started
-# @TODO: add connect to model verification
+
 # @TODO: dialog if masks not applied but next batch clicked
 
 uvicorn.run(app, host="127.0.0.1", port=8000)

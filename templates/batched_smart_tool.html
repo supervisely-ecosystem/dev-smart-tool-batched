@@ -1,78 +1,7 @@
-<sly-card title="Batched Smart Tool" subtitle="annotate batch of images">
-    <div slot="header" style="display: flex; padding-bottom: 10px; align-items: center; justify-content: center">
-        <el-popover
-                ref="popover2"
-                placement="bottom"
-                title="Title"
-                width="200"
-
-                trigger="manual"
-                content="this is content, this is content, this is content">
-        </el-popover>
-
-        <div style="padding: 0 10px; display: flex; justify-content: center; align-items: center;
-                        border-right: solid black 1px">
-            <sly-icon
-                    style="margin-top: 17px;"
-                    v-if="state.currentStep === 0"
-                    slot="icon" :options="{ color: '#ffffff', bgColor: '#fe5a1d', rounded: false }">
-                <i class="zmdi zmdi-memory"></i>
-            </sly-icon>
-            <sly-icon
-                    v-else
-                    style="margin-top: 17px;"
-                    slot="icon" :options="{ color: '#ffffff', bgColor: '#32a852', rounded: false }">
-                <i class="zmdi zmdi-memory"></i>
-            </sly-icon>
-            <div
-
-                    class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
-                <p style="font-size: 12px; color: #5a6772; margin: 2px 0">Connect to Model</p>
-                <sly-select-app-session
-
-                        style="width: 128px"
-                        slot="title"
-                        :group-id="data.teamId"
-                        :app-session-id="state.processingServerSessionId"
-                        :options="data.connectorOptions"
-                        @update:app-session-id="state.processingServerSessionId=$event; post('/connect-to-model/' + state.processingServerSessionId)"
-                >
-                </sly-select-app-session>
-            </div>
-        </div>
-
-        <div style="padding: 0 10px; display: flex; justify-content: center; align-items: center;">
-
-            <sly-icon
-                    style="margin-top: 17px; margin-left: 5px"
-                    slot="icon" :options="{ color: '#ffffff', bgColor: '#32a852', rounded: false }">
-                <i class="zmdi zmdi-flower-alt"></i>
-            </sly-icon>
-            <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
-                <p style="font-size: 12px; color: #5a6772; margin: 2px 0">Select Class</p>
-                <el-button
-                        v-popover:popover2
-                        :plain="true"
-                        style="width: 128px"
-                        type="success" class="regular" size="small"
-                        style="margin: 0 4px; padding: 10px 18px"
-                        @click="state.selectClassVisible=true"
-                >
-                    {{ state.outputClassName }}
-                </el-button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div v-if="!state.queueIsEmpty">
-
+<sly-card>
+    <div>
         <div style="display: flex; flex-direction: row;">
-
             <div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0 5px; padding-bottom: 15px; width: 100%">
-
                 <div style="display: flex">
                     <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
                         <p style="font-size: 12px; color: #5a6772; margin: 1px 0">Smart Tools <b
@@ -115,104 +44,198 @@
                 </div>
 
                 <div style="display: flex">
-                    <a :href="`https://supervisely-dev.deepsystems.io/projects/${state.outputProject.id}/datasets`"
-                       target="_blank">
-                        <el-button
-                                :plain="true"
-                                type="success" class="regular" size="small"
-                                style="margin: 0 0px; padding: 6px 10px">
-                            <i class="zmdi zmdi-arrow-right-top"></i>
-                        </el-button>
-                    </a>
+                    <div style="display: flex; padding-bottom: 10px; align-items: center; justify-content: center">
+                        <el-popover
+                                ref="popover2"
+                                placement="bottom"
+                                title="Title"
+                                width="200"
 
-                </div>
+                                trigger="manual"
+                                content="this is content, this is content, this is content">
+                        </el-popover>
 
+                        <div style="padding: 0 10px; display: flex; justify-content: center; align-items: center;
+                        border-right: solid black 1px">
+                            <sly-icon
+                                    style="margin-top: 17px;"
+                                    v-if="!state.processingServer.connected"
+                                    slot="icon" :options="{ color: '#ffffff', bgColor: '#fe5a1d', rounded: false }">
+                                <i class="zmdi zmdi-memory"></i>
+                            </sly-icon>
+                            <sly-icon
+                                    v-else
+                                    style="margin-top: 17px;"
+                                    slot="icon" :options="{ color: '#ffffff', bgColor: '#32a852', rounded: false }">
+                                <i class="zmdi zmdi-memory"></i>
+                            </sly-icon>
+                            <div
 
-            </div>
-        </div>
+                                    class="fflex"
+                                    style="justify-content: center; flex-direction: column; margin: 0 2px;">
+                                <p style="font-size: 12px; color: #5a6772; margin: 2px 0">Connect to Model</p>
+                                <sly-select-app-session
+                                        :loading="state.processingServer.loading"
+                                        style="width: 128px"
+                                        slot="title"
+                                        :group-id="data.teamId"
+                                        :app-session-id="state.processingServer.sessionId"
+                                        :options="data.connectorOptions"
+                                        @update:app-session-id="state.processingServer.sessionId=$event; state.processingServer.loading=true; post('/connect-to-model/' + state.processingServer.sessionId)"
+                                >
+                                </sly-select-app-session>
+                            </div>
+                        </div>
 
-        <div
-                style="display: flex; width:100%; flex-direction: row; flex-wrap: wrap; justify-content: center;">
+                        <div style="padding: 0 10px; display: flex; justify-content: center; align-items: center;
+                        border-right: solid black 1px">
 
-            <div v-for="widget in state.widgets.SmartTool" :style="{flex: `0 0 ${state.toolSize}%`}">
-                {{{smart_tool.to_undefined_html()}}}
-            </div>
-
-        </div>
-
-
-        <div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0 8px;"
-             v-if="state.windowsCount > 0">
-            <div style="display: flex; align-items: center; margin-top: 20px;">
-
-                <el-button :plain="true" type="success" class="regular" size="small" style="margin: 0 2px;"
-                           @click="post('/change-all-buttons/True')"><i class="zmdi zmdi-check-all mr5"></i> Select all
-                </el-button>
-
-
-                <el-button :plain="true" type="warning" class="regular" size="small" style="margin: 0 2px;"
-                           @click="post('/change-all-buttons/False')"><i class="zmdi zmdi-square-o mr5"></i> Deselect
-                    all
-                </el-button>
-            </div>
-            <div style="display: flex; align-items: center; margin-top: 15px;">
-                <el-button type="warning" :plain="true" class="regular" size="small" style="margin: 0 2px;"
-                           @click="post('/assign-base-points/')">ASSIGN BASE
-                </el-button>
-                <el-button type="danger" :plain="true" class="regular" size="small" style="margin: 0 2px;"
-                           @click="post('/clean-up/')">CLEAN UP
-                </el-button>
-            </div>
-
-            <div style="display: flex; align-items: flex-end; ">
-                <el-button type="primary" class="regular" size="small" style="margin: 5px 5px;"
-                           @click="state.updatingMasks=true; post('/update-masks/')">
-                    <i class="zmdi zmdi-refresh-alt mr5"></i>
-                    UPDATE MASKS
-                </el-button>
-
-                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 15px;">
-                    <div>
-                        <p style="font-size: 12px; color: #5a6772; margin: 2px 0">BBoxes left: <b
-                                style="color: #ff6600;">{{Object.keys(state.widgets.SmartTool).length +
-                            data.objectsLeftQueue}} </b>
-                        </p>
+                            <sly-icon
+                                    style="margin-top: 17px; margin-left: 5px"
+                                    slot="icon" :options="{ color: '#ffffff', bgColor: '#32a852', rounded: false }">
+                                <i class="zmdi zmdi-flower-alt"></i>
+                            </sly-icon>
+                            <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
+                                <p style="font-size: 12px; color: #5a6772; margin: 2px 0">Select Queue</p>
+                                <el-button
+                                        v-popover:popover2
+                                        :plain="true"
+                                        style="width: 128px"
+                                        type="success" class="regular" size="small"
+                                        style="margin: 0 4px; padding: 10px 18px"
+                                        @click="state.selectClassVisible=true"
+                                >
+                                    {{ state.outputClassName }}
+                                </el-button>
+                            </div>
+                        </div>
+                        <div style="padding: 0 10px;">
+                            <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
+                                <p style="font-size: 12px; color: #5a6772; margin: 2px 0">Output Project</p>
+                                <a :href="`https://supervisely-dev.deepsystems.io/projects/${state.outputProject.id}/datasets`"
+                                   target="_blank">
+                                    <el-button
+                                            :plain="true"
+                                            type="success" class="regular" size="small"
+                                            style="margin: 0 0px; padding: 6px 10px; width: 128px; height: 33px;">
+                                        <i class="zmdi zmdi-arrow-right-top"></i>
+                                    </el-button>
+                                </a>
+                            </div>
+                        </div>
 
                     </div>
-                    <el-button type="primary" class="regular" size="small" style="margin: 0 2px; margin-bottom: 5px"
-                               @click="state.batchInUpload=true; state.updatingMasks=true; post('/next-batch/')"
-                               :disabled="state.queueIsEmpty || state.batchInUpload">
-                        <i class="zmdi zmdi-skip-next mr5"></i>
-                        NEXT BATCH
-                    </el-button>
+
+
                 </div>
+
+
+            </div>
+        </div>
+
+        <div v-if="!state.queueIsEmpty && state.processingServer.connected">
+            <div
+                    style="display: flex; width:100%; flex-direction: row; flex-wrap: wrap; justify-content: center;">
+
+                <div v-for="widget in state.widgets.SmartTool" :style="{flex: `0 0 ${state.toolSize}%`}">
+                    {{{smart_tool.to_undefined_html()}}}
+                </div>
+
             </div>
 
 
-        </div>
+            <div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0 8px;"
+                 v-if="state.windowsCount > 0">
+                <div style="display: flex; align-items: center; margin-top: 20px;">
 
-    </div>
-    <div v-else style="display: flex; flex-direction: row; align-items: center; justify-content: space-between">
-        <sly-field
-                title="INFO: Queue is Empty"
-                description="there is no more items with to annotate"
-                style="margin-bottom: 0; margin-left: 5px">
-            <sly-icon slot="icon" :options="{ color: '#4c9ef8', bgColor: '#e3f0ff', rounded: false }">
-                <i class="zmdi zmdi-info"></I>
-            </sly-icon>
-        </sly-field>
-        <div style="display: flex">
-            <a :href="`https://supervisely-dev.deepsystems.io/projects/${state.outputProject.id}/datasets`"
-               target="_blank">
-                <el-button
-                        :plain="true"
-                        type="success" class="regular" size="small"
-                        style="margin: 0 0px; padding: 6px 10px">
-                    <i class="zmdi zmdi-arrow-right-top"></i>
-                </el-button>
-            </a>
+                    <el-button :plain="true" type="success" class="regular" size="small" style="margin: 0 2px;"
+                               @click="post('/change-all-buttons/True')"><i class="zmdi zmdi-check-all mr5"></i> Select
+                        all
+                    </el-button>
+
+
+                    <el-button :plain="true" type="warning" class="regular" size="small" style="margin: 0 2px;"
+                               @click="post('/change-all-buttons/False')"><i class="zmdi zmdi-square-o mr5"></i>
+                        Deselect
+                        all
+                    </el-button>
+                </div>
+                <div style="display: flex; align-items: center; margin-top: 15px;">
+                    <el-button type="warning" :plain="true" class="regular" size="small" style="margin: 0 2px;"
+                               @click="post('/assign-base-points/')">ASSIGN BASE
+                    </el-button>
+                    <el-button type="danger" :plain="true" class="regular" size="small" style="margin: 0 2px;"
+                               @click="post('/clean-up/')">CLEAN UP
+                    </el-button>
+                </div>
+
+                <div style="display: flex; align-items: flex-end; ">
+                    <el-button type="primary" class="regular" size="small" style="margin: 5px 5px;"
+                               :disabled="!data.newMasksAvailable"
+
+                               @click="state.updatingMasks=true; post('/update-masks/')">
+                        <i class="zmdi zmdi-refresh-alt mr5"></i>
+                        UPDATE MASKS
+                    </el-button>
+
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 15px;">
+                        <div>
+                            <p style="font-size: 12px; color: #5a6772; margin: 2px 0">BBoxes left: <b
+                                    style="color: #ff6600;">{{Object.keys(state.widgets.SmartTool).length +
+                                data.objectsLeftQueue}} </b>
+                            </p>
+
+                        </div>
+
+
+                        <el-button
+                                v-if="data.newMasksAvailable"
+                                type="primary" class="regular" size="small" style="margin: 0 2px; margin-bottom: 5px"
+                                @click="post('/spawn-unsaved-mask-dialog/')"
+                                :disabled="state.queueIsEmpty || state.batchInUpload">
+                            <i class="zmdi zmdi-skip-next mr5"></i>
+                            NEXT BATCH
+                        </el-button>
+                        <el-button
+                                v-else
+                                type="primary" class="regular" size="small" style="margin: 0 2px; margin-bottom: 5px"
+                                @click="state.batchInUpload=true; state.updatingMasks=true; post('/next-batch/')"
+                                :disabled="state.queueIsEmpty || state.batchInUpload">
+                            <i class="zmdi zmdi-skip-next mr5"></i>
+                            NEXT BATCH
+                        </el-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="state.queueIsEmpty" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;  margin: 5px 0">
+            <sly-field
+                    title="INFO: Queue is Empty"
+                    description="there is no more items with to annotate"
+                    style="margin-bottom: 0; margin-left: 5px">
+                <sly-icon slot="icon" :options="{ color: '#4c9ef8', bgColor: '#e3f0ff', rounded: false }">
+                    <i class="zmdi zmdi-info"></I>
+                </sly-icon>
+            </sly-field>
+            <div style="display: flex">
+
+            </div>
+        </div>
+        <div v-if="!state.processingServer.connected" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; margin: 5px 0">
+            <sly-field
+                    title="INFO: Model isn't connected"
+                    description="please connect to model first"
+                    style="margin-bottom: 0; margin-left: 5px">
+                <sly-icon slot="icon" :options="{ color: '#4c9ef8', bgColor: '#e3f0ff', rounded: false }">
+                    <i class="zmdi zmdi-info"></I>
+                </sly-icon>
+            </sly-field>
+            <div style="display: flex">
+
+            </div>
         </div>
     </div>
+
 </sly-card>
 <!--    <sly-select-project-->
 <!--            :workspace-id="418"-->

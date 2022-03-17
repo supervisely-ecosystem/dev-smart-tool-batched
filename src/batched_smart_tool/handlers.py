@@ -16,6 +16,8 @@ import src.select_class.functions as sc_functions
 import src.batched_smart_tool.functions as local_functions
 import src.sly_functions as global_functions
 
+import src.dialog_window as dialog_window
+
 
 from loguru import logger
 
@@ -24,6 +26,7 @@ def points_updated(identifier: str,
                    state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     widget: SmartTool = g.grid_controller.get_widget_by_id(widget_id=identifier)
     widget.needs_an_update = True
+    DataJson()['newMasksAvailable'] = True
 
     updated_points = {}
     removed_points = {}
@@ -53,6 +56,7 @@ def points_updated(identifier: str,
 
     # update all remote state by local objects
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
+    async_to_sync(DataJson().synchronize_changes)()
 
 
 def change_all_buttons(is_active: bool,
@@ -101,17 +105,27 @@ def assign_base_points(state: supervisely.app.StateJson = Depends(supervisely.ap
 
 
 def update_masks(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    state['dialogWindow']['mode'] = None
+
     data_to_process = local_functions.get_data_to_process()
     try:
-        response = g.api.task.send_request(int(state['processingServerSessionId']), "smart_segmentation_batched",
+        response = g.api.task.send_request(int(state['processingServer']['sessionId']), "smart_segmentation_batched",
                                            data={},
                                            context={'data_to_process': data_to_process}, timeout=60)
         local_functions.update_local_masks(response)
     except Exception as ex:
-        logger.error('Exception while updating masks:', ex, backtrace=True)
+        dialog_window.notification_box.title = 'The model is not responding to requests.'
+        dialog_window.notification_box.description = 'Please make sure the model is working and reconnect to it.'
+
+        state['processingServer']['connected'] = False
+        state['dialogWindow']['mode'] = 'modelConnection'
+        logger.error(f'Exception while updating masks: {ex}')
 
     state['updatingMasks'] = False
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
+
+    DataJson()['newMasksAvailable'] = False
+    async_to_sync(DataJson().synchronize_changes)()
 
 
 def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
@@ -160,6 +174,7 @@ def bboxes_padding_changed(request: Request,
 
 def bbox_updated(identifier: str,
                  state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    DataJson()['newMasksAvailable'] = True
 
     bboxes_padding = state['bboxesPadding'] / 100
     updated_widget: SmartTool = g.grid_controller.get_widget_by_id(widget_id=identifier)
@@ -177,3 +192,6 @@ def bbox_updated(identifier: str,
     updated_widget.original_bbox[1][1] = updated_widget.scaled_bbox[1][1] - div_height
 
     updated_widget.update_remote_fields(state=state, data=DataJson())
+    async_to_sync(DataJson().synchronize_changes)()
+
+

@@ -1,0 +1,59 @@
+<el-dialog title="Select Output Project" :visible.sync="state.dialogWindow.mode === 'outputProject'"
+           :show-close="false" :close-on-click-modal="false" :close-on-press-escape="false">
+
+    <!--    <h3 style="line-height: 26px;"></h3>-->
+
+    {{{ notification_box.to_html() }}}
+
+    <div style="width: 100%; display: flex; align-items: center; justify-content: flex-end">
+        <el-button
+                :plain="true"
+                :loading="state.outputProject.loading && state.outputProject.mode==='existing'"
+                :disabled="state.outputProject.loading"
+                type="primary" class="regular" size="small" style="margin: 0 2px; margin-top: 17px"
+                @click="state.outputProject.loading=true; state.outputProject.mode='existing'; post('/select-output-project/')">
+            use existing
+        </el-button>
+        <el-button
+                :loading="state.outputProject.loading && state.outputProject.mode==='new'"
+                :disabled="state.outputProject.loading"
+                type="primary" class="regular" size="small" style="margin: 0 2px; margin-top: 17px"
+                @click="state.outputProject.loading=true; state.outputProject.mode='new'; post('/select-output-project/')">
+            create new
+        </el-button>
+    </div>
+</el-dialog>
+
+<el-dialog title="Model Connection Problem" :visible.sync="state.dialogWindow.mode === 'modelConnection'"
+           :show-close="false" :close-on-click-modal="false" :close-on-press-escape="false">
+
+    {{{ notification_box.to_html() }}}
+
+    <div style="width: 100%; display: flex; align-items: center; justify-content: flex-end">
+        <el-button
+                type="primary" class="regular" size="small" style="margin: 0 2px; margin-top: 17px"
+                @click="state.dialogWindow.mode=null;">
+            ok
+        </el-button>
+    </div>
+</el-dialog>
+
+<el-dialog title="Masks Update Available" :visible.sync="state.dialogWindow.mode === 'unsavedMasks'"
+           :show-close="false" :close-on-click-modal="false" :close-on-press-escape="false">
+
+    {{{ notification_box.to_html() }}}
+
+    <div style="width: 100%; display: flex; align-items: center; justify-content: flex-end">
+        <el-button
+                :plain="true"
+                type="primary" class="regular" size="small" style="margin: 0 2px; margin-top: 17px"
+                @click="state.dialogWindow.mode=null; state.batchInUpload=true; state.updatingMasks=true; post('/next-batch/')">
+            next batch
+        </el-button>
+        <el-button
+                type="primary" class="regular" size="small" style="margin: 0 2px; margin-top: 17px"
+                @click="state.dialogWindow.mode=null; state.updatingMasks=true; post('/update-masks/')">
+            update masks
+        </el-button>
+    </div>
+</el-dialog>

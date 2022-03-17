@@ -3,7 +3,6 @@ from supervisely.app import StateJson, DataJson
 from .handlers import *
 from .functions import *
 
-StateJson()['currentStep'] = 0
 
 StateJson()['inputProject'] = {
     'id': None,
@@ -23,7 +22,11 @@ StateJson()['outputClass'] = {
     'name': None
 }
 
-StateJson()['processingServerSessionId'] = None
+StateJson()['processingServer'] = {
+    'sessionId': None,
+    'connected': None,
+    'loading': False
+}
 
 StateJson()['selectProjectLoading'] = None
 
