@@ -13,5 +13,5 @@ def spawn_unsaved_mask_dialog(state: supervisely.app.StateJson = Depends(supervi
     dialog_window.notification_box.description = 'You can upload masks in the current version or apply the changes first.'
     state['dialogWindow']['mode'] = 'unsavedMasks'
 
-    async_to_sync(DataJson().synchronize_changes)()
-    async_to_sync(state.synchronize_changes)()
+    DataJson().synchronize_changes()
+    state.synchronize_changes()

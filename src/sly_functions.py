@@ -7,7 +7,7 @@ from asgiref.sync import async_to_sync
 from starlette.templating import Jinja2Templates
 
 import supervisely
-from sly_tqdm import sly_tqdm
+
 import src.sly_globals as g
 
 import src.select_class as select_class

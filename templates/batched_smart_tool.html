@@ -93,10 +93,10 @@
                             <sly-icon
                                     style="margin-top: 17px; margin-left: 5px"
                                     slot="icon" :options="{ color: '#ffffff', bgColor: '#32a852', rounded: false }">
-                                <i class="zmdi zmdi-flower-alt"></i>
+                                <i class="zmdi zmdi-crop-din"></i>
                             </sly-icon>
                             <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
-                                <p style="font-size: 12px; color: #5a6772; margin: 2px 0">Select Queue</p>
+                                <p style="font-size: 12px; color: #5a6772; margin: 2px 0">Apply To</p>
                                 <el-button
                                         v-popover:popover2
                                         :plain="true"
@@ -208,20 +208,29 @@
                 </div>
             </div>
         </div>
-        <div v-if="state.queueIsEmpty" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;  margin: 5px 0">
+        <div v-if="state.queueIsEmpty"
+             style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;  margin: 5px 0">
             <sly-field
-                    title="INFO: Queue is Empty"
-                    description="there is no more items with to annotate"
+                    title=""
+
                     style="margin-bottom: 0; margin-left: 5px">
                 <sly-icon slot="icon" :options="{ color: '#4c9ef8', bgColor: '#e3f0ff', rounded: false }">
                     <i class="zmdi zmdi-info"></I>
                 </sly-icon>
+                <div slot="title">
+                    <b>INFO</b>
+                </div>
+                <div slot="description">
+                    There is no more BBoxes <b style="text-transform: uppercase;">{{
+                    state.outputClassName }}</b> to label
+                </div>
             </sly-field>
             <div style="display: flex">
 
             </div>
         </div>
-        <div v-if="!state.processingServer.connected" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; margin: 5px 0">
+        <div v-if="!state.processingServer.connected"
+             style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; margin: 5px 0">
             <sly-field
                     title="INFO: Model isn't connected"
                     description="please connect to model first"

@@ -38,8 +38,8 @@ def connect_to_model(identifier: str,
         state['processingServer']['connected'] = False
 
     state['processingServer']['loading'] = False
-    async_to_sync(state.synchronize_changes)()
-    async_to_sync(DataJson().synchronize_changes)()
+    state.synchronize_changes()
+    DataJson().synchronize_changes()
 
 
 def get_output_project_id():
@@ -65,8 +65,8 @@ def select_output_project(state: supervisely.app.StateJson = Depends(supervisely
     state['outputProject']['loading'] = False
     state['dialogWindow']['mode'] = None
 
-    async_to_sync(state.synchronize_changes)()
-    async_to_sync(DataJson().synchronize_changes)()
+    state.synchronize_changes()
+    DataJson().synchronize_changes()
 
 
 def select_output_class(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
@@ -79,4 +79,4 @@ def select_output_class(state: supervisely.app.StateJson = Depends(supervisely.a
     state['queueIsEmpty'] = g.selected_queue.empty()
 
     grid_controller_handlers.windows_count_changed(state=state)
-    async_to_sync(state.synchronize_changes)()
+    state.synchronize_changes()

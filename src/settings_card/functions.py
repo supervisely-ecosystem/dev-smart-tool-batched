@@ -2,7 +2,6 @@ import copy
 import functools
 from queue import Queue
 
-
 import numpy as np
 
 import supervisely
@@ -13,6 +12,7 @@ from supervisely.app import DataJson
 import src.select_class as select_class
 
 import src.sly_functions as global_functions
+import src.dialog_window as dialog_window
 
 
 def get_bboxes_from_annotation(image_annotations):
@@ -139,12 +139,13 @@ def refill_queues_by_input_project_data(project_id):
     project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=project_id))
     project_datasets = g.api.dataset.get_list(project_id=project_id)
 
-    for current_dataset in project_datasets:
+    for current_dataset in dialog_window.datasets_progress(project_datasets, message='downloading datasets'):
         images_in_dataset = g.api.image.get_list(dataset_id=current_dataset.id)
         annotations_in_dataset = get_annotations_for_dataset(dataset_id=current_dataset.id,
                                                              images=images_in_dataset)
 
-        for current_image, current_annotation in zip(images_in_dataset, annotations_in_dataset):
+        for current_image, current_annotation in dialog_window.images_progress(
+                zip(images_in_dataset, annotations_in_dataset), total=len(images_in_dataset), message='downloading images'):
             put_crops_to_queue(selected_image=current_image,
                                img_annotation_json=current_annotation,
                                current_dataset=current_dataset,
@@ -195,5 +196,3 @@ def remove_processed_geometries(state):
         g.classes2queues[label] = updated_queue
 
     select_class.update_classes_table()
-
-

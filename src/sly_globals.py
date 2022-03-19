@@ -1,3 +1,4 @@
+import asyncio
 import os
 import queue
 import sys
@@ -10,7 +11,7 @@ from starlette.responses import FileResponse
 from starlette.staticfiles import StaticFiles
 
 import supervisely
-from sly_tqdm import sly_tqdm
+
 from smart_tool import SmartTool
 from supervisely.app import DataJson, StateJson
 from supervisely.app.fastapi import create, Jinja2Templates
@@ -60,6 +61,9 @@ output_class_object = None
 
 input_project_id = os.getenv('modal.state.slyProjectId')
 output_project_id = None
+
+
+bg_loop = asyncio.new_event_loop()
 
 
 @app.get('/favicon.ico')

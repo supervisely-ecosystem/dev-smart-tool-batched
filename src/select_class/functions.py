@@ -7,7 +7,7 @@ import src.sly_globals as g
 def init_table_data():
     rows_to_init = []
     for label, queue in g.classes2queues.items():
-        rows_to_init.append([label, len(queue.queue), len(queue.queue)])
+        rows_to_init.append([label, len(queue.queue), len(queue.queue), 0])
 
     classes_table.rows = rows_to_init
 

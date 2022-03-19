@@ -6,7 +6,7 @@ from .functions import *
 
 StateJson()['inputProject'] = {
     'id': None,
-    'loading': False
+    'loading': True
 }
 
 StateJson()['outputProject'] = {

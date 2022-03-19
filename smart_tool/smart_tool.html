@@ -1,7 +1,9 @@
 {% if identifier %}
 
-<div id="batched-smart-tool-widget-container-{{{identifier}}}"
-     style="width: 250px; height:250px; border: #77b4ff solid 1px;
+<div
+        v-loading="state.updatingMasks"
+        id="batched-smart-tool-widget-container-{{{identifier}}}"
+        style="width: 250px; height:250px; border: #77b4ff solid 1px;
                         display: flex;
                         flex-direction: column;
                         align-items: center;

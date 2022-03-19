@@ -10,3 +10,6 @@ notification_box = widgets.NotificationBox(
         Do you want to use existing project or create a new?
     '''
 )
+
+datasets_progress = widgets.SlyTqdm()
+images_progress = widgets.SlyTqdm()

@@ -56,7 +56,7 @@ def points_updated(identifier: str,
 
     # update all remote state by local objects
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
-    async_to_sync(DataJson().synchronize_changes)()
+    DataJson().synchronize_changes()
 
 
 def change_all_buttons(is_active: bool,
@@ -125,7 +125,7 @@ def update_masks(state: supervisely.app.StateJson = Depends(supervisely.app.Stat
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
     DataJson()['newMasksAvailable'] = False
-    async_to_sync(DataJson().synchronize_changes)()
+    DataJson().synchronize_changes()
 
 
 def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
@@ -161,8 +161,8 @@ def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJ
     sc_functions.update_classes_table()
     global_functions.update_queues_stats(state)
 
-    async_to_sync(state.synchronize_changes)()
-    async_to_sync(DataJson().synchronize_changes)()
+    state.synchronize_changes()
+    DataJson().synchronize_changes()
 
 
 def bboxes_padding_changed(request: Request,
@@ -192,6 +192,6 @@ def bbox_updated(identifier: str,
     updated_widget.original_bbox[1][1] = updated_widget.scaled_bbox[1][1] - div_height
 
     updated_widget.update_remote_fields(state=state, data=DataJson())
-    async_to_sync(DataJson().synchronize_changes)()
+    DataJson().synchronize_changes()
 
 
