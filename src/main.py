@@ -8,7 +8,7 @@ from fastapi import Request, Depends
 import supervisely
 from smart_tool import SmartTool  # 🤖 widgets
 
-import initialize_app
+import src.initialize_app as initialize_app
 import src.sly_globals as g
 from supervisely.app import StateJson, DataJson
 

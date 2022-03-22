@@ -1,6 +1,6 @@
 
 supervisely[apps] == 6.8.4
-
+git+https://github.com/supervisely/supervisely@widget-intermediate-updates
 
 #uvicorn==0.17.0
 #fastapi==0.71.0
