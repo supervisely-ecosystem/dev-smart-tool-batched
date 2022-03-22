@@ -24,11 +24,11 @@ def startup_event():
     initialize_app.init_routes()
     initialize_app.init_project()
 
-    # StateJson().synchronize_changes()
-    # DataJson().synchronize_changes()
+    StateJson().synchronize_changes()
+    DataJson().synchronize_changes()
 
     # await task
     print("startup_event --- init something before server starts")
 
 
-# uvicorn.run(g.app, host="127.0.0.1", port=8000)
+uvicorn.run(g.app, host="127.0.0.1", port=8000)

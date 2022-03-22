@@ -111,8 +111,11 @@ function getBBoxSize(bbox) {
 
 Vue.component('smarttool-editor', {
   template: `
-    <div v-loading="loading">
-      <svg  ref="container" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%"></svg>
+    <div>
+      <svg ref="container" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%"></svg>
+
+<!--      <input type="range" min="0" max="1" step="0.1" :value="maskOpacity" @input="maskOpacityChanged" />-->
+
     </div>
   `,
   props: {
@@ -141,7 +144,6 @@ Vue.component('smarttool-editor', {
       pt: null,
       container: null,
       maskOpacity: 0.5,
-      loading: true,
     };
   },
   watch: {
@@ -332,13 +334,6 @@ Vue.component('smarttool-editor', {
     initPoints() {
       this.pointsChanged(this.positivePoints, true);
       this.pointsChanged(this.negativePoints, false);
-
-      this.bboxEl.node.nextElementSibling.childNodes.forEach((n) => {
-        if (!n.r) return;
-        n.setAttribute('r', this.pointSize);
-      });
-
-      this.loading = false;
     },
 
     init() {

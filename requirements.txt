@@ -1,4 +1,4 @@
-requests
+
 
 supervisely[apps] == 6.8.4
 git+https://github.com/supervisely/supervisely@widget-intermediate-updates

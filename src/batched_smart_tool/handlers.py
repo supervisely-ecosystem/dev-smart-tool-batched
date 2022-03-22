@@ -144,7 +144,9 @@ def assign_base_points(state: supervisely.app.StateJson = Depends(supervisely.ap
             # widget.positive_points.pop()
 
             # points_updated(identifier=widget.identifier, state=state)  # update main card
+            DataJson()['newMasksAvailable'] = new_masks_available_flag()
 
+    DataJson().synchronize_changes()
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
 

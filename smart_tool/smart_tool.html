@@ -1,7 +1,7 @@
 {% if identifier %}
 
 <div
-        v-loading="state.updatingMasks"
+        v-loading="state.updatingMasks && (state.widgets['{{{identifier}}}'].needsAnUpdate || state.widgets['{{{identifier}}}'].isActive)"
         id="batched-smart-tool-widget-container-{{{identifier}}}"
         style="width: 250px; height:250px;
                         display: flex;
@@ -36,7 +36,7 @@
 
 {% else %}
 
-<div v-loading="state.updatingMasks"
+<div v-loading="state.updatingMasks && (widget.needsAnUpdate || widget.isActive)"
      style="width: 100%; height:100%;
                         display: flex;
                         flex-direction: column;
