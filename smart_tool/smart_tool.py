@@ -25,6 +25,8 @@ class SmartTool:
         self.app = app
         self.identifier = self.get_widget_identifier(state, data)
 
+        self.sly_id = None
+
         self.image_url = None
         self.image_hash = None
         self.image_size = None
@@ -39,20 +41,18 @@ class SmartTool:
 
         self.mask = None
         self.is_active = True
+        self.needs_an_update = False
 
         self._connected_points = list()  # [{1, 2, 3), {4, 5, 6}] — connected points
 
         self.update_remote_fields(state, data)
 
-        self.needs_an_update = False
 
     @property
     def is_empty(self):
         if len(self.original_bbox) > 0:
             return False
         return True
-
-
 
     def get_updated_points(self, state, data, points_type='positive'):
         new_widget_data = self.get_widget_data_from_remote(state=state, data=data)
@@ -96,8 +96,8 @@ class SmartTool:
 
         self.scaled_bbox[0][0] = self.original_bbox[0][0] - additional_w if self.original_bbox[0][0] - additional_w > 0 else 0
         self.scaled_bbox[0][1] = self.original_bbox[0][1] - additional_h if self.original_bbox[0][1] - additional_h > 0 else 0
-        self.scaled_bbox[1][0] = self.original_bbox[1][0] + additional_w if self.original_bbox[1][0] + additional_w < self.image_size[0] else self.image_size[0]
-        self.scaled_bbox[1][1] = self.original_bbox[1][1] + additional_h if self.original_bbox[1][1] + additional_h < self.image_size[1] else self.image_size[1]
+        self.scaled_bbox[1][0] = self.original_bbox[1][0] + additional_w if self.original_bbox[1][0] + additional_w < self.image_size[0] else self.image_size[0] - 1
+        self.scaled_bbox[1][1] = self.original_bbox[1][1] + additional_h if self.original_bbox[1][1] + additional_h < self.image_size[1] else self.image_size[1] - 1
 
     def get_relative_coordinates(self, abs_coordinates):
         box_width, box_height = self.get_bbox_size(current_bbox=self.scaled_bbox)
@@ -174,6 +174,8 @@ class SmartTool:
         self.scaled_bbox = new_widget_data.get('scaledBbox', [])
         self.mask = new_widget_data.get('mask', None)
         self.is_active = new_widget_data.get('isActive', True)
+        self.sly_id = new_widget_data.get('slyId', True)
+        self.needs_an_update = new_widget_data.get('needsAnUpdate', False)
 
     def get_data_to_send(self):
         return {
@@ -187,18 +189,25 @@ class SmartTool:
             'originalBbox': self.original_bbox,
             'scaledBbox': self.scaled_bbox,
             'mask': self.mask,
-            'isActive': self.is_active
+            'isActive': self.is_active,
+            'slyId': self.sly_id,
+            'needsAnUpdate': self.needs_an_update
         }
 
     def update_remote_fields(self, state, data):
         state['widgets'].setdefault(f'{self.__class__.__name__}', {})[f'{self.identifier}'] = self.get_data_to_send()
-        async_to_sync(state.synchronize_changes)()
+        state.synchronize_changes()
+        # try:
+        #     async_to_sync(state.synchronize_changes)()
+        # except RuntimeError:
+        #     loop = asyncio.get_running_loop()
+        #     asyncio.ensure_future(state.synchronize_changes(), loop=loop)
 
     def remove_remote_fields(self, state, data):
         existing_objects = state['widgets'].get(f'{self.__class__.__name__}', {})
         if existing_objects.get(self.identifier, None) is not None:
             existing_objects.pop(self.identifier)
-            async_to_sync(state.synchronize_changes)()
+            state.synchronize_changes()
 
     def get_widget_identifier(self, state, data):
         existing_widgets_count = len(state["widgets"].get(f'{self.__class__.__name__}', []))

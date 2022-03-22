@@ -1,4 +1,6 @@
+import asyncio
 import os
+import queue
 import sys
 from loguru import logger
 from pathlib import Path
@@ -8,10 +10,8 @@ from fastapi import FastAPI
 from starlette.responses import FileResponse
 from starlette.staticfiles import StaticFiles
 
-from queue import Queue
-
 import supervisely
-from sly_tqdm import sly_tqdm
+
 from smart_tool import SmartTool
 from supervisely.app import DataJson, StateJson
 from supervisely.app.fastapi import create, Jinja2Templates
@@ -39,26 +39,31 @@ api = supervisely.Api.from_env()
 StateJson()['widgets'] = {}
 
 
-DataJson(
-    {
-        'teamId': os.environ['context.teamId'],
-        'workspaceId': os.environ['context.workspaceId'],
-
-        'widgets': {},
-    }
-)
+DataJson()['teamId'] = os.environ['context.teamId']
+DataJson()['workspaceId'] = os.environ['context.workspaceId']
+DataJson()['widgets'] = {}
 
 templates_env = Jinja2Templates(directory=os.path.join(app_root_directory, 'templates'))
 
 
-bboxes_to_process = Queue(maxsize=int(1e6))
-processing_queue_backup = None
+# selected_queue = Queue(maxsize=int(1e6))
+selected_queue = None
+classes2queues = {}
+images_queue = queue.Queue(maxsize=int(1e6))
 
 grid_controller = GridController(SmartTool)
 
 imagehash2imageinfo_by_datasets = {}
+processed_geometries = []
 
+output_class_name = None
 output_class_object = None
+
+input_project_id = os.getenv('modal.state.slyProjectId')
+output_project_id = None
+
+
+bg_loop = asyncio.new_event_loop()
 
 
 @app.get('/favicon.ico')

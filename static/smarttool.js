@@ -1,4 +1,4 @@
-const POINT_SIZE = 8;
+const POINT_SIZE = 6;
 const VIEW_BOX_OFFSET = 60;
 const VIEW_BOX_OFFSET_HALF = VIEW_BOX_OFFSET / 2;
 
@@ -149,7 +149,12 @@ Vue.component('smarttool-editor', {
   watch: {
     mask: {
       async handler () {
-        if (!this.mask) return;
+        if (!this.mask) {
+          if (this.maskEl) {
+            this.maskEl.load('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
+          }
+          return;
+        };
         const buf = await base64BitmapToRaw(this.mask.data);
         const annImageUrl = URL.createObjectURL(new Blob([buf]));
         let image = await loadImage(annImageUrl);
@@ -195,16 +200,18 @@ Vue.component('smarttool-editor', {
         pointsSet.add(point.id);
 
         const pt = this.pointsMap.get(point.id);
+        // const position = [Math.floor(point.position[0][0] - (this.pointSize / 2)), Math.floor(point.position[0][1]  - (this.pointSize / 2))]
+        const position = [Math.floor(point.position[0][0] - (this.pointSize)), Math.floor(point.position[0][1] - (this.pointSize))]
 
         if (pt) {
-          pt.point.move(point.position[0][0], point.position[0][1])
+          pt.point.move(position[0], position[1])
           return;
         }
 
         this.addPoint({
           id: point.id,
-          x: point.position[0][0],
-          y: point.position[0][1],
+          x: position[0],
+          y: position[1],
           isPositive,
         });
       });
@@ -260,7 +267,7 @@ Vue.component('smarttool-editor', {
       const typeKey = isPositive ? 'positive' : 'negative';
 
       const point = this.sceneEl
-        .circle(POINT_SIZE * 2.5)
+        .circle(this.pointSize * 2)
         .move(x, y)
         .draggable()
         .on('contextmenu', this.removePointHandler)
@@ -271,8 +278,8 @@ Vue.component('smarttool-editor', {
 
           if (!curPoint) return;
 
-          curPoint.position[0][0] = Math.floor(point.x());
-          curPoint.position[0][1] = Math.floor(point.y());
+          curPoint.position[0][0] = Math.floor(point.x() + this.pointSize);
+          curPoint.position[0][1] = Math.floor(point.y() + this.pointSize);
           this.$emit(`update:${typeKey}-points`, [...pointsArr]);
         });
 
@@ -295,10 +302,10 @@ Vue.component('smarttool-editor', {
       this.pt.x = evt.x;
       this.pt.y = evt.y;
 
-      const transformed =   this.pt.matrixTransform(this.container.getScreenCTM().inverse());
+      const transformed = this.pt.matrixTransform(this.container.getScreenCTM().inverse());
 
       const pointData = {
-        position: [[Math.floor(transformed.x - (POINT_SIZE / 2)), Math.floor(transformed.y - (POINT_SIZE / 2))]],
+        position: [[Math.floor(transformed.x), Math.floor(transformed.y)]],
         id: uuidv4(),
       };
 
@@ -324,8 +331,12 @@ Vue.component('smarttool-editor', {
       this.$emit(eventName, [...curPoints, pointData])
     },
 
+    initPoints() {
+      this.pointsChanged(this.positivePoints, true);
+      this.pointsChanged(this.negativePoints, false);
+    },
+
     init() {
-      console.log('initialized')
       this.container.addEventListener('contextmenu', (e) => {
         e.preventDefault();
       });
@@ -338,13 +349,14 @@ Vue.component('smarttool-editor', {
         });
 
       this.group = this.sceneEl.group();
-      this.backgroundEl = this.sceneEl.image(this.imageUrl);
+      
+      const bboxSize = getBBoxSize(this.bbox);
+
       this.maskEl = this.sceneEl.image();
       this.maskEl.addClass('sly-smart-tool__annotation');
 
-      const bboxSize = getBBoxSize(this.bbox);
-
-      this.bboxEl = this.sceneEl.rect(bboxSize.width, bboxSize.height)
+      this.bboxEl = this.sceneEl
+        .rect(bboxSize.width, bboxSize.height)
         .move(this.bbox[0][0], this.bbox[0][1])
         .selectize()
         .resize()
@@ -359,16 +371,18 @@ Vue.component('smarttool-editor', {
           this.$emit('update:bbox', [[x, y], [x + w, y + h]]);
         });
 
-      this.sceneEl.viewbox(getViewBox(this.bboxEl.bbox()))
+      const viewBox = getViewBox(this.bboxEl.bbox());
+      this.sceneEl.viewbox(viewBox)
 
+      this.backgroundEl = this.sceneEl.image(this.imageUrl).loaded(() => {
+        this.pointSize = POINT_SIZE * (viewBox.w / this.container.width.baseVal.value);
+        this.initPoints();
+      });
       this.group.add(this.backgroundEl, this.maskEl, this.bboxEl);
 
       this.pt = this.container.createSVGPoint();
 
       this.bboxEl.click(this.pointHandler);
-
-      this.pointsChanged(this.positivePoints, true);
-      this.pointsChanged(this.negativePoints, false);
     },
   },
 

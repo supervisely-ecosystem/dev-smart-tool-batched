@@ -12,5 +12,8 @@
     "task_location": "application_sessions",
     "icon_background": "#FFFFFF",
     "icon_cover": false,
-    "icon": "https://imgur.com/LHD0OCt.png"
-  }
+    "icon": "https://imgur.com/LHD0OCt.png",
+    "context_menu": {
+        "target": ["images_project"]
+    }
+}

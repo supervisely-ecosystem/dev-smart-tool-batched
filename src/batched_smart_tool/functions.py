@@ -2,15 +2,19 @@
 import src.sly_globals as g
 
 
+def set_widget_mask_by_data(widget, data):
+    widget.mask = {
+        'data': data.get('bitmap'),
+        'origin': [data['origin']['x'], data['origin']['y']],
+        'color': '#77e377'
+    }
+
+
 def update_local_masks(response):
     for index, widget in enumerate(g.grid_controller.widgets.values()):
         data = response.get(f'{index}')
         if data is not None:
-            widget.mask = {
-                'data': data.get('bitmap'),
-                'origin': [data['origin']['x'], data['origin']['y']],
-                'color': '#77e377'
-            }
+            set_widget_mask_by_data(widget, data)
 
 
 def add_point_to_active_cards(origin_identifier, updated_point, points_type):
@@ -36,38 +40,39 @@ def remove_point_from_connected_cards(origin_identifier, point_to_remove, points
             widget.remove_connected_point(point_to_remove, points_type)
 
 
+def get_data_from_widget_to_compute_masks(widget):
+    widget_data = widget.get_data_to_send()
+    return {
+            "crop": [
+                {
+                    "x": widget_data['scaledBbox'][0][0],
+                    "y": widget_data['scaledBbox'][0][1]
+                },
+                {
+                    "x": widget_data['scaledBbox'][1][0],
+                    "y": widget_data['scaledBbox'][1][1]
+                }
+            ],
+            "positive": [
+                {
+                    "x": positive_point['position'][0][0],
+                    "y": positive_point['position'][0][1]
+                } for positive_point in widget_data['positivePoints']
+            ],
+            "negative": [
+                {
+                    "x": negative_points['position'][0][0],
+                    "y": negative_points['position'][0][1]
+                } for negative_points in widget_data['negativePoints']
+            ],
+            "image_hash": f"{widget_data['imageHash']}"
+        }
+
+
 def get_data_to_process():
     data_to_send = {}
     for index, widget in enumerate(g.grid_controller.widgets.values()):
         if widget.needs_an_update:
             widget.needs_an_update = False
-
-            widget_data = widget.get_data_to_send()
-            data_to_send[index] = \
-                {
-                    "crop": [
-                        {
-                            "x": widget_data['scaledBbox'][0][0],
-                            "y": widget_data['scaledBbox'][0][1]
-                        },
-                        {
-                            "x": widget_data['scaledBbox'][1][0],
-                            "y": widget_data['scaledBbox'][1][1]
-                        }
-                    ],
-                    "positive": [
-                        {
-                            "x": positive_point['position'][0][0],
-                            "y": positive_point['position'][0][1]
-                        } for positive_point in widget_data['positivePoints']
-                    ],
-                    "negative": [
-                        {
-                            "x": negative_points['position'][0][0],
-                            "y": negative_points['position'][0][1]
-                        } for negative_points in widget_data['negativePoints']
-                    ],
-                    "image_hash": f"{widget_data['imageHash']}"
-                }
-
+            data_to_send[index] = get_data_from_widget_to_compute_masks(widget)
     return data_to_send
