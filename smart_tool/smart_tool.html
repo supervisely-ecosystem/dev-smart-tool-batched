@@ -3,11 +3,16 @@
 <div
         v-loading="state.updatingMasks"
         id="batched-smart-tool-widget-container-{{{identifier}}}"
-        style="width: 250px; height:250px; border: #77b4ff solid 1px;
+        style="width: 250px; height:250px;
                         display: flex;
                         flex-direction: column;
                         align-items: center;
-                        position: relative">
+                        position: relative"
+
+        :style="[state.widgets['{{{identifier}}}'].needsAnUpdate ? {'border': '#ff6600 solid 2px'} : {'border': '#77b4ff solid 2px'}]"
+
+
+>
     <div style="display: flex; align-items: center; justify-content: space-between; position: absolute; width: 100%">
         <el-checkbox v-model="state.widgets['{{{identifier}}}'].isActive"
                      style="padding: 5px"
@@ -32,12 +37,16 @@
 {% else %}
 
 <div v-loading="state.updatingMasks"
-     style="width: 100%; height:100%; border: #77b4ff solid 1px;
+     style="width: 100%; height:100%;
                         display: flex;
                         flex-direction: column;
                         align-items: center;
                         position: relative;
-                        box-sizing: border-box">
+                        box-sizing: border-box"
+
+     :style="[widget.needsAnUpdate ? {'border': '#ff6600 solid 2px'} : {'border': '#77b4ff solid 2px'}]"
+
+>
     <div style="display: flex; align-items: center; justify-content: space-between; position: absolute; width: 100%">
 
         <el-checkbox v-model="widget.isActive"

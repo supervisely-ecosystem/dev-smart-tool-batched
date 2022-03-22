@@ -30,14 +30,15 @@ def get_bboxes_from_annotation(image_annotations):
 
 
 def get_data_to_render(image_info, bboxes, current_dataset):
-    data_to_render = {}
+    data_to_render = []
 
     for bbox_item in bboxes:
         label = bbox_item['label']
         sly_id = bbox_item.get('sly_id')
         bbox = bbox_item['bbox']
 
-        data_to_render.setdefault(label, []).append({
+        data_to_render.append({
+            'label': label,
             'imageUrl': f'{image_info.full_storage_url}',
             'imageHash': f'{image_info.hash}',
             'imageSize': [image_info.width, image_info.height],
@@ -48,16 +49,20 @@ def get_data_to_render(image_info, bboxes, current_dataset):
             'negativePoints': [],
             'mask': None,
             'isActive': True,
-            'slyId': sly_id
+            'slyId': sly_id,
+
+            'boxArea': (bbox.right - bbox.left) * (bbox.bottom - bbox.top)
         })
 
     return data_to_render
 
 
-def put_data_to_queue(data_to_render):
-    for label, items in data_to_render.items():
-        for item in items:
-            g.classes2queues.setdefault(label, Queue(maxsize=int(1e6))).put(item)
+def put_data_to_queues(data_to_render):
+    for item in data_to_render:
+        if item['label'] != 'image':
+            g.classes2queues.setdefault(item['label'], Queue(maxsize=int(1e6))).put(item)
+        else:
+            g.images_queue.put(item)
 
 
 def get_annotations_for_dataset(dataset_id, images):
@@ -65,12 +70,12 @@ def get_annotations_for_dataset(dataset_id, images):
     return g.api.annotation.download_batch(dataset_id=dataset_id, image_ids=images_ids)
 
 
-def put_crops_to_queue(selected_image, img_annotation_json, current_dataset, project_meta):
+def get_crops_for_queue(selected_image, img_annotation_json, current_dataset, project_meta):
     image_annotation = supervisely.Annotation.from_json(img_annotation_json.annotation, project_meta)
 
     bboxes = get_bboxes_from_annotation(image_annotation)
     data_to_render = get_data_to_render(selected_image, bboxes, current_dataset)
-    put_data_to_queue(data_to_render)
+    return data_to_render
 
 
 def create_new_project_by_name(state):
@@ -121,7 +126,7 @@ def cache_existing_images(state):
     return state
 
 
-def put_image_to_queue(selected_image, current_dataset):
+def get_images_for_queue(selected_image, current_dataset):
     bbox = {
         'bbox': supervisely.Rectangle(top=0, left=0, bottom=selected_image.height - 1, right=selected_image.width - 1),
         'label': 'image'
@@ -129,15 +134,16 @@ def put_image_to_queue(selected_image, current_dataset):
 
     data_to_render = get_data_to_render(image_info=selected_image,
                                         bboxes=[bbox],
-                                        current_dataset=current_dataset)['image']
+                                        current_dataset=current_dataset)
 
-    for item in data_to_render:
-        g.images_queue.put(item)
+    return data_to_render
 
 
 def refill_queues_by_input_project_data(project_id):
     project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=project_id))
     project_datasets = g.api.dataset.get_list(project_id=project_id)
+
+    crops_data = []
 
     for current_dataset in dialog_window.datasets_progress(project_datasets, message='downloading datasets'):
         images_in_dataset = g.api.image.get_list(dataset_id=current_dataset.id)
@@ -145,14 +151,18 @@ def refill_queues_by_input_project_data(project_id):
                                                              images=images_in_dataset)
 
         for current_image, current_annotation in dialog_window.images_progress(
-                zip(images_in_dataset, annotations_in_dataset), total=len(images_in_dataset), message='downloading images'):
-            put_crops_to_queue(selected_image=current_image,
-                               img_annotation_json=current_annotation,
-                               current_dataset=current_dataset,
-                               project_meta=project_meta)
+                zip(images_in_dataset, annotations_in_dataset), total=len(images_in_dataset),
+                message='downloading images'):
+            crops_data.extend(get_crops_for_queue(selected_image=current_image,
+                                                  img_annotation_json=current_annotation,
+                                                  current_dataset=current_dataset,
+                                                  project_meta=project_meta))
 
-            put_image_to_queue(selected_image=current_image,
-                               current_dataset=current_dataset)
+            crops_data.extend(get_images_for_queue(selected_image=current_image,
+                                                   current_dataset=current_dataset))
+
+    crops_data = sorted(crops_data, key=lambda d: d['boxArea'], reverse=True)
+    put_data_to_queues(data_to_render=crops_data)
 
 
 def select_input_project(identifier: str, state):

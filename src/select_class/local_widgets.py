@@ -2,9 +2,7 @@ import supervisely.app.widgets as widgets
 
 
 def progress_bar_formatter(value):
-    return f'''
-    <el-progress :percentage="{value}"></el-progress>
-    '''
+    return f'''<el-progress :percentage="{value}" style="width: 220px"></el-progress>'''
 
 
 classes_table = widgets.RadioTable(

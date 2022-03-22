@@ -10,7 +10,7 @@ from smart_tool import SmartTool  # 🤖 widgets
 
 import initialize_app
 import src.sly_globals as g
-from supervisely.app import StateJson
+from supervisely.app import StateJson, DataJson
 
 
 @g.app.get("/")
@@ -23,6 +23,9 @@ def read_index(request: Request):
 def startup_event():
     initialize_app.init_routes()
     initialize_app.init_project()
+
+    # StateJson().synchronize_changes()
+    # DataJson().synchronize_changes()
 
     # await task
     print("startup_event --- init something before server starts")

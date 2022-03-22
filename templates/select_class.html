@@ -1,8 +1,7 @@
-<el-dialog title="Select Class" :visible.sync="state.selectClassVisible">
+<el-dialog title="Apply Model To" :visible.sync="state.selectClassVisible">
 
     <el-radio-group v-model="state.queueMode" size="small" style="margin-bottom: 14px">
-        <el-radio-button label="objects"
-                         :disabled="data.objectsLeftTotal === 0"></el-radio-button>
+        <el-radio-button label="objects"></el-radio-button>
         <el-radio-button label="images"></el-radio-button>
     </el-radio-group>
 

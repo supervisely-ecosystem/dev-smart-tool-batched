@@ -41,13 +41,11 @@ class SmartTool:
 
         self.mask = None
         self.is_active = True
+        self.needs_an_update = False
 
         self._connected_points = list()  # [{1, 2, 3), {4, 5, 6}] — connected points
 
         self.update_remote_fields(state, data)
-
-        self.needs_an_update = False
-
 
 
     @property
@@ -177,6 +175,7 @@ class SmartTool:
         self.mask = new_widget_data.get('mask', None)
         self.is_active = new_widget_data.get('isActive', True)
         self.sly_id = new_widget_data.get('slyId', True)
+        self.needs_an_update = new_widget_data.get('needsAnUpdate', False)
 
     def get_data_to_send(self):
         return {
@@ -191,7 +190,8 @@ class SmartTool:
             'scaledBbox': self.scaled_bbox,
             'mask': self.mask,
             'isActive': self.is_active,
-            'slyId': self.sly_id
+            'slyId': self.sly_id,
+            'needsAnUpdate': self.needs_an_update
         }
 
     def update_remote_fields(self, state, data):

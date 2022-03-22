@@ -11,5 +11,5 @@ notification_box = widgets.NotificationBox(
     '''
 )
 
-datasets_progress = widgets.SlyTqdm()
-images_progress = widgets.SlyTqdm()
+datasets_progress = widgets.SlyTqdm(message='starting download datasets...')
+images_progress = widgets.SlyTqdm(message='starting download images...')

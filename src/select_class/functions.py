@@ -21,6 +21,7 @@ def update_classes_table():
     for row in actual_rows:
         label = row[0]
         row[1] = len(queues[labels.index(label)].queue)
+        row[3] = int((row[2] - row[1]) / int(row[2])) * 100
 
     classes_table.rows = actual_rows
 
