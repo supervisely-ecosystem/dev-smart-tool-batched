@@ -91,10 +91,18 @@
                         border-right: solid black 1px">
 
                             <sly-icon
+                                    v-if="state.queueIsEmpty"
+                                    style="margin-top: 17px; margin-left: 5px"
+                                    slot="icon" :options="{ color: '#ffffff', bgColor: '#fe5a1d', rounded: false }">
+                                <i class="zmdi zmdi-crop-din"></i>
+                            </sly-icon>
+                            <sly-icon
+                                    v-else
                                     style="margin-top: 17px; margin-left: 5px"
                                     slot="icon" :options="{ color: '#ffffff', bgColor: '#32a852', rounded: false }">
                                 <i class="zmdi zmdi-crop-din"></i>
                             </sly-icon>
+
                             <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
                                 <p style="font-size: 12px; color: #5a6772; margin: 2px 0">Apply To</p>
                                 <el-button
@@ -221,8 +229,8 @@
                     <b>INFO</b>
                 </div>
                 <div slot="description">
-                    There is no more BBoxes <b style="text-transform: uppercase;">{{
-                    state.outputClassName }}</b> to label
+                    There is no more BBoxes with label <b style="text-transform: uppercase;">{{
+                    state.outputClassName }}</b> to annotate
                 </div>
             </sly-field>
             <div style="display: flex">

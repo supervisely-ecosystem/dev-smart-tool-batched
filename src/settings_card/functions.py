@@ -206,3 +206,4 @@ def remove_processed_geometries(state):
         g.classes2queues[label] = updated_queue
 
     select_class.update_classes_table()
+    DataJson().synchronize_changes()

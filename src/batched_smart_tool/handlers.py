@@ -78,11 +78,12 @@ def points_updated(identifier: str,
                 local_functions.add_point_to_active_cards(origin_identifier=identifier, updated_point=updated_point,
                                                           points_type=points_type)
 
-    update_single_widget_realtime(widget_id=identifier, state=state)
-    DataJson()['newMasksAvailable'] = new_masks_available_flag()
-
     # update all remote state by local objects
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
+    DataJson().synchronize_changes()
+
+    update_single_widget_realtime(widget_id=identifier, state=state)
+    DataJson()['newMasksAvailable'] = new_masks_available_flag()
     DataJson().synchronize_changes()
 
 

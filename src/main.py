@@ -31,4 +31,4 @@ def startup_event():
     print("startup_event --- init something before server starts")
 
 
-# uvicorn.run(g.app, host="127.0.0.1", port=8000)
+uvicorn.run(g.app, host="127.0.0.1", port=8000)

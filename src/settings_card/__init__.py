@@ -4,6 +4,8 @@ from .handlers import *
 from .functions import *
 
 
+StateJson()['showViewer'] = True
+
 StateJson()['inputProject'] = {
     'id': None,
     'loading': True
