@@ -22,6 +22,7 @@
     </div>
     <smarttool-editor
             style="width: 100%; height: 100%;"
+            :mask-opacity="state.masksOpacity / 100"
             :mask="state.widgets['{{{identifier}}}'].mask"
             :image-url="state.widgets['{{{identifier}}}'].imageUrl"
             :bbox.sync="state.widgets['{{{identifier}}}'].scaledBbox"
@@ -58,6 +59,7 @@
     <smarttool-editor
             v-if="widget.imageUrl"
             style="width: 100%; height: 100%;"
+            :mask-opacity="state.masksOpacity / 100"
             :mask="widget.mask"
             :image-url="widget.imageUrl"
             :bbox.sync="widget.scaledBbox"

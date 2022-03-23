@@ -40,6 +40,7 @@ class SmartTool:
         self.scaled_bbox = []
 
         self.mask = None
+        self.maskOpacity = 50
         self.is_active = True
         self.needs_an_update = False
 
@@ -98,6 +99,10 @@ class SmartTool:
         self.scaled_bbox[0][1] = self.original_bbox[0][1] - additional_h if self.original_bbox[0][1] - additional_h > 0 else 0
         self.scaled_bbox[1][0] = self.original_bbox[1][0] + additional_w if self.original_bbox[1][0] + additional_w < self.image_size[0] else self.image_size[0] - 1
         self.scaled_bbox[1][1] = self.original_bbox[1][1] + additional_h if self.original_bbox[1][1] + additional_h < self.image_size[1] else self.image_size[1] - 1
+
+    def change_mask_opacity(self, opacity_coefficient):
+        # if self.mask is not None:
+        self.maskOpacity = opacity_coefficient
 
     def get_relative_coordinates(self, abs_coordinates):
         box_width, box_height = self.get_bbox_size(current_bbox=self.scaled_bbox)

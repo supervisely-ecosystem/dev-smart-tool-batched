@@ -241,3 +241,11 @@ def bbox_updated(identifier: str,
 
     updated_widget.update_remote_fields(state=state, data=DataJson())
     DataJson().synchronize_changes()
+
+
+def bboxes_masks_opacity_changed(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    g.grid_controller.update_local_fields(state=state, data=DataJson())
+    for widget in g.grid_controller.widgets.values():
+        if not widget.is_empty:
+            widget.change_mask_opacity(opacity_coefficient=state['masksOpacity'])
+    g.grid_controller.update_remote_fields(state=state, data=DataJson())

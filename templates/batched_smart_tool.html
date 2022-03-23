@@ -30,10 +30,23 @@
                     </div>
                     <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
                         <p style="font-size: 12px; color: #5a6772; margin: 1px 0">BBoxes <b
-                                style="color: #ff6600;">additional padding (%)</b>
+                                style="color: #ff6600;">padding (%)</b>
                         </p>
                         <el-input-number size="small" :value="state.bboxesPadding"
                                          @change="state.bboxesPadding=$event; post('/bboxes-padding-changed/');"
+                                         :min="0" :max="100" :step="1"
+                                         style="width: 140px; margin: 2px 3px"
+
+                        >
+
+                        </el-input-number>
+                    </div>
+                    <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
+                        <p style="font-size: 12px; color: #5a6772; margin: 1px 0">Masks <b
+                                style="color: #ff6600;">opacity (%)</b>
+                        </p>
+                        <el-input-number size="small" :value="state.masksOpacity"
+                                         @change="state.masksOpacity=$event; post('/bboxes-masks-opacity-changed/');"
                                          :min="0" :max="100" :step="1"
                                          style="width: 140px; margin: 2px 3px"
 

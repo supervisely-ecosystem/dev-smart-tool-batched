@@ -111,11 +111,12 @@ function getBBoxSize(bbox) {
 
 Vue.component('smarttool-editor', {
   template: `
-    <div v-loading="loading">
-      <svg  ref="container" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%"></svg>
+    <div>
+      <svg v-loading="loading" ref="container" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%"></svg>
     </div>
   `,
   props: {
+    maskOpacity: 0.5,
     bbox: {
       type: Array,
       required: true,
@@ -140,7 +141,6 @@ Vue.component('smarttool-editor', {
     return {
       pt: null,
       container: null,
-      maskOpacity: 0.5,
       loading: true,
     };
   },
@@ -190,6 +190,14 @@ Vue.component('smarttool-editor', {
       },
       deep: true,
     },
+
+    maskOpacity: {
+      handler() {
+        if (!this.maskEl) return;
+        this.maskEl.node.style.opacity = this.maskOpacity;
+      },
+      immediate: true,
+    },
   },
   methods: {
     pointsChanged(points, isPositive) {
@@ -198,7 +206,6 @@ Vue.component('smarttool-editor', {
         pointsSet.add(point.id);
 
         const pt = this.pointsMap.get(point.id);
-        // const position = [Math.floor(point.position[0][0] - (this.pointSize / 2)), Math.floor(point.position[0][1]  - (this.pointSize / 2))]
         const position = [Math.floor(point.position[0][0] - (this.pointSize)), Math.floor(point.position[0][1] - (this.pointSize))]
 
         if (pt) {
@@ -223,11 +230,6 @@ Vue.component('smarttool-editor', {
           this.pointsMap.delete(p.point.slyData.id);
         }
       });
-    },
-
-    maskOpacityChanged(evt) {
-      this.maskOpacity = Number(evt.target.value);
-      this.maskEl.node.style.opacity = this.maskOpacity;
     },
 
     removePointHandler(pEvt) {
@@ -307,7 +309,7 @@ Vue.component('smarttool-editor', {
         id: uuidv4(),
       };
 
-      const isPositive = !evt.shiftKey;
+      const isPositive = !(evt.shiftKey || evt.type === 'contextmenu');
 
       this.addPoint({
         id: pointData.id,
@@ -359,6 +361,7 @@ Vue.component('smarttool-editor', {
 
       this.maskEl = this.sceneEl.image();
       this.maskEl.addClass('sly-smart-tool__annotation');
+      this.maskEl.node.style.opacity = this.maskOpacity;
 
       this.bboxEl = this.sceneEl
         .rect(bboxSize.width, bboxSize.height)
@@ -388,6 +391,7 @@ Vue.component('smarttool-editor', {
       this.pt = this.container.createSVGPoint();
 
       this.bboxEl.click(this.pointHandler);
+      this.bboxEl.on('contextmenu', this.pointHandler);
     },
   },
 

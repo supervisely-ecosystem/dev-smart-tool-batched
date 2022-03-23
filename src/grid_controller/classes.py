@@ -59,6 +59,7 @@ class GridController:
             widget.update_fields_by_data(new_data)
             if not widget.is_empty:
                 widget.add_bbox_padding(padding_coefficient=state['bboxesPadding'])
+                widget.change_mask_opacity(opacity_coefficient=state['masksOpacity'])
 
         self.widgets[widget.identifier] = widget
 
