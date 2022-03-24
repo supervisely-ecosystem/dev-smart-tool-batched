@@ -1,7 +1,4 @@
-
-
-
-git+https://github.com/supervisely/supervisely@widget-intermediate-updates
+supervisely==6.9.1
 
 #uvicorn==0.17.0
 #fastapi==0.71.0
