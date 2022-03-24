@@ -176,13 +176,13 @@ def select_input_project(identifier: str, state):
 
 
 def update_output_class(state):
-    selected_row = select_class.classes_table.get_selected_row(state)
+    try:
+        selected_row = select_class.classes_table.get_selected_row(state)
+    except IndexError:
+        selected_row = None
 
-    if state['queueMode'] == 'objects':
-        if selected_row is not None:
-            g.output_class_name = selected_row[0]
-        else:
-            g.output_class_name = list(g.classes2queues.keys())[0]
+    if state['queueMode'] == 'objects' and selected_row is not None:
+        g.output_class_name = selected_row[0]
     else:
         g.output_class_name = 'image'
 
