@@ -1,20 +1,56 @@
+import copy
+import json
 
+import imutils as imutils
+import numpy as np
+
+import smart_tool
 import src.sly_globals as g
+import supervisely
+
+import cv2
+
+from supervisely.app import DataJson
 
 
-def set_widget_mask_by_data(widget, data):
+def get_contours(base64mask, origin_shift):
+    test_mask = np.asarray(supervisely.Bitmap.base64_2_data(base64mask)).astype(np.uint8) * 255
+    thresholded_mask = cv2.threshold(test_mask, 100, 255, cv2.THRESH_BINARY)[1]
+
+    contours = cv2.findContours(thresholded_mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours = imutils.grab_contours(contours)
+
+    reshaped_contours = []
+    for contour in contours:
+        reshaped_contour = contour.reshape(contour.shape[0], 2)
+
+        reshaped_contour[:, 0] += origin_shift['x']
+        reshaped_contour[:, 1] += origin_shift['y']
+
+        reshaped_contours.append(reshaped_contour.tolist())
+
+    return reshaped_contours
+
+
+def set_widget_mask_by_data(widget: smart_tool.SmartTool, data, state):
+    contours = copy.deepcopy(get_contours(data['bitmap'], data['origin']))
+
+    widget.remove_contour()
+    widget.update_remote_fields(state=state, data=DataJson())
+
     widget.mask = {
         'data': data.get('bitmap'),
         'origin': [data['origin']['x'], data['origin']['y']],
-        'color': '#77e377'
+        'color': '#77e377',
+        'contour': contours
     }
 
 
-def update_local_masks(response):
+def update_local_masks(response, state):
     for index, widget in enumerate(g.grid_controller.widgets.values()):
         data = response.get(f'{index}')
         if data is not None:
-            set_widget_mask_by_data(widget, data)
+            set_widget_mask_by_data(widget, data, state)
 
 
 def add_point_to_active_cards(origin_identifier, updated_point, points_type):

@@ -7,3 +7,5 @@ StateJson()['dialogWindow'] = {
     'mode': 'inputProject',  # can be 'inputProject', 'outputProject', 'modelConnection', 'unsavedMasks'
 }
 
+
+StateJson()['dialogWindowUnsavedMasks'] = False

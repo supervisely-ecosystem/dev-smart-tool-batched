@@ -3,6 +3,7 @@ import functools
 from queue import Queue
 
 import numpy as np
+from asgiref.sync import async_to_sync
 
 import supervisely
 
@@ -194,7 +195,7 @@ def update_selected_queue(state):
 
 
 def remove_processed_geometries(state):
-    custom_data = global_functions.get_project_custom_data(state['outputProject']['id'])
+    custom_data = global_functions.get_project_custom_data(state['outputProject']['id']).get('_batched_smart_tool', {})
     processed_geometries_ids = custom_data.get('processed_geometries', [])
 
     for label, queue in g.classes2queues.items():
@@ -206,4 +207,4 @@ def remove_processed_geometries(state):
         g.classes2queues[label] = updated_queue
 
     select_class.update_classes_table()
-    DataJson().synchronize_changes()
+    async_to_sync(DataJson().synchronize_changes)()

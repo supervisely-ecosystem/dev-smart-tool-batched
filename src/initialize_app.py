@@ -57,10 +57,9 @@ def _init_project(state):
     grid_controller.handlers.windows_count_changed(state=state)
 
     state['inputProject']['loading'] = False
-    print('done')
 
-    state.synchronize_changes()
-    DataJson().synchronize_changes()
+    async_to_sync(state.synchronize_changes)()
+    async_to_sync(DataJson().synchronize_changes)()
 
 
 def init_project():

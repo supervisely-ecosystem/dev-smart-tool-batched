@@ -55,8 +55,8 @@
     </div>
 </el-dialog>
 
-<el-dialog title="Masks Update Available" :visible.sync="state.dialogWindow.mode === 'unsavedMasks'"
-           :show-close="false" :close-on-click-modal="false" :close-on-press-escape="false">
+<el-dialog title="Masks Update Available" :visible.sync="state.dialogWindowUnsavedMasks"
+           :show-close="true" :close-on-click-modal="false" :close-on-press-escape="false">
 
     {{{ notification_box.to_html() }}}
 
@@ -64,12 +64,12 @@
         <el-button
                 :plain="true"
                 type="primary" class="regular" size="small" style="margin: 0 2px; margin-top: 17px"
-                @click="state.dialogWindow.mode=null; state.batchInUpload=true; state.updatingMasks=true; post('/next-batch/')">
+                @click="state.dialogWindowUnsavedMasks=false; state.batchInUpload=true; state.updatingMasks=true; post('/next-batch/')">
             next batch
         </el-button>
         <el-button
                 type="primary" class="regular" size="small" style="margin: 0 2px; margin-top: 17px"
-                @click="state.dialogWindow.mode=null; state.updatingMasks=true; post('/update-masks/')">
+                @click="state.dialogWindowUnsavedMasks=false; state.updatingMasks=true; post('/update-masks/')">
             update masks
         </el-button>
     </div>

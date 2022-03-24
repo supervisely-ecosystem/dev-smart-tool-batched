@@ -38,11 +38,11 @@ def get_project_custom_data(project_id):
 
 
 def append_processed_geometries(geometries_ids, project_id):
+    project_custom_data = get_project_custom_data(project_id).get('_batched_smart_tool', {})
 
-    project_custom_data = get_project_custom_data(project_id)
     project_custom_data.setdefault('processed_geometries', []).extend(geometries_ids)
 
-    g.api.project.update_custom_data(project_id, project_custom_data)
+    g.api.project.update_custom_data(project_id, {'_batched_smart_tool': project_custom_data})
 
 
 def upload_images_to_dataset(dataset_id, data_to_upload):

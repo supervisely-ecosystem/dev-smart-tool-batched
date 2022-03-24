@@ -1,0 +1,52 @@
+.el-dialog__wrapper {
+    z-index: 10001 !important;
+}
+
+
+.svg_select_boundingRect {
+    visibility: visible !important;
+    opacity: 1 !important;
+    stroke-width: 2 !important;
+}
+
+.svg_select_points_rot {
+    display: none;
+}
+
+.sly-smart-tool__annotation {
+    opacity: 0.5;
+}
+
+.sly-smart-tool__point {
+    stroke: white;
+    stroke-width: 1px;
+    /* fill: none; */
+}
+
+.sly-smart-tool__point:hover {
+    cursor: pointer;
+}
+
+.sly-smart-tool__point.positive:hover {
+    stroke: green;
+}
+
+.sly-smart-tool__point.negative:hover {
+    stroke: red;
+}
+
+*.el-button--success.is-plain {
+    border: 1px solid #94d1ff !important;
+}
+
+*.el-button--warning.is-plain {
+    border: 1px solid #94d1ff !important;
+}
+
+*.el-button--danger.is-plain {
+    border: 1px solid #94d1ff !important;
+}
+
+*.el-input__inner {
+    border: 1px solid #94d1ff !important;
+}

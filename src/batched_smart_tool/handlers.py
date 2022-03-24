@@ -1,7 +1,10 @@
+import asyncio
 import copy
 import uuid
 
+import numpy as np
 from asgiref.sync import async_to_sync
+from cv2 import cv2
 from fastapi import Request, Depends
 
 import supervisely
@@ -23,17 +26,21 @@ from loguru import logger
 
 def update_single_widget_realtime(widget_id, state):
     widget: SmartTool = g.grid_controller.get_widget_by_id(widget_id=widget_id)
-    data_to_process = local_functions.get_data_from_widget_to_compute_masks(widget)
 
-    response_data = g.api.task.send_request(int(state['processingServer']['sessionId']), "smart_segmentation",
-                                            data={},
-                                            context=data_to_process, timeout=60)
+    try:
+        data_to_process = local_functions.get_data_from_widget_to_compute_masks(widget)
 
-    if response_data.get('origin') is not None:
-        local_functions.set_widget_mask_by_data(widget, response_data)
-        widget.needs_an_update = False
-    else:
-        widget.mask = None
+        response_data = g.api.task.send_request(int(state['processingServer']['sessionId']), "smart_segmentation",
+                                                data={},
+                                                context=data_to_process, timeout=60)
+
+        if response_data.get('origin') is not None:
+            local_functions.set_widget_mask_by_data(widget, response_data, state=state)
+            widget.needs_an_update = False
+        else:
+            widget.mask = None
+    except Exception as ex:
+        logger.warning(f'{ex}')
 
     widget.update_remote_fields(state=state, data=DataJson())
 
@@ -80,11 +87,11 @@ def points_updated(identifier: str,
 
     # update all remote state by local objects
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
-    DataJson().synchronize_changes()
+    async_to_sync(DataJson().synchronize_changes)()
 
     update_single_widget_realtime(widget_id=identifier, state=state)
     DataJson()['newMasksAvailable'] = new_masks_available_flag()
-    DataJson().synchronize_changes()
+    async_to_sync(DataJson().synchronize_changes)()
 
 
 def change_all_buttons(is_active: bool,
@@ -147,7 +154,7 @@ def assign_base_points(state: supervisely.app.StateJson = Depends(supervisely.ap
             # points_updated(identifier=widget.identifier, state=state)  # update main card
             DataJson()['newMasksAvailable'] = new_masks_available_flag()
 
-    DataJson().synchronize_changes()
+    async_to_sync(DataJson().synchronize_changes)()
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
 
@@ -159,7 +166,7 @@ def update_masks(state: supervisely.app.StateJson = Depends(supervisely.app.Stat
         response = g.api.task.send_request(int(state['processingServer']['sessionId']), "smart_segmentation_batched",
                                            data={},
                                            context={'data_to_process': data_to_process}, timeout=60)
-        local_functions.update_local_masks(response)
+        local_functions.update_local_masks(response, state)
     except Exception as ex:
         dialog_window.notification_box.title = 'The model is not responding to requests.'
         dialog_window.notification_box.description = 'Please make sure the model is working and reconnect to it.'
@@ -172,7 +179,7 @@ def update_masks(state: supervisely.app.StateJson = Depends(supervisely.app.Stat
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
     DataJson()['newMasksAvailable'] = False
-    DataJson().synchronize_changes()
+    async_to_sync(DataJson().synchronize_changes)()
 
 
 def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
@@ -208,8 +215,8 @@ def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJ
     sc_functions.update_classes_table()
     global_functions.update_queues_stats(state)
 
-    state.synchronize_changes()
-    DataJson().synchronize_changes()
+    async_to_sync(state.synchronize_changes)()
+    async_to_sync(DataJson().synchronize_changes)()
 
 
 def bboxes_padding_changed(request: Request,
@@ -240,7 +247,7 @@ def bbox_updated(identifier: str,
     updated_widget.original_bbox[1][1] = updated_widget.scaled_bbox[1][1] - div_height
 
     updated_widget.update_remote_fields(state=state, data=DataJson())
-    DataJson().synchronize_changes()
+    async_to_sync(DataJson().synchronize_changes)()
 
 
 def bboxes_masks_opacity_changed(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):

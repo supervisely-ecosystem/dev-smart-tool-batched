@@ -111,8 +111,8 @@ function getBBoxSize(bbox) {
 
 Vue.component('smarttool-editor', {
   template: `
-    <div>
-      <svg v-loading="loading" ref="container" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%"></svg>
+    <div v-loading="loading">
+      <svg ref="container" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%"></svg>
     </div>
   `,
   props: {
@@ -135,16 +135,47 @@ Vue.component('smarttool-editor', {
     negativePoints: {
       type: Array,
       default: [],
-    }
+    },
   },
   data() {
     return {
       pt: null,
       container: null,
       loading: true,
+      contours: [],
     };
   },
   watch: {
+    'mask.contour': {
+      handler() {
+        this.contours.forEach((c) => {
+          c.remove();
+        });
+
+        if (this.mask?.contour) {
+          this.mask?.contour.forEach((c) => {
+            const contourEl1 = this.sceneEl.polygon()
+              .plot(c || [])
+              .fill('none')
+              .stroke({
+                color: 'white',
+                width: 3,
+              });
+            const contourEl2 = this.sceneEl.polygon()
+              .plot(c || [])
+              .fill('none')
+              .stroke({
+                color: '#ff6600',
+                width: 3,
+                dasharray: '10 10',
+              });
+
+            this.contours.push(contourEl1, contourEl2);
+          });
+        }
+      },
+      deep: true,
+    },
     mask: {
       async handler () {
         if (!this.mask) {
@@ -363,6 +394,28 @@ Vue.component('smarttool-editor', {
       this.maskEl.addClass('sly-smart-tool__annotation');
       this.maskEl.node.style.opacity = this.maskOpacity;
 
+      if (this.mask?.contour) {
+        this.mask?.contour.forEach((c) => {
+          const contourEl1 = this.sceneEl.polygon()
+            .plot(c || [])
+            .fill('none')
+            .stroke({
+              width: 3,
+              // dasharray: '10 10',
+            });
+          const contourEl2 = this.sceneEl.polygon()
+            .plot(c || [])
+            .fill('none')
+            .stroke({
+              color: 'white',
+              width: 3,
+              dasharray: '10 10',
+            });
+
+          this.contours.push(contourEl1, contourEl2);
+        });
+      }
+
       this.bboxEl = this.sceneEl
         .rect(bboxSize.width, bboxSize.height)
         .move(this.bbox[0][0], this.bbox[0][1])
@@ -391,7 +444,7 @@ Vue.component('smarttool-editor', {
       this.pt = this.container.createSVGPoint();
 
       this.bboxEl.click(this.pointHandler);
-      this.bboxEl.on('contextmenu', this.pointHandler);
+      // this.bboxEl.on('contextmenu', this.pointHandler);
     },
   },
 

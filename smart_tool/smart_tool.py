@@ -151,6 +151,10 @@ class SmartTool:
 
                 break
 
+    def remove_contour(self):
+        if self.mask is not None:
+            self.mask['contour'] = None
+
     def clean_up(self):
         self.positive_points = []
         self.negative_points = []
@@ -201,18 +205,18 @@ class SmartTool:
 
     def update_remote_fields(self, state, data):
         state['widgets'].setdefault(f'{self.__class__.__name__}', {})[f'{self.identifier}'] = self.get_data_to_send()
-        state.synchronize_changes()
+        async_to_sync(state.synchronize_changes)()
         # try:
         #     async_to_sync(state.synchronize_changes)()
         # except RuntimeError:
         #     loop = asyncio.get_running_loop()
-        #     asyncio.ensure_future(state.synchronize_changes(), loop=loop)
+        #     asyncio.ensure_future(async_to_sync(state.synchronize_changes)(), loop=loop)
 
     def remove_remote_fields(self, state, data):
         existing_objects = state['widgets'].get(f'{self.__class__.__name__}', {})
         if existing_objects.get(self.identifier, None) is not None:
             existing_objects.pop(self.identifier)
-            state.synchronize_changes()
+            async_to_sync(state.synchronize_changes)()
 
     def get_widget_identifier(self, state, data):
         existing_widgets_count = len(state["widgets"].get(f'{self.__class__.__name__}', []))

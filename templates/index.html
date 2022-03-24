@@ -4,53 +4,7 @@
     <title>Supervisely Applications: Batched Smart Tool</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/svg.select.js@3.0.1/dist/svg.select.min.css"/>
     <!--    <link rel="stylesheet" href="https://supervise.ly/apps-designer.bundle.css"/>-->
-
-
-    <style>
-        .svg_select_points_rot {
-            display: none;
-        }
-
-        .sly-smart-tool__annotation {
-            opacity: 0.5;
-        }
-
-        .sly-smart-tool__point {
-            stroke: white;
-            stroke-width: 1px;
-            /* fill: none; */
-        }
-
-        .sly-smart-tool__point:hover {
-            cursor: pointer;
-        }
-
-        .sly-smart-tool__point.positive:hover {
-            stroke: green;
-        }
-
-        .sly-smart-tool__point.negative:hover {
-            stroke: red;
-        }
-
-        *.el-button--success.is-plain {
-            border: 1px solid #94d1ff !important;
-        }
-
-        *.el-button--warning.is-plain {
-            border: 1px solid #94d1ff !important;
-        }
-
-        *.el-button--danger.is-plain {
-            border: 1px solid #94d1ff !important;
-        }
-
-        *.el-input__inner {
-            border: 1px solid #94d1ff !important;
-        }
-
-
-    </style>
+    <link rel="stylesheet" href="./static/styles.css"/>
 </head>
 
 <body style="overflow-y: auto;">
@@ -93,16 +47,16 @@
     <sly-app>
         <template v-slot="{ post, state, data }">
 
-            <div style="position: fixed; top: 0; right: 0; z-index: 9999">
-                <el-button
-                        style="position: absolute; right:0;  z-index: 99999"
-                        @click="state.showViewer = !state.showViewer" size="small">
-                    toggle
-                </el-button>
+<!--            <div style="position: fixed; top: 0; right: 0; z-index: 999999">-->
+<!--                <el-button-->
+<!--                        style="position: absolute; right:0;  z-index: 99999"-->
+<!--                        @click="state.showViewer = !state.showViewer" size="small">-->
+<!--                    toggle-->
+<!--                </el-button>-->
 
-                <json-viewer v-if='state.showViewer' :value="{'state': state, 'data': data}"
-                ></json-viewer>
-            </div>
+<!--                <json-viewer v-if='state.showViewer' :value="{'state': state, 'data': data}"-->
+<!--                ></json-viewer>-->
+<!--            </div>-->
             {% include 'batched_smart_tool.html' %}
 
             {% include 'select_class.html' %}

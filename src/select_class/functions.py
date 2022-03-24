@@ -41,7 +41,6 @@ def update_classes_table():
         else:
             row[1] = len(g.images_queue.queue)
 
-        row[1] = len(g.images_queue.queue)
         row[3] = int(((row[2] - row[1]) / row[2]) * 100)
 
 
