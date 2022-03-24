@@ -21,12 +21,11 @@ def read_index(request: Request):
 
 @g.app.on_event("startup")
 async def startup_event():
-    initialize_app.init_routes()
-    initialize_app.init_project()
-
     await StateJson().synchronize_changes()
     await DataJson().synchronize_changes()
 
+    initialize_app.init_routes()
+    initialize_app.init_project()
 
 
 # uvicorn.run(g.app, host="127.0.0.1", port=8000)
