@@ -3,7 +3,7 @@
         <div style="display: flex; flex-direction: row;">
             <div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0 5px; padding-bottom: 15px; width: 100%">
                 <div style="display: flex">
-                    <el-tooltip placement="bottom" effect="light">
+                    <el-tooltip placement="bottom" effect="light" :open-delay="900">
                         <div style="text-align: center" slot="content">adjust number of cells in <br/>the labeling grid
                         </div>
                         <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
@@ -20,7 +20,7 @@
 
                         </div>
                     </el-tooltip>
-                    <el-tooltip placement="bottom" effect="light">
+                    <el-tooltip placement="bottom" effect="light" :open-delay="900">
                         <div style="text-align: center" slot="content">adjust size of cells in <br/>the labeling grid
                         </div>
                         <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
@@ -36,7 +36,7 @@
 
                         </div>
                     </el-tooltip>
-                    <el-tooltip placement="bottom" effect="light">
+                    <el-tooltip placement="bottom" effect="light" :open-delay="900">
                         <div style="text-align: center" slot="content">adjust additional padding<br/>for each BBox
                         </div>
                         <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
@@ -53,7 +53,7 @@
                             </el-input-number>
                         </div>
                     </el-tooltip>
-                    <el-tooltip placement="bottom" effect="light">
+                    <el-tooltip placement="bottom" effect="light" :open-delay="900">
                         <div style="text-align: center" slot="content">adjust labeled objects <br/>masks opacity</div>
                         <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
                             <p style="font-size: 12px; color: #5a6772; margin: 1px 0">Masks <b
@@ -73,7 +73,7 @@
 
                 <div style="display: flex">
                     <div style="display: flex; padding-bottom: 10px; align-items: center; justify-content: center">
-                        <el-tooltip placement="bottom" effect="light">
+                        <el-tooltip placement="bottom" effect="light" :open-delay="900">
                             <div style="text-align: center" slot="content">
                                 <b>select
                                     <a :href="`https://ecosystem.supervise.ly/apps/supervisely-ecosystem%252Fritm-interactive-segmentation%252Fsupervisely`"
@@ -114,7 +114,7 @@
                             </div>
                         </el-tooltip>
 
-                        <el-tooltip placement="bottom" effect="light">
+                        <el-tooltip placement="bottom" effect="light" :open-delay="900">
                             <div style="text-align: center" slot="content">
                                 you can label <b>objects</b> and <b>entire images</b>
                             </div>
@@ -187,7 +187,7 @@
 
             <div style="display: flex; flex-direction: row; justify-content: space-between; padding: 0 8px;"
                  v-if="state.windowsCount > 0">
-                <el-tooltip placement="top" effect="light">
+                <el-tooltip placement="top" effect="light" :open-delay="900">
                     <div style="text-align: center" slot="content">
                         you can <b>link / unlink</b> all cells in the labeling grid
                     </div>
@@ -204,7 +204,7 @@
                     </div>
                 </el-tooltip>
                 <div style="display: flex; align-items: center; margin-top: 15px;">
-                    <el-tooltip placement="top" effect="light">
+                    <el-tooltip placement="top" effect="light" :open-delay="900">
                         <div style="text-align: center" slot="content">
                             put <b>base points</b> to <b>linked</b> cells automatically
                         </div>
@@ -212,7 +212,7 @@
                                    @click="post('/assign-base-points/')">ASSIGN BASE
                         </el-button>
                     </el-tooltip>
-                    <el-tooltip placement="top" effect="light">
+                    <el-tooltip placement="top" effect="light" :open-delay="900">
                         <div style="text-align: center" slot="content">
                             <b>clean up</b> all data from <b>linked</b> cells
                         </div>

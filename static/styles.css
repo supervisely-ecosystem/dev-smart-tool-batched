@@ -1,4 +1,8 @@
 .el-dialog__wrapper {
+    z-index: 15001 !important;
+}
+
+.el-tooltip__popper {
     z-index: 10001 !important;
 }
 
