@@ -30,29 +30,46 @@ Application key points:
 
 # Usage
 
-1. Prepare **Images Project** with roughly assigned **Rectangles**
+Easily place green points to label-interested area and red points to label-not-interested area.
 
-<img src="https://github.com/supervisely-ecosystem/dev-smart-tool-batched/releases/download/v0.0.1/prepare-project.gif?raw=true" style="width: 100%;"/>
-
-2. Launch [RITM interactive segmentation smart tool](https://ecosystem.supervise.ly/apps/supervisely-ecosystem%252Fritm-interactive-segmentation%252Fsupervisely)
-
-<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/ritm-interactive-segmentation/supervisely" src="https://i.imgur.com/eWmFwQ9.png" width="600px" style='padding-bottom: 0'/>  
+<img src="https://imgur.com/N6SbpAU.png" style="width: 100%;"/>
 
 
-3. Launch **Batched Smart Tool** and start labeling
+| Key                                                           | Description                               |
+| ------------------------------------------------------------- | ------------------------------------------|
+| <kbd>Left Mouse Button</kbd>                                  | Place a green point |
+| <kbd>Left Mouse Button</kbd> + <br> <kbd>Shift</kbd>          | Place a red point               |
+| <kbd>Left Mouse Button</kbd> + <br> <kbd>Ctrl</kbd>           | Remove point                              |
+| <kbd>Scroll Wheel</kbd>                                       | Zoom an image in and out                  |
+| <kbd>Right Mouse Button</kbd> + <br> <kbd>Move Mouse</kbd>    | Move an image                             |
+
+
+
 
 
 
 # How to run
 
-1. Add [Batched Smart Tool](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/dev-smart-tool-batched) to your Team
+
+1. Prepare **Images Project** with roughly assigned **Rectangles**
+
+<img src="https://github.com/supervisely-ecosystem/dev-smart-tool-batched/releases/download/v0.0.1/prepare-project.gif?raw=true" style="width: 100%;"/>
+
+2. Launch [RITM interactive segmentation Smart Tool](https://ecosystem.supervise.ly/apps/supervisely-ecosystem%252Fritm-interactive-segmentation%252Fsupervisely)
+
+<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/ritm-interactive-segmentation/supervisely" src="https://i.imgur.com/eWmFwQ9.png" width="600px" style='padding-bottom: 0'/>  
+
+
+
+3. Add [Batched Smart Tool](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/dev-smart-tool-batched) to your Team
 
 <img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/dev-smart-tool-batched" src="https://imgur.com/KkM6dO0.png" width="350px">
 
 
-2. Launch from `Plugins & Apps`
+4. Launch from context menu of prepared project
 
-<img src="https://imgur.com/bidnbEa.png" style="width: 100%;"/>
+<img src="https://imgur.com/YrAQeRi.png" style="width: 100%;"/>
+
 
 
 
