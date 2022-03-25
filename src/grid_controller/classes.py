@@ -1,6 +1,7 @@
 import functools
 import threading
 
+from asgiref.sync import async_to_sync
 from loguru import logger
 
 
@@ -46,7 +47,9 @@ class GridController:
     @process_with_lock
     def update_remote_fields(self, state, data):
         for widget in self.widgets.values():
-            widget.update_remote_fields(state=state, data=data)
+            widget.update_remote_fields(state=state, data=data, synchronize=False)
+
+        async_to_sync(state.synchronize_changes)()
 
     # @process_with_lock
     def _add(self, app, state, data, images_queue):
