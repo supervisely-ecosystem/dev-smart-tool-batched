@@ -21,6 +21,7 @@ def init_routes():
 
     g.app.add_api_route('/windows-count-changed/', grid_controller.windows_count_changed, methods=["POST"])
 
+    g.app.add_api_route('/select-bboxes-order/', batched_smart_tool.select_bboxes_order, methods=["POST"])
     g.app.add_api_route('/bboxes-padding-changed/', batched_smart_tool.bboxes_padding_changed, methods=["POST"])
     g.app.add_api_route('/bboxes-masks-opacity-changed/', batched_smart_tool.bboxes_masks_opacity_changed, methods=["POST"])
 

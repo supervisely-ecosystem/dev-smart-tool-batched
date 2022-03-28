@@ -162,7 +162,9 @@ def refill_queues_by_input_project_data(project_id):
             crops_data.extend(get_images_for_queue(selected_image=current_image,
                                                    current_dataset=current_dataset))
 
-    crops_data = sorted(crops_data, key=lambda d: d['boxArea'], reverse=True)
+    if g.bboxes_order == 'sizes':
+        crops_data = sorted(crops_data, key=lambda d: d['boxArea'], reverse=True)
+
     put_data_to_queues(data_to_render=crops_data)
 
 

@@ -47,6 +47,7 @@ templates_env = Jinja2Templates(directory=os.path.join(app_root_directory, 'temp
 
 
 # selected_queue = Queue(maxsize=int(1e6))
+bboxes_order = 'sizes'
 selected_queue = None
 classes2queues = {}
 images_queue = queue.Queue(maxsize=int(1e6))

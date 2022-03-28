@@ -12,6 +12,36 @@ import cv2
 
 from supervisely.app import DataJson
 
+from loguru import logger
+
+
+def update_single_widget_realtime(widget_id, state):
+    widget = g.grid_controller.get_widget_by_id(widget_id=widget_id)
+
+    try:
+        data_to_process = get_data_from_widget_to_compute_masks(widget)
+
+        response_data = g.api.task.send_request(int(state['processingServer']['sessionId']), "smart_segmentation",
+                                                data={},
+                                                context=data_to_process, timeout=60)
+
+        if response_data.get('origin') is not None:
+            set_widget_mask_by_data(widget, response_data, state=state)
+            widget.needs_an_update = False
+        else:
+            widget.mask = None
+    except Exception as ex:
+        logger.warning(f'{ex}')
+
+    widget.update_remote_fields(state=state, data=DataJson())
+
+
+def new_masks_available_flag():
+    for widget in g.grid_controller.widgets.values():
+        if widget.needs_an_update:
+            return True
+    return False
+
 
 def get_contours(base64mask, origin_shift):
     test_mask = np.asarray(supervisely.Bitmap.base64_2_data(base64mask)).astype(np.uint8) * 255

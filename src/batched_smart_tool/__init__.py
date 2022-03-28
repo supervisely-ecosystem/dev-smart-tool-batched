@@ -9,5 +9,8 @@ StateJson()['queueIsEmpty'] = False
 StateJson()['batchInUpload'] = False
 StateJson()['masksOpacity'] = 50
 
+StateJson()['bboxesOrder'] = 'images'  # sizes
+
 DataJson()['newMasksAvailable'] = False
+
 

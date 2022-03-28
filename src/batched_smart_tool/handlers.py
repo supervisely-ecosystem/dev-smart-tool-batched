@@ -24,32 +24,8 @@ import src.dialog_window as dialog_window
 from loguru import logger
 
 
-def update_single_widget_realtime(widget_id, state):
-    widget: SmartTool = g.grid_controller.get_widget_by_id(widget_id=widget_id)
-
-    try:
-        data_to_process = local_functions.get_data_from_widget_to_compute_masks(widget)
-
-        response_data = g.api.task.send_request(int(state['processingServer']['sessionId']), "smart_segmentation",
-                                                data={},
-                                                context=data_to_process, timeout=60)
-
-        if response_data.get('origin') is not None:
-            local_functions.set_widget_mask_by_data(widget, response_data, state=state)
-            widget.needs_an_update = False
-        else:
-            widget.mask = None
-    except Exception as ex:
-        logger.warning(f'{ex}')
-
-    widget.update_remote_fields(state=state, data=DataJson())
-
-
-def new_masks_available_flag():
-    for widget in g.grid_controller.widgets.values():
-        if widget.needs_an_update:
-            return True
-    return False
+def select_bboxes_order(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    g.bboxes_order = state['bboxesOrder']
 
 
 def points_updated(identifier: str,
@@ -89,8 +65,8 @@ def points_updated(identifier: str,
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
     async_to_sync(DataJson().synchronize_changes)()
 
-    update_single_widget_realtime(widget_id=identifier, state=state)
-    DataJson()['newMasksAvailable'] = new_masks_available_flag()
+    local_functions.update_single_widget_realtime(widget_id=identifier, state=state)
+    DataJson()['newMasksAvailable'] = local_functions.new_masks_available_flag()
     async_to_sync(DataJson().synchronize_changes)()
 
 
@@ -152,7 +128,7 @@ def assign_base_points(state: supervisely.app.StateJson = Depends(supervisely.ap
             # widget.positive_points.pop()
 
             # points_updated(identifier=widget.identifier, state=state)  # update main card
-            DataJson()['newMasksAvailable'] = new_masks_available_flag()
+            DataJson()['newMasksAvailable'] = local_functions.new_masks_available_flag()
 
     async_to_sync(DataJson().synchronize_changes)()
     g.grid_controller.update_remote_fields(state=state, data=DataJson())

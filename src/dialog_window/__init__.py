@@ -4,7 +4,7 @@ from .handlers import *
 
 
 StateJson()['dialogWindow'] = {
-    'mode': 'inputProject',  # can be 'inputProject', 'outputProject', 'modelConnection', 'unsavedMasks'
+    'mode': 'inputProject',  # can be 'bboxesOrder', 'inputProject', 'outputProject', 'modelConnection'
 }
 
 
