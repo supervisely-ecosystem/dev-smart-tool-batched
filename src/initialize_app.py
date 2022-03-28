@@ -23,7 +23,8 @@ def init_routes():
 
     g.app.add_api_route('/select-bboxes-order/', batched_smart_tool.select_bboxes_order, methods=["POST"])
     g.app.add_api_route('/bboxes-padding-changed/', batched_smart_tool.bboxes_padding_changed, methods=["POST"])
-    g.app.add_api_route('/bboxes-masks-opacity-changed/', batched_smart_tool.bboxes_masks_opacity_changed, methods=["POST"])
+    g.app.add_api_route('/bboxes-masks-opacity-changed/', batched_smart_tool.bboxes_masks_opacity_changed,
+                        methods=["POST"])
 
     g.app.add_api_route('/change-all-buttons/{is_active}', batched_smart_tool.change_all_buttons, methods=["POST"])
     g.app.add_api_route('/clean-up/', batched_smart_tool.clean_up, methods=["POST"])
@@ -43,21 +44,14 @@ def init_routes():
 
 def _init_project(state):
     settings_card.select_input_project(identifier=f'{g.input_project_id}', state=state)  # download input project
-    select_class.init_table_data()  # fill classes table
-
-    output_project_id = settings_card.get_output_project_id()
-    if output_project_id is not None:
-        state['dialogWindow']['mode'] = 'outputProject'
-        state['outputProject']['id'] = output_project_id
-        dialog_window.notification_box.description = dialog_window.notification_box.description.format(
-            output_project_id,
-            f'{g.api.project.get_info_by_id(g.input_project_id).name}_BST')
-    else:
-        settings_card.select_output_project(state=state)
-
-    grid_controller.handlers.windows_count_changed(state=state)
 
     state['inputProject']['loading'] = False
+    state['dialogWindow']['mode'] = 'bboxesOrder'
+
+    dialog_window.notification_box.title = None
+    dialog_window.notification_box.description = 'You can annotate data in original order (how it stores in datasets)<br>' \
+                                                 'or we can automatically sort input data by in decreasing order of BBox size.<br><br>' \
+                                                 'For more comfortable labeling we recommend to use sorted data.'
 
     async_to_sync(state.synchronize_changes)()
     async_to_sync(DataJson().synchronize_changes)()

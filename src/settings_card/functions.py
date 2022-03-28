@@ -162,10 +162,7 @@ def refill_queues_by_input_project_data(project_id):
             crops_data.extend(get_images_for_queue(selected_image=current_image,
                                                    current_dataset=current_dataset))
 
-    if g.bboxes_order == 'sizes':
-        crops_data = sorted(crops_data, key=lambda d: d['boxArea'], reverse=True)
-
-    put_data_to_queues(data_to_render=crops_data)
+    g.crops_data = crops_data
 
 
 def select_input_project(identifier: str, state):
@@ -210,3 +207,9 @@ def remove_processed_geometries(state):
 
     select_class.update_classes_table()
     async_to_sync(DataJson().synchronize_changes)()
+
+
+def get_output_project_id():
+    for project in g.api.project.get_list(workspace_id=DataJson()['workspaceId']):
+        if project.name == f'{g.api.project.get_info_by_id(g.input_project_id).name}_BST':
+            return project.id

@@ -42,12 +42,6 @@ def connect_to_model(identifier: str,
     async_to_sync(DataJson().synchronize_changes)()
 
 
-def get_output_project_id():
-    for project in g.api.project.get_list(workspace_id=DataJson()['workspaceId']):
-        if project.name == f'{g.api.project.get_info_by_id(g.input_project_id).name}_BST':
-            return project.id
-
-
 def select_output_project(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     g.imagehash2imageinfo_by_datasets = {}  # reset output images cache
     g.grid_controller.clean_all(state=state, data=DataJson(), images_queue=g.selected_queue)
@@ -55,12 +49,14 @@ def select_output_project(state: supervisely.app.StateJson = Depends(supervisely
     if state['outputProject']['mode'] == 'new':
         local_functions.create_new_project_by_name(state)
     else:
-        state['outputProject']['id'] = get_output_project_id()
+        state['outputProject']['id'] = local_functions.get_output_project_id()
         local_functions.cache_existing_images(state)
         local_functions.remove_processed_geometries(state)
 
     g.output_project_id = state['outputProject']['id']
     select_output_class(state=state)  # selecting first class from table
+
+    # grid_controller.handlers.windows_count_changed(state=state)
 
     state['outputProject']['loading'] = False
     state['dialogWindow']['mode'] = None

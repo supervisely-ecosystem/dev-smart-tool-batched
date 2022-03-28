@@ -206,7 +206,7 @@ class SmartTool:
     def update_remote_fields(self, state, data, synchronize=True):
         state['widgets'].setdefault(f'{self.__class__.__name__}', {})[f'{self.identifier}'] = self.get_data_to_send()
         if synchronize:
-            async_to_sync(state.synchronize_changes)()
+            asyncio.run(state.synchronize_changes())
         # try:
         #     async_to_sync(state.synchronize_changes)()
         # except RuntimeError:

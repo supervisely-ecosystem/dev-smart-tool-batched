@@ -6,14 +6,18 @@
     <div style="width: 100%; display: flex; align-items: center; justify-content: flex-end">
         <el-button
                 :plain="true"
+                :loading="state.bboxesOrderLoading && state.bboxesOrder=='images'"
+                :disabled="state.bboxesOrderLoading"
                 type="primary" class="regular" size="small" style="margin: 0 2px; margin-top: 17px"
-                @click="state.bboxesOrder='images'; post('/select-bboxes-order/')">
-            use original images order
+                @click="state.bboxesOrder='images'; state.bboxesOrderLoading=true; post('/select-bboxes-order/')">
+            original
         </el-button>
         <el-button
+                :loading="state.bboxesOrderLoading && state.bboxesOrder=='sizes'"
+                :disabled="state.bboxesOrderLoading"
                 type="primary" class="regular" size="small" style="margin: 0 2px; margin-top: 17px"
-                @click="state.bboxesOrder='sizes'; post('/select-bboxes-order/')">
-            use bbox sizes order
+                @click="state.bboxesOrder='sizes'; state.bboxesOrderLoading=true; post('/select-bboxes-order/')">
+            sorted
         </el-button>
     </div>
 </el-dialog>

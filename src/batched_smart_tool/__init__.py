@@ -10,6 +10,7 @@ StateJson()['batchInUpload'] = False
 StateJson()['masksOpacity'] = 50
 
 StateJson()['bboxesOrder'] = 'images'  # sizes
+StateJson()['bboxesOrderLoading'] = False
 
 DataJson()['newMasksAvailable'] = False
 

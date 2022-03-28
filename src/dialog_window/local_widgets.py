@@ -1,14 +1,9 @@
 from supervisely.app import widgets
 
 notification_box = widgets.NotificationBox(
-    title='Project with same output name founded',
-    description=
-    '''
-    Output project with name
-        <a href="https://supervisely-dev.deepsystems.io/projects/{}/datasets"
-                       target="_blank">{}</a> already exists.<br>
-        Do you want to use existing project or create a new?
-    '''
+    title='',
+    description=''
+
 )
 
 datasets_progress = widgets.SlyTqdm(message='starting download datasets...')

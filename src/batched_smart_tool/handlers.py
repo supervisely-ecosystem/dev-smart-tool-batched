@@ -15,6 +15,9 @@ import src.sly_functions as f
 import src.sly_globals as g
 
 import src.select_class.functions as sc_functions
+import src.settings_card.functions as settings_card_functions
+
+import src.settings_card.handlers as settings_card_handlers
 
 import src.batched_smart_tool.functions as local_functions
 import src.sly_functions as global_functions
@@ -24,8 +27,33 @@ import src.dialog_window as dialog_window
 from loguru import logger
 
 
-def select_bboxes_order(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
-    g.bboxes_order = state['bboxesOrder']
+async def select_bboxes_order(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    if state['bboxesOrder'] == 'sizes':
+        g.crops_data = sorted(g.crops_data, key=lambda d: d['boxArea'], reverse=True)
+    settings_card_functions.put_data_to_queues(data_to_render=g.crops_data)
+
+    sc_functions.init_table_data()  # fill classes table
+
+    output_project_id = settings_card_functions.get_output_project_id()
+    if output_project_id is not None:
+        state['dialogWindow']['mode'] = 'outputProject'
+        state['outputProject']['id'] = output_project_id
+
+        dialog_window.notification_box.title = 'Project with same output name founded'
+        dialog_window.notification_box.description = '''
+        Output project with name
+            <a href="https://supervisely-dev.deepsystems.io/projects/{}/datasets"
+                           target="_blank">{}</a> already exists.<br>
+            Do you want to use existing project or create a new?
+        '''.format(
+            output_project_id,
+            f'{g.api.project.get_info_by_id(g.input_project_id).name}_BST')
+    else:
+        settings_card_handlers.select_output_project(state=state)
+
+    state['bboxesOrderLoading'] = False
+    await state.synchronize_changes()
+    await DataJson().synchronize_changes()
 
 
 def points_updated(identifier: str,

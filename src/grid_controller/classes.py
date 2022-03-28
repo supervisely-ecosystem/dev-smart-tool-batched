@@ -30,8 +30,6 @@ class GridController:
         while actual_count < len(self.widgets):
             self._remove(state, data, images_queue)
 
-
-
     # @process_with_lock
     def change_padding(self, actual_padding):
         for widget in self.widgets.values():
