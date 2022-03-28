@@ -28,4 +28,4 @@ async def startup_event():
     await DataJson().synchronize_changes()
 
 
-# uvicorn.run(g.app, host="127.0.0.1", port=8000)
+uvicorn.run(g.app, host="127.0.0.1", port=8000)

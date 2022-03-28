@@ -401,6 +401,7 @@ Vue.component('smarttool-editor', {
             .fill('none')
             .stroke({
               width: 3,
+              color: '#ff6600',
               // dasharray: '10 10',
             });
           const contourEl2 = this.sceneEl.polygon()

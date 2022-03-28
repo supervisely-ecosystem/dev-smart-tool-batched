@@ -2,6 +2,10 @@
     z-index: 15001 !important;
 }
 
+.el-select-dropdown {
+    z-index: 10002 !important;
+}
+
 .el-tooltip__popper {
     z-index: 10001 !important;
 }
@@ -11,6 +15,7 @@
     visibility: visible !important;
     opacity: 1 !important;
     stroke-width: 2 !important;
+    stroke :wheat !important;
 }
 
 .svg_select_points_rot {

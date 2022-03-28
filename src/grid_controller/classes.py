@@ -30,10 +30,13 @@ class GridController:
         while actual_count < len(self.widgets):
             self._remove(state, data, images_queue)
 
+
+
     # @process_with_lock
     def change_padding(self, actual_padding):
         for widget in self.widgets.values():
             if not widget.is_empty:
+                widget.clean_up()
                 widget.add_bbox_padding(padding_coefficient=actual_padding)
 
     def get_widget_by_id(self, widget_id):
@@ -47,7 +50,8 @@ class GridController:
     @process_with_lock
     def update_remote_fields(self, state, data):
         for widget in self.widgets.values():
-            widget.update_remote_fields(state=state, data=data, synchronize=False)
+            if not widget.is_empty:
+                widget.update_remote_fields(state=state, data=data, synchronize=False)
 
         async_to_sync(state.synchronize_changes)()
 

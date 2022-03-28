@@ -35,8 +35,8 @@ def get_contours(base64mask, origin_shift):
 def set_widget_mask_by_data(widget: smart_tool.SmartTool, data, state):
     contours = copy.deepcopy(get_contours(data['bitmap'], data['origin']))
 
-    widget.remove_contour()
-    widget.update_remote_fields(state=state, data=DataJson())
+    # widget.remove_contour()
+    # widget.update_remote_fields(state=state, data=DataJson())
 
     widget.mask = {
         'data': data.get('bitmap'),
@@ -57,7 +57,7 @@ def add_point_to_active_cards(origin_identifier, updated_point, points_type):
     new_connected_points = set()
 
     for widget in g.grid_controller.widgets.values():
-        if widget.is_active and widget.identifier != origin_identifier:
+        if widget.is_active and widget.identifier != origin_identifier and not widget.is_empty:
             point_id = widget.update_by_relative_coordinates(updated_point, points_type)
 
             if point_id is not None:

@@ -38,10 +38,11 @@ Easily place green points to label-interested area and red points to label-not-i
 | Key                                                           | Description                               |
 | ------------------------------------------------------------- | ------------------------------------------|
 | <kbd>Left Mouse Button</kbd>                                  | Place a green point |
-| <kbd>Left Mouse Button</kbd> + <br> <kbd>Shift</kbd>          | Place a red point               |
-| <kbd>Left Mouse Button</kbd> + <br> <kbd>Ctrl</kbd>           | Remove point                              |
+| <kbd>Left Mouse Button</kbd> + <kbd>Shift</kbd>          | Place a red point               |
+| <kbd>Left Mouse Button</kbd> + <kbd>Ctrl</kbd>           | Remove point                              |
 | <kbd>Scroll Wheel</kbd>                                       | Zoom an image in and out                  |
-| <kbd>Right Mouse Button</kbd> + <br> <kbd>Move Mouse</kbd>    | Move an image                             |
+| <kbd>Right Mouse Button</kbd> + <kbd>Move Mouse</kbd>    | Move an image                             |
+
 
 
 
