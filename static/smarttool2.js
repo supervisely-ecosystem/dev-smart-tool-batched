@@ -111,8 +111,7 @@ function getBBoxSize(bbox) {
 
 Vue.component('smarttool-editor', {
   template: `
-    <div v-loading="loading" style="position: relative;">
-      <div v-if="disabled" style="position: absolute; inset: 0; opacity: 0.5; background-color: #808080;"></div>
+    <div v-loading="loading">
       <svg ref="container" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%"></svg>
     </div>
   `,
@@ -137,10 +136,6 @@ Vue.component('smarttool-editor', {
       type: Array,
       default: [],
     },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
@@ -163,14 +158,14 @@ Vue.component('smarttool-editor', {
               .plot(c || [])
               .fill('none')
               .stroke({
-                color: '#ff6600',
+                color: 'white',
                 width: 3,
               });
             const contourEl2 = this.sceneEl.polygon()
               .plot(c || [])
               .fill('none')
               .stroke({
-                color: 'white',
+                color: '#ff6600',
                 width: 3,
                 dasharray: '10 10',
               });
