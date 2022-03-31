@@ -56,6 +56,8 @@ def select_output_project(state: supervisely.app.StateJson = Depends(supervisely
     g.output_project_id = state['outputProject']['id']
     select_output_class(state=state)  # selecting first class from table
 
+    g.broken_class_object = local_functions.get_object_class_by_name(state, 'broken_input_', supervisely.Rectangle)
+
     # grid_controller.handlers.windows_count_changed(state=state)
 
     state['outputProject']['loading'] = False
@@ -69,7 +71,8 @@ def select_output_class(state: supervisely.app.StateJson = Depends(supervisely.a
     local_functions.update_output_class(state)
 
     g.grid_controller.clean_all(state=state, data=DataJson(), images_queue=g.selected_queue)
-    g.output_class_object = local_functions.get_object_class_by_name(state)
+    g.output_class_object = local_functions.get_object_class_by_name(state, g.output_class_name)
+
 
     local_functions.update_selected_queue(state)
     state['queueIsEmpty'] = g.selected_queue.empty()

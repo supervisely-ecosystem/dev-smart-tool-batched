@@ -89,27 +89,27 @@ def create_new_project_by_name(state):
     state['outputProject']['id'] = created_project.id
 
 
-def create_new_object_meta_by_name(output_class_name):
+def create_new_object_meta_by_name(output_class_name, geometry_type):
     objects = supervisely.ObjClassCollection(
-        [supervisely.ObjClass(name=output_class_name, geometry_type=supervisely.Bitmap,
+        [supervisely.ObjClass(name=output_class_name, geometry_type=geometry_type,
                               color=list(np.random.choice(range(256), size=3)))])
 
     return supervisely.ProjectMeta(obj_classes=objects, project_type=supervisely.ProjectType.IMAGES)
 
 
-def get_object_class_by_name(state):
+def get_object_class_by_name(state, output_class_name, geometry_type=supervisely.Bitmap):
     output_project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=state['outputProject']['id']))
-    obj_class = output_project_meta.obj_classes.get(g.output_class_name, None)
+    obj_class = output_project_meta.obj_classes.get(output_class_name, None)
 
-    while obj_class is None or obj_class.geometry_type is not supervisely.Bitmap:
-        if obj_class is not None and obj_class.geometry_type is not supervisely.Bitmap:
-            g.output_class_name += '_smart_tool'
+    while obj_class is None or obj_class.geometry_type is not geometry_type:
+        if obj_class is not None and obj_class.geometry_type is not geometry_type:
+            output_class_name += '_smart_tool'
 
-        updated_meta = output_project_meta.merge(create_new_object_meta_by_name(g.output_class_name))
+        updated_meta = output_project_meta.merge(create_new_object_meta_by_name(output_class_name, geometry_type))
         g.api.project.update_meta(id=state['outputProject']['id'], meta=updated_meta.to_json())
 
         output_project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=state['outputProject']['id']))
-        obj_class = output_project_meta.obj_classes.get(g.output_class_name, None)
+        obj_class = output_project_meta.obj_classes.get(output_class_name, None)
 
     return obj_class
 

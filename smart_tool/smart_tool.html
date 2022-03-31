@@ -55,33 +55,33 @@
                         box-sizing: border-box"
 
      :style="[widget.needsAnUpdate ? {'border': '#ff6600 solid 2px'} : {'border': '#77b4ff solid 2px'}]"
-     :style="[widget.isBroken ? {'border': '#ff6600 solid 2px'} : {'border': '#77b4ff solid 2px'}]"
+
 
 >
     <div style="display: flex; align-items: center; justify-content: space-between; position: absolute; width: 100%">
         <el-button
                    type="text"
                    style="padding: 5px"
-                   :disabled="widget.scaledBbox.length == 0"
+                   :disabled="widget.scaledBbox.length == 0 || widget.isBroken || widget.isFinished"
 
                    @click="widget.isActive = !widget.isActive">
-            <i class="zmdi zmdi-link checkers" :style="[widget.isActive  ? {'background': '#77b4ff'} : {'background': '#b8b8b8'}]"></i>
+            <i class="zmdi zmdi-link checkers" :style="[widget.isActive && !widget.isBroken && !widget.isFinished  ? {'background': '#20a0ff'} : {'background': '#b8b8b8'}]"></i>
         </el-button>
         <el-button
                    type="text"
                    style="padding: 5px"
-
+                   :disabled="widget.isFinished"
 
                    @click="widget.isBroken = !widget.isBroken">
-            <i class="zmdi zmdi-close checkers" :style="[widget.isBroken  ? {'background': '#77b4ff'} : {'background': '#b8b8b8'}]"></i>
+            <i class="zmdi zmdi-close checkers" :style="[widget.isBroken  ? {'background': '#ff4f4f'} : {'background': '#b8b8b8'}]"></i>
         </el-button>
         <el-button
                    type="text"
                    style="padding: 5px"
-                   :disabled="widget.scaledBbox.length == 0"
+                   :disabled="widget.scaledBbox.length == 0 || widget.isBroken"
 
                    @click="widget.isFinished = !widget.isFinished">
-            <i class="zmdi zmdi-flag checkers" :style="[widget.isFinished  ? {'background': '#77b4ff'} : {'background': '#b8b8b8'}]"></i>
+            <i class="zmdi zmdi-flag checkers" :style="[widget.isFinished  ? {'background': '#96cc4b'} : {'background': '#b8b8b8'}]"></i>
         </el-button>
     </div>
     <smarttool-editor
