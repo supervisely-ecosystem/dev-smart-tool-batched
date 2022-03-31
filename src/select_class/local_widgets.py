@@ -26,3 +26,5 @@ images_table = widgets.RadioTable(
         'progress': progress_bar_formatter
     },
 )
+
+

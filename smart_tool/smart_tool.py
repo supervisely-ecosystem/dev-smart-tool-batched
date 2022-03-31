@@ -7,7 +7,7 @@ from pathlib import Path
 from uuid import uuid4
 
 import markupsafe
-from asgiref.sync import async_to_sync
+from src.run_sync import run_sync
 from jinja2 import Environment
 
 from supervisely.app import StateJson, DataJson
@@ -214,18 +214,13 @@ class SmartTool:
     def update_remote_fields(self, state, data, synchronize=True):
         state['widgets'].setdefault(f'{self.__class__.__name__}', {})[f'{self.identifier}'] = self.get_data_to_send()
         if synchronize:
-            # asyncio.run(state.synchronize_changes())
-            try:
-                async_to_sync(state.synchronize_changes)()  # @TODO: change
-            except RuntimeError:
-                loop = asyncio.get_running_loop()
-                asyncio.ensure_future(state.synchronize_changes(), loop=loop)
+            run_sync(state.synchronize_changes())  # @TODO: change
 
     def remove_remote_fields(self, state, data):
         existing_objects = state['widgets'].get(f'{self.__class__.__name__}', {})
         if existing_objects.get(self.identifier, None) is not None:
             existing_objects.pop(self.identifier)
-            async_to_sync(state.synchronize_changes)()
+            run_sync(state.synchronize_changes())
 
     def get_widget_identifier(self, state, data):
         existing_widgets_count = len(state["widgets"].get(f'{self.__class__.__name__}', []))

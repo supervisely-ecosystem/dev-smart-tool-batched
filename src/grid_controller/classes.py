@@ -1,7 +1,7 @@
 import functools
 import threading
 
-from asgiref.sync import async_to_sync
+from src.run_sync import run_sync
 from loguru import logger
 
 
@@ -14,6 +14,7 @@ def process_with_lock(func):
         return ret_val
 
     return wrapper
+
 
 
 class GridController:
@@ -51,7 +52,7 @@ class GridController:
             if not widget.is_empty:
                 widget.update_remote_fields(state=state, data=data, synchronize=False)
 
-        async_to_sync(state.synchronize_changes)()
+        run_sync(state.synchronize_changes())
 
     # @process_with_lock
     def _add(self, app, state, data, images_queue):

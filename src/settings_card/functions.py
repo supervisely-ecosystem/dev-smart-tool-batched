@@ -3,7 +3,7 @@ import functools
 from queue import Queue
 
 import numpy as np
-from asgiref.sync import async_to_sync
+from src.run_sync import run_sync
 
 import supervisely
 
@@ -203,7 +203,7 @@ def remove_processed_geometries(state):
         g.classes2queues[label] = updated_queue
 
     select_class.update_classes_table()
-    async_to_sync(DataJson().synchronize_changes)()
+    run_sync(DataJson().synchronize_changes())
 
 
 def get_output_project_id():

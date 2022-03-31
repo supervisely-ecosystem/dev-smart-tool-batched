@@ -1,4 +1,4 @@
-from asgiref.sync import async_to_sync
+from src.run_sync import run_sync
 from fastapi import Request, Depends
 
 import supervisely
@@ -17,5 +17,5 @@ def windows_count_changed(state: supervisely.app.StateJson = Depends(supervisely
 
     global_functions.update_queues_stats(state)
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
-    async_to_sync(DataJson().synchronize_changes)()
+    run_sync(DataJson().synchronize_changes())
 

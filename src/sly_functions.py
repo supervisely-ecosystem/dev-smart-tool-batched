@@ -1,9 +1,9 @@
+import asyncio
 import functools
 import os
 import uuid
 
 import jinja2
-from asgiref.sync import async_to_sync
 from starlette.templating import Jinja2Templates
 
 import supervisely
@@ -115,3 +115,14 @@ def update_queues_stats(state):
     DataJson()['objectsLeftQueue'] = len(g.selected_queue.queue)
 
     select_class.update_classes_table()
+
+
+def run_sync(coroutine):
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+    if loop and loop.is_running():
+        asyncio.ensure_future(coroutine, loop=loop)
+    else:
+        asyncio.run(coroutine)

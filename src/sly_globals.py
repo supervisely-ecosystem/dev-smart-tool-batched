@@ -5,7 +5,7 @@ import sys
 from loguru import logger
 from pathlib import Path
 
-from asgiref.sync import async_to_sync
+
 from fastapi import FastAPI
 from starlette.responses import FileResponse
 from starlette.staticfiles import StaticFiles

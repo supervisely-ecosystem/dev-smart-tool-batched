@@ -1,7 +1,7 @@
 import functools
 from threading import Thread
 
-from asgiref.sync import async_to_sync
+from src.run_sync import run_sync
 
 from supervisely.app import StateJson, DataJson
 
@@ -53,8 +53,8 @@ def _init_project(state):
                                                  'or we can automatically sort input data by in decreasing order of BBox size.<br><br>' \
                                                  'For more comfortable labeling we recommend to use sorted data.'
 
-    async_to_sync(state.synchronize_changes)()
-    async_to_sync(DataJson().synchronize_changes)()
+    run_sync(state.synchronize_changes())
+    run_sync(DataJson().synchronize_changes())
 
 
 def init_project():
