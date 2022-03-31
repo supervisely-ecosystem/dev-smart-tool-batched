@@ -65,8 +65,8 @@ def get_contours(base64mask, origin_shift):
 def set_widget_mask_by_data(widget: smart_tool.SmartTool, data, state):
     contours = copy.deepcopy(get_contours(data['bitmap'], data['origin']))
 
-    # widget.remove_contour()
-    # widget.update_remote_fields(state=state, data=DataJson())
+    widget.remove_contour()
+    widget.update_remote_fields(state=state, data=DataJson())
 
     widget.mask = {
         'data': data.get('bitmap'),
@@ -138,7 +138,7 @@ def get_data_from_widget_to_compute_masks(widget):
 def get_data_to_process():
     data_to_send = {}
     for index, widget in enumerate(g.grid_controller.widgets.values()):
-        if widget.needs_an_update:
+        if widget.needs_an_update and not widget.is_broken and not widget.is_finished:
             widget.needs_an_update = False
             data_to_send[index] = get_data_from_widget_to_compute_masks(widget)
     return data_to_send

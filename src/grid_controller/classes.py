@@ -33,7 +33,7 @@ class GridController:
     # @process_with_lock
     def change_padding(self, actual_padding):
         for widget in self.widgets.values():
-            if not widget.is_empty:
+            if not widget.is_empty and not widget.is_broken and not widget.is_finished:
                 widget.clean_up()
                 widget.add_bbox_padding(padding_coefficient=actual_padding)
 

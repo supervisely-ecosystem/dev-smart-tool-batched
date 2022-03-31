@@ -15,7 +15,18 @@ from supervisely.app import DataJson
 
 
 def get_supervisely_label_by_widget_data(widget_data, current_class_name="batched_smart_tool"):
-    if widget_data.get('mask') is not None:
+    label = None
+
+    if widget_data.get('isBroken', False) and widget_data.get('originalBbox') is not None:
+        original_bbox = widget_data['originalBbox']
+        geometry = supervisely.Rectangle(
+            top=original_bbox[0][1], left=original_bbox[0][0],
+            bottom=original_bbox[1][1], right=original_bbox[1][0]
+        )
+        label = supervisely.Label(geometry=geometry,
+                                  obj_class=g.broken_class_object)
+
+    elif widget_data.get('mask') is not None:
         mask_np = supervisely.Bitmap.base64_2_data(widget_data['mask']['data'])
         geometry = supervisely.Bitmap(data=mask_np,
                                       origin=supervisely.PointLocation(row=widget_data['mask']['origin'][1],
@@ -26,7 +37,7 @@ def get_supervisely_label_by_widget_data(widget_data, current_class_name="batche
         label = supervisely.Label(geometry=geometry,
                                   obj_class=g.output_class_object)
 
-        return label
+    return label
 
 
 def get_project_custom_data(project_id):

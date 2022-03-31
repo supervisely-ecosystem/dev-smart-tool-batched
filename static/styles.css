@@ -59,3 +59,12 @@
 *.el-input__inner {
     border: 1px solid #94d1ff !important;
 }
+
+.checkers {
+    font-size: 22px !important;
+    color: white;
+    background: rgba(106, 106, 106, 0.6);
+    border-radius: 5px;
+    padding: 1px 20px;
+    transition: all 0.1s ease-out;
+}

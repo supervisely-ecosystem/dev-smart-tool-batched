@@ -41,8 +41,11 @@ class SmartTool:
 
         self.mask = None
         self.maskOpacity = 50
-        self.is_active = True
         self.needs_an_update = False
+
+        self.is_active = True
+        self.is_broken = False
+        self.is_finished = False
 
         self._connected_points = list()  # [{1, 2, 3), {4, 5, 6}] — connected points
 
@@ -182,9 +185,12 @@ class SmartTool:
         self.original_bbox = new_widget_data.get('originalBbox', [])
         self.scaled_bbox = new_widget_data.get('scaledBbox', [])
         self.mask = new_widget_data.get('mask', None)
-        self.is_active = new_widget_data.get('isActive', True)
         self.sly_id = new_widget_data.get('slyId', True)
         self.needs_an_update = new_widget_data.get('needsAnUpdate', False)
+
+        self.is_active = new_widget_data.get('isActive', True)
+        self.is_broken = new_widget_data.get('isBroken', False)
+        self.is_finished = new_widget_data.get('isFinished', False)
 
     def get_data_to_send(self):
         return {
@@ -198,9 +204,11 @@ class SmartTool:
             'originalBbox': self.original_bbox,
             'scaledBbox': self.scaled_bbox,
             'mask': self.mask,
-            'isActive': self.is_active,
             'slyId': self.sly_id,
-            'needsAnUpdate': self.needs_an_update
+            'needsAnUpdate': self.needs_an_update,
+            'isActive': self.is_active,
+            'isBroken': self.is_broken,
+            'isFinished': self.is_finished
         }
 
     def update_remote_fields(self, state, data, synchronize=True):

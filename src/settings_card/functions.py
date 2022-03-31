@@ -169,10 +169,6 @@ def select_input_project(identifier: str, state):
     g.grid_controller.clean_all(state=state, data=DataJson())
     refill_queues_by_input_project_data(project_id=identifier)
 
-    classes = list(g.classes2queues.keys())
-    if len(classes) > 0:
-        g.selected_queue = g.classes2queues[classes[0]]
-
 
 def update_output_class(state):
     try:
@@ -183,6 +179,7 @@ def update_output_class(state):
     if state['queueMode'] == 'objects' and selected_row is not None:
         g.output_class_name = selected_row[0]
     else:
+        state['queueMode'] = 'images'
         g.output_class_name = 'image'
 
 

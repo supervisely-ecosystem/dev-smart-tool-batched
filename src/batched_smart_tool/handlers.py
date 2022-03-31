@@ -101,6 +101,8 @@ def points_updated(identifier: str,
 def change_all_buttons(is_active: bool,
                        request: Request,
                        state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    g.grid_controller.update_local_fields(state=state, data=DataJson())
+
     for widget in g.grid_controller.widgets.values():
         if len(widget.scaled_bbox) > 0:
             widget.is_active = is_active

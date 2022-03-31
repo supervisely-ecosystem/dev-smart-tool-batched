@@ -60,6 +60,7 @@ processed_geometries = []
 
 output_class_name = None
 output_class_object = None
+broken_class_object = None
 
 input_project_id = os.getenv('modal.state.slyProjectId')
 output_project_id = None
