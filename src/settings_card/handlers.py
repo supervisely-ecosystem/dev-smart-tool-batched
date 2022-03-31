@@ -9,6 +9,7 @@ from fastapi import Request, Depends
 import src.sly_functions as f
 import src.sly_globals as g
 import supervisely
+from src.select_class import local_widgets
 from supervisely.app import DataJson, StateJson
 
 import src.settings_card.functions as local_functions
@@ -69,10 +70,12 @@ def select_output_project(state: supervisely.app.StateJson = Depends(supervisely
 
 def select_output_class(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     local_functions.update_output_class(state)
+    local_widgets.running_classes_progress = None
 
+    g.grid_controller.update_local_fields(state=state, data=DataJson())
     g.grid_controller.clean_all(state=state, data=DataJson(), images_queue=g.selected_queue)
-    g.output_class_object = local_functions.get_object_class_by_name(state, g.output_class_name)
 
+    g.output_class_object = local_functions.get_object_class_by_name(state, g.output_class_name)
 
     local_functions.update_selected_queue(state)
     state['queueIsEmpty'] = g.selected_queue.empty()

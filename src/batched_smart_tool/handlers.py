@@ -57,6 +57,7 @@ async def select_bboxes_order(state: supervisely.app.StateJson = Depends(supervi
 
 
 def points_updated(identifier: str,
+                   request: Request,
                    state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     widget: SmartTool = g.grid_controller.get_widget_by_id(widget_id=identifier)
 

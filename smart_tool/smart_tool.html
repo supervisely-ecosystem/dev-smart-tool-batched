@@ -54,11 +54,11 @@
                         position: relative;
                         box-sizing: border-box"
 
-     :style="[widget.needsAnUpdate ? {'border': '#ff6600 solid 2px'} : {'border': '#77b4ff solid 2px'}]"
+     :style="[widget.needsAnUpdate && !widget.isBroken && !widget.isFinished ? {'border': '#ff6600 solid 2px'} : {'border': '#77b4ff solid 2px'}]"
 
 
 >
-    <div style="display: flex; align-items: center; justify-content: space-between; position: absolute; width: 100%">
+    <div style="display: flex; align-items: center; justify-content: space-between; position: absolute; width: 100%; z-index: 10001;" >
         <el-button
                    type="text"
                    style="padding: 2px 2px; margin: 0"
@@ -85,7 +85,7 @@
         </el-button>
     </div>
     <smarttool-editor
-
+            :disabled="widget.isFinished || widget.isBroken"
             v-if="widget.imageUrl"
             style="width: 100%; height: 100%;"
             :mask-opacity="state.masksOpacity / 100"
@@ -94,9 +94,9 @@
             :bbox.sync="widget.scaledBbox"
             @update:bbox="widget.scaledBbox = $event; post('/widgets/smarttool/bbox-updated/' + widget.identifier)"
             :positive-points="widget.positivePoints"
-            @update:positive-points="widget.positivePoints = $event; post('/widgets/smarttool/positive-updated/' + widget.identifier)"
+            @update:positive-points="widget.positivePoints = $event; widget.lastCall = Math.floor(Date.now()); post('/widgets/smarttool/positive-updated/' + widget.identifier)"
             :negative-points="widget.negativePoints"
-            @update:negative-points="widget.negativePoints = $event; post('/widgets/smarttool/negative-updated/' + widget.identifier)">
+            @update:negative-points="widget.negativePoints = $event; widget.lastCall = Math.floor(Date.now()) ;post('/widgets/smarttool/negative-updated/' + widget.identifier)">
 
     </smarttool-editor>
 </div>

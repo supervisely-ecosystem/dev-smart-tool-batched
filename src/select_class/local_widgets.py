@@ -27,4 +27,5 @@ images_table = widgets.RadioTable(
     },
 )
 
-
+selected_class_progress = widgets.SlyTqdm()
+running_classes_progress = None

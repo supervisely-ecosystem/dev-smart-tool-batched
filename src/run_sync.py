@@ -7,6 +7,6 @@ def run_sync(coroutine):
     except RuntimeError:
         loop = None
     if loop and loop.is_running():
-        asyncio.ensure_future(coroutine, loop=loop)
+        asyncio.create_task(coroutine)
     else:
         asyncio.run(coroutine)

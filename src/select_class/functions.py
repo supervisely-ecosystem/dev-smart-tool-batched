@@ -1,7 +1,18 @@
 from supervisely.app import DataJson
-from src.select_class.local_widgets import classes_table, images_table
+from src.select_class.local_widgets import classes_table, images_table, selected_class_progress
+import src.select_class.local_widgets as local_widgets
 
 import src.sly_globals as g
+
+
+def update_classes_progress(label, total, n):
+    if local_widgets.running_classes_progress is None:
+        local_widgets.running_classes_progress = selected_class_progress(total=int(total),
+                                                                         message=f'annotating {label}',
+                                                                         initial=int(n))
+    else:
+        local_widgets.running_classes_progress.n = int(n)
+        local_widgets.running_classes_progress.refresh()
 
 
 def init_table_data():
@@ -25,11 +36,13 @@ def update_classes_table():
     for row in actual_rows:
         label = row[0]
         if label == g.output_class_name:
-            row[1] = len(queues[labels.index(label)].queue) + len(g.grid_controller.widgets)
+            row[1] = len(queues[labels.index(label)].queue) + len(g.grid_controller.widgets)  # left
+
+            update_classes_progress(label=label, total=row[2], n=row[2]-row[1])
         else:
             row[1] = len(queues[labels.index(label)].queue)
 
-        row[3] = int(((row[2] - row[1]) / row[2]) * 100)
+        row[3] = int(((row[2] - row[1]) / row[2]) * 100)  # percentage
 
     classes_table.rows = actual_rows
 
@@ -37,11 +50,9 @@ def update_classes_table():
     for row in actual_rows:
 
         if 'image' == g.output_class_name:
-            row[1] = len(g.images_queue.queue) + len(g.grid_controller.widgets)
+            row[1] = len(g.images_queue.queue) + len(g.grid_controller.widgets)  # left
+            update_classes_progress(label='images', total=row[2], n=row[2]-row[1])
         else:
             row[1] = len(g.images_queue.queue)
 
         row[3] = int(((row[2] - row[1]) / row[2]) * 100)
-
-
-

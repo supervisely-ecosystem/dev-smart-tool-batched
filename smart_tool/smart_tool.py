@@ -47,6 +47,8 @@ class SmartTool:
         self.is_broken = False
         self.is_finished = False
 
+        self.last_call = 0
+
         self._connected_points = list()  # [{1, 2, 3), {4, 5, 6}] — connected points
 
         self.update_remote_fields(state, data)
@@ -192,6 +194,8 @@ class SmartTool:
         self.is_broken = new_widget_data.get('isBroken', False)
         self.is_finished = new_widget_data.get('isFinished', False)
 
+        self.last_call = new_widget_data.get('lastCall', 0)
+
     def get_data_to_send(self):
         return {
             'identifier': f'{self.identifier}',
@@ -208,13 +212,14 @@ class SmartTool:
             'needsAnUpdate': self.needs_an_update,
             'isActive': self.is_active,
             'isBroken': self.is_broken,
-            'isFinished': self.is_finished
+            'isFinished': self.is_finished,
+            'lastCall': self.last_call
         }
 
     def update_remote_fields(self, state, data, synchronize=True):
         state['widgets'].setdefault(f'{self.__class__.__name__}', {})[f'{self.identifier}'] = self.get_data_to_send()
         if synchronize:
-            run_sync(state.synchronize_changes())  # @TODO: change
+            run_sync(state.synchronize_changes())
 
     def remove_remote_fields(self, state, data):
         existing_objects = state['widgets'].get(f'{self.__class__.__name__}', {})

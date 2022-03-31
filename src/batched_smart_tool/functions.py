@@ -65,8 +65,8 @@ def get_contours(base64mask, origin_shift):
 def set_widget_mask_by_data(widget: smart_tool.SmartTool, data, state):
     contours = copy.deepcopy(get_contours(data['bitmap'], data['origin']))
 
-    widget.remove_contour()
-    widget.update_remote_fields(state=state, data=DataJson())
+    # widget.remove_contour()
+    # widget.update_remote_fields(state=state, data=DataJson())
 
     widget.mask = {
         'data': data.get('bitmap'),
