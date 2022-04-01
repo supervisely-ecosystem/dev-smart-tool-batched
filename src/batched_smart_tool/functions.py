@@ -87,7 +87,8 @@ def add_point_to_active_cards(origin_identifier, updated_point, points_type):
     new_connected_points = set()
 
     for widget in g.grid_controller.widgets.values():
-        if widget.is_active and widget.identifier != origin_identifier and not widget.is_empty:
+        if widget.is_active and widget.identifier != origin_identifier and not widget.is_empty \
+                and not widget.is_broken and not widget.is_finished:
             point_id = widget.update_by_relative_coordinates(updated_point, points_type)
 
             if point_id is not None:
@@ -96,7 +97,7 @@ def add_point_to_active_cards(origin_identifier, updated_point, points_type):
     new_connected_points.add(updated_point['id'])
 
     for widget in g.grid_controller.widgets.values():
-        if widget.is_active:
+        if widget.is_active and not widget.is_broken and not widget.is_finished:
             widget.add_connected_point(connected_points_ids=new_connected_points)
 
 
@@ -109,30 +110,30 @@ def remove_point_from_connected_cards(origin_identifier, point_to_remove, points
 def get_data_from_widget_to_compute_masks(widget):
     widget_data = widget.get_data_to_send()
     return {
-            "crop": [
-                {
-                    "x": widget_data['scaledBbox'][0][0],
-                    "y": widget_data['scaledBbox'][0][1]
-                },
-                {
-                    "x": widget_data['scaledBbox'][1][0],
-                    "y": widget_data['scaledBbox'][1][1]
-                }
-            ],
-            "positive": [
-                {
-                    "x": positive_point['position'][0][0],
-                    "y": positive_point['position'][0][1]
-                } for positive_point in widget_data['positivePoints']
-            ],
-            "negative": [
-                {
-                    "x": negative_points['position'][0][0],
-                    "y": negative_points['position'][0][1]
-                } for negative_points in widget_data['negativePoints']
-            ],
-            "image_hash": f"{widget_data['imageHash']}"
-        }
+        "crop": [
+            {
+                "x": widget_data['scaledBbox'][0][0],
+                "y": widget_data['scaledBbox'][0][1]
+            },
+            {
+                "x": widget_data['scaledBbox'][1][0],
+                "y": widget_data['scaledBbox'][1][1]
+            }
+        ],
+        "positive": [
+            {
+                "x": positive_point['position'][0][0],
+                "y": positive_point['position'][0][1]
+            } for positive_point in widget_data['positivePoints']
+        ],
+        "negative": [
+            {
+                "x": negative_points['position'][0][0],
+                "y": negative_points['position'][0][1]
+            } for negative_points in widget_data['negativePoints']
+        ],
+        "image_hash": f"{widget_data['imageHash']}"
+    }
 
 
 def get_data_to_process():

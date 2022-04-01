@@ -207,52 +207,93 @@
                 <div style="text-align: center" slot="content">
                     you can <b>link / unlink</b> all cells in the labeling grid
                 </div>
-                <div style="display: flex; align-items: center; margin-top: 20px;">
-                    <el-button :plain="true" type="success" class="regular" size="small" style="margin: 0 2px;"
-                               @click="post('/change-all-buttons/True')"><i style="margin-right: 5px"
-                                                                            class="zmdi zmdi-grid"></i>
-                        link all
-                    </el-button>
 
-                    <el-button :plain="true" type="warning" class="regular" size="small" style="margin: 0 2px;"
-                               @click="post('/change-all-buttons/False')"><i style="margin-right: 5px"
-                                                                             class="zmdi zmdi-grid-off"></i>
-                        unlink all
-                    </el-button>
+
+                <div style="display: flex; align-items: center;">
+
+                    <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
+                        <p style="font-size: 12px; color: #5a6772; margin: 1px 0">
+                            <b style="color: #ff6600;">Shift + E</b>
+                            <i style="margin-left: 5px" class="zmdi zmdi-keyboard"></i>
+                        </p>
+                        <el-button :plain="true" type="success" class="regular" size="small" style="margin: 0 2px;"
+                                   @click="post('/change-all-buttons/True')"><i style="margin-right: 5px"
+                                                                                class="zmdi zmdi-grid"></i>
+                            link all
+                        </el-button>
+                    </div>
+                    <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
+                        <p style="font-size: 12px; color: #5a6772; margin: 1px 0">
+                            <b style="color: #ff6600;">Shift + Q</b>
+                            <i style="margin-left: 5px" class="zmdi zmdi-keyboard"></i>
+                        </p>
+                        <el-button :plain="true" type="warning" class="regular" size="small" style="margin: 0 2px;"
+                                   @click="post('/change-all-buttons/False')"><i style="margin-right: 5px"
+                                                                                 class="zmdi zmdi-grid-off"></i>
+                            unlink all
+                        </el-button>
+                    </div>
                 </div>
             </el-tooltip>
-            <div style="display: flex; align-items: center; margin-top: 15px;">
-                <el-tooltip placement="top" effect="light" :open-delay="900">
-                    <div style="text-align: center" slot="content">
-                        put <b>base points</b> to <b>linked</b> cells automatically
+            <div style="display: flex; align-items: center;">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div>
+                        <p style="font-size: 12px; color: #5a6772; margin: 2px 0">
+                            <b style="color: #ff6600;">Shift + A</b>
+                            <i style="margin-left: 5px" class="zmdi zmdi-keyboard"></i>
+                        </p>
                     </div>
-                    <el-button type="warning" :plain="true" class="regular" size="small" style="margin: 0 2px;"
-                               @click="post('/assign-base-points/')">ASSIGN BASE
-                    </el-button>
-                </el-tooltip>
-                <el-tooltip placement="top" effect="light" :open-delay="900">
-                    <div style="text-align: center" slot="content">
-                        <b>clean up</b> all data from <b>linked</b> cells
+                    <el-tooltip placement="top" effect="light" :open-delay="900">
+                        <div style="text-align: center" slot="content">
+                            put <b>base points</b> to <b>linked</b> cells automatically
+                        </div>
+
+                        <el-button type="warning" :plain="true" class="regular" size="small" style="margin: 0 2px;"
+                                   @click="post('/assign-base-points/')">ASSIGN BASE
+                        </el-button>
+                    </el-tooltip>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div>
+                        <p style="font-size: 12px; color: #5a6772; margin: 2px 0">
+                            <b style="color: #ff6600;">Shift + C</b>
+                            <i style="margin-left: 5px" class="zmdi zmdi-keyboard"></i>
+                        </p>
                     </div>
-                    <el-button type="danger" :plain="true" class="regular" size="small" style="margin: 0 2px;"
-                               @click="post('/clean-up/')">CLEAN UP
-                    </el-button>
-                </el-tooltip>
+                    <el-tooltip placement="top" effect="light" :open-delay="900">
+                        <div style="text-align: center" slot="content">
+                            <b>clean up</b> all data from <b>linked</b> cells
+                        </div>
+                        <el-button type="danger" :plain="true" class="regular" size="small" style="margin: 0 2px;"
+                                   @click="post('/clean-up/')">CLEAN UP
+                        </el-button>
+                    </el-tooltip>
+                </div>
             </div>
 
             <div style="display: flex; align-items: flex-end; ">
-                <el-tooltip placement="top" effect="light" :open-delay="900">
-                    <div style="text-align: center" slot="content">
-                        get actual masks from Model
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 15px;">
+                    <div>
+                        <p style="font-size: 12px; color: #5a6772; margin: 2px 0">
+                            <b style="color: #ff6600;">Shift + D</b>
+                            <i style="margin-left: 5px" class="zmdi zmdi-keyboard"></i>
+                        </p>
                     </div>
-                    <el-button type="primary" class="regular" size="small" style="margin: 5px 5px;"
-                               :disabled="!data.newMasksAvailable"
+                    <el-tooltip placement="top" effect="light" :open-delay="900">
+                        <div style="text-align: center" slot="content">
+                            get actual masks from Model
+                        </div>
+                        <el-button type="primary" class="regular" size="small" style="margin: 0 5px 5px;"
+                                   :disabled="!data.newMasksAvailable"
 
-                               @click="state.updatingMasks=true; post('/update-masks/')">
-                        <i class="zmdi zmdi-refresh-alt mr5"></i>
-                        UPDATE MASKS
-                    </el-button>
-                </el-tooltip>
+                                   @click="state.updatingMasks=true; post('/update-masks/')">
+                            <i class="zmdi zmdi-refresh-alt mr5"></i>
+                            UPDATE MASKS
+                        </el-button>
+                    </el-tooltip>
+
+                </div>
+
 
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 15px;">
                     <div>

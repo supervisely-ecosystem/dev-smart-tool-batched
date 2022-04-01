@@ -115,7 +115,7 @@ def clean_up(state: supervisely.app.StateJson = Depends(supervisely.app.StateJso
     g.grid_controller.update_local_fields(state=state, data=DataJson())
 
     for widget in g.grid_controller.widgets.values():
-        if widget.is_active and not widget.is_empty:
+        if widget.is_active and not widget.is_empty and not widget.is_broken and not widget.is_finished:
             widget.clean_up()
             widget.needs_an_update = False
 
@@ -126,18 +126,18 @@ def assign_base_points(state: supervisely.app.StateJson = Depends(supervisely.ap
     g.grid_controller.update_local_fields(state=state, data=DataJson())
 
     for widget in g.grid_controller.widgets.values():
-        if widget.is_active and not widget.is_empty:
+        if widget.is_active and not widget.is_empty and not widget.is_finished and not widget.is_broken:
             widget.needs_an_update = True
 
-            w = widget.scaled_bbox[1][0] - widget.scaled_bbox[0][0]
-            h = widget.scaled_bbox[1][1] - widget.scaled_bbox[0][1]
+            w = widget.original_bbox[1][0] - widget.original_bbox[0][0]
+            h = widget.original_bbox[1][1] - widget.original_bbox[0][1]
 
-            base_padding = 0.12
+            w_padding, h_padding = (state['bboxesPadding'] / 100) * w / 4, (state['bboxesPadding'] / 100) * h / 4
 
-            x0, y0, x1, y1 = widget.scaled_bbox[0][0] + int(w * base_padding), \
-                             widget.scaled_bbox[0][1] + int(h * base_padding), \
-                             widget.scaled_bbox[1][0] - int(w * base_padding), \
-                             widget.scaled_bbox[1][1] - int(h * base_padding)
+            x0, y0, x1, y1 = widget.scaled_bbox[0][0] + int(w_padding), \
+                             widget.scaled_bbox[0][1] + int(h_padding), \
+                             widget.scaled_bbox[1][0] - int(w_padding), \
+                             widget.scaled_bbox[1][1] - int(h_padding)
 
             # new negative points on corners
             widget.negative_points.append({'position': [[x0, y0]], 'id': f'{uuid.uuid4()}'})
@@ -145,7 +145,13 @@ def assign_base_points(state: supervisely.app.StateJson = Depends(supervisely.ap
             widget.negative_points.append({'position': [[x1, y0]], 'id': f'{uuid.uuid4()}'})
             widget.negative_points.append({'position': [[x1, y1]], 'id': f'{uuid.uuid4()}'})
 
-            # new negative points on corners
+            # new negative points between corners
+            widget.negative_points.append({'position': [[x0, (y0 + y1) // 2]], 'id': f'{uuid.uuid4()}'})
+            widget.negative_points.append({'position': [[x1, (y0 + y1) // 2]], 'id': f'{uuid.uuid4()}'})
+            widget.negative_points.append({'position': [[(x0 + x1) // 2, y0]], 'id': f'{uuid.uuid4()}'})
+            widget.negative_points.append({'position': [[(x0 + x1) // 2, y1]], 'id': f'{uuid.uuid4()}'})
+
+            # new positive point in center
             center_x, center_y = int((x0 + x1) / 2), int((y0 + y1) / 2)
             widget.positive_points.append({'position': [[center_x, center_y]], 'id': f'{uuid.uuid4()}'})
 

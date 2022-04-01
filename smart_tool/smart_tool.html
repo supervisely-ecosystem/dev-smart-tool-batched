@@ -46,7 +46,7 @@
 
 {% else %}
 
-<div v-loading="state.updatingMasks && (widget.needsAnUpdate || widget.isActive)"
+<div v-loading="state.updatingMasks && (widget.needsAnUpdate || widget.isActive) && !(widget.isFinished || widget.isBroken)"
      style="width: 100%; height:100%;
                         display: flex;
                         flex-direction: column;

@@ -37,7 +37,7 @@
 
 <script
         type="module"
-        src="https://cdn.jsdelivr.net/gh/supervisely-ecosystem/supervisely-app-frontend-js@v0.0.9/SlyApp.js">
+        src="https://cdn.jsdelivr.net/gh/supervisely-ecosystem/supervisely-app-frontend-js@v0.0.10/SlyApp.js">
 </script>
 <!--        src="https://supervisely-ecosystem.github.io/supervisely-app-frontend-js/SlyApp.js">-->
 <!--<script src="/static/SlyApp.js" type="module"></script>-->
@@ -45,7 +45,14 @@
 
 
 <div id="sly-app">
-    <sly-app>
+    <sly-app
+    :hotkeys="[
+    { keyCode: 68, modifiers: ['shift'], handler({ state, post }) { state.updatingMasks=true; post('/update-masks/'); }},
+    { keyCode: 81, modifiers: ['shift'], handler({ state, post }) { post('/change-all-buttons/False'); }},
+    { keyCode: 69, modifiers: ['shift'], handler({ state, post }) { post('/change-all-buttons/True') }},
+    { keyCode: 65, modifiers: ['shift'], handler({ state, post }) { post('/assign-base-points/'); }},
+    { keyCode: 67, modifiers: ['shift'], handler({ state, post }) { post('/clean-up/') }},
+    ]">
         <template v-slot="{ post, state, data }">
 <!--            {{ JSON.stringify(state, null, 2) }}-->
 
