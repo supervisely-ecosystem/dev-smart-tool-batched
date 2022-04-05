@@ -65,8 +65,7 @@ broken_class_object = None
 input_project_id = os.getenv('modal.state.slyProjectId')
 output_project_id = None
 
-
-bg_loop = asyncio.new_event_loop()
+realtime_widget_update = 0
 
 
 @app.get('/favicon.ico')

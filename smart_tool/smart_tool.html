@@ -61,26 +61,22 @@
     <div style="display: flex; align-items: center; justify-content: space-between; position: absolute; width: 100%; z-index: 10001;" >
         <el-button
                    type="text"
-                   style="padding: 2px 2px; margin: 0"
-                   :disabled="widget.scaledBbox.length == 0 || widget.isBroken || widget.isFinished"
+                   style="padding: 2px 2px; margin: 0; flex: 1 1 25%"
+                   :disabled="widget.scaledBbox.length == 0"
 
-                   @click="widget.isActive = !widget.isActive">
+                   @click="widget.isActive = !widget.isActive; post('/update-locals/');">
             <i class="zmdi zmdi-link checkers" :style="[widget.isActive && !widget.isBroken && !widget.isFinished  ? {'background': '#20a0ff'} : {'background': '#b8b8b8'}]"></i>
         </el-button>
         <el-button
                    type="text"
-                   style="padding: 2px 2px; margin: 0"
-                   :disabled="widget.isFinished"
-
-                   @click="widget.isBroken = !widget.isBroken">
+                   style="padding: 2px 2px; margin: 0; flex: 1 1 25%"
+                   @click="widget.isBroken = !widget.isBroken; widget.isFinished=false; widget.isActive=false; post('/update-locals/');">
             <i class="zmdi zmdi-close checkers" :style="[widget.isBroken  ? {'background': '#ff4f4f'} : {'background': '#b8b8b8'}]"></i>
         </el-button>
         <el-button
                    type="text"
-                   style="padding: 2px 2px; margin: 0"
-                   :disabled="widget.scaledBbox.length == 0 || widget.isBroken"
-
-                   @click="widget.isFinished = !widget.isFinished">
+                   style="padding: 2px 2px; margin: 0; flex: 1 1 25%"
+                   @click="widget.isFinished = !widget.isFinished; ; widget.isBroken=false; widget.isActive=false; post('/update-locals/');">
             <i class="zmdi zmdi-flag checkers" :style="[widget.isFinished  ? {'background': '#96cc4b'} : {'background': '#b8b8b8'}]"></i>
         </el-button>
     </div>
@@ -94,9 +90,9 @@
             :bbox.sync="widget.scaledBbox"
             @update:bbox="widget.scaledBbox = $event; post('/widgets/smarttool/bbox-updated/' + widget.identifier)"
             :positive-points="widget.positivePoints"
-            @update:positive-points="widget.positivePoints = $event; widget.lastCall = Math.floor(Date.now()); post('/widgets/smarttool/positive-updated/' + widget.identifier)"
+            @update:positive-points="widget.positivePoints = $event; widget.lastCall = Math.floor(Date.now()); post.throttled('/widgets/smarttool/positive-updated/' + widget.identifier)"
             :negative-points="widget.negativePoints"
-            @update:negative-points="widget.negativePoints = $event; widget.lastCall = Math.floor(Date.now()) ;post('/widgets/smarttool/negative-updated/' + widget.identifier)">
+            @update:negative-points="widget.negativePoints = $event; widget.lastCall = Math.floor(Date.now());  post.throttled('/widgets/smarttool/negative-updated/' + widget.identifier)">
 
     </smarttool-editor>
 </div>

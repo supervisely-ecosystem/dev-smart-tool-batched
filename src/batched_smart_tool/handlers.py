@@ -6,6 +6,7 @@ import numpy as np
 from src.run_sync import run_sync
 from cv2 import cv2
 from fastapi import Request, Depends
+from fastapi import BackgroundTasks, FastAPI
 
 import supervisely
 from smart_tool import SmartTool
@@ -58,6 +59,7 @@ async def select_bboxes_order(state: supervisely.app.StateJson = Depends(supervi
 
 def points_updated(identifier: str,
                    request: Request,
+                   background_tasks: BackgroundTasks,
                    state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     widget: SmartTool = g.grid_controller.get_widget_by_id(widget_id=identifier)
 
@@ -94,9 +96,13 @@ def points_updated(identifier: str,
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
     run_sync(DataJson().synchronize_changes())
 
-    local_functions.update_single_widget_realtime(widget_id=identifier, state=state)
-    DataJson()['newMasksAvailable'] = local_functions.new_masks_available_flag()
-    run_sync(DataJson().synchronize_changes())
+    widget = g.grid_controller.get_widget_by_id(widget_id=identifier)
+    g.realtime_widget_update = copy.copy(widget.last_call)
+
+    background_tasks.add_task(local_functions.update_single_widget_realtime, widget=widget, state=state)
+    # local_functions.update_single_widget_realtime(widget=widget, state=state)
+
+
 
 
 def change_all_buttons(is_active: bool,
@@ -270,3 +276,7 @@ def bboxes_masks_opacity_changed(state: supervisely.app.StateJson = Depends(supe
         if not widget.is_empty:
             widget.change_mask_opacity(opacity_coefficient=state['masksOpacity'])
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
+
+
+def update_locals(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    run_sync(state.synchronize_changes())

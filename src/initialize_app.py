@@ -26,11 +26,14 @@ def init_routes():
     g.app.add_api_route('/bboxes-masks-opacity-changed/', batched_smart_tool.bboxes_masks_opacity_changed,
                         methods=["POST"])
 
+    g.app.add_api_route('/update-locals/', batched_smart_tool.update_locals, methods=["POST"])
+
     g.app.add_api_route('/change-all-buttons/{is_active}', batched_smart_tool.change_all_buttons, methods=["POST"])
     g.app.add_api_route('/clean-up/', batched_smart_tool.clean_up, methods=["POST"])
     g.app.add_api_route('/assign-base-points/', batched_smart_tool.assign_base_points, methods=["POST"])
     g.app.add_api_route('/update-masks/', batched_smart_tool.update_masks, methods=["POST"])
     g.app.add_api_route('/next-batch/', batched_smart_tool.next_batch, methods=["POST"])
+
 
     g.app.add_api_route('/spawn-unsaved-mask-dialog/', dialog_window.spawn_unsaved_mask_dialog, methods=["POST"])
 
