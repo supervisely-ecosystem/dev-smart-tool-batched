@@ -57,6 +57,7 @@ images_queue = queue.Queue(maxsize=int(1e6))
 grid_controller = GridController(SmartTool)
 
 imagehash2imageinfo_by_datasets = {}
+imagehash2imageann = {}
 processed_geometries = []
 
 output_class_name = None
@@ -64,6 +65,7 @@ output_class_object = None
 broken_class_object = None
 
 input_project_id = os.getenv('modal.state.slyProjectId')
+input_project_meta = supervisely.ProjectMeta()
 output_project_id = None
 
 realtime_widget_update = 0

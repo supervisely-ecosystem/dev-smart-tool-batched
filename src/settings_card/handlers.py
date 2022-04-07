@@ -49,6 +49,7 @@ def select_output_project(state: supervisely.app.StateJson = Depends(supervisely
 
     if state['outputProject']['mode'] == 'new':
         local_functions.create_new_project_by_name(state)
+        local_functions.copy_meta_from_input_to_output(state['outputProject']['id'])
     else:
         state['outputProject']['id'] = local_functions.get_output_project_id()
         local_functions.cache_existing_images(state)

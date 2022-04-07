@@ -70,13 +70,13 @@ def upload_images_to_dataset(dataset_id, data_to_upload):
             imagehash2imageinfo = g.imagehash2imageinfo_by_datasets.get(dataset_id, {})
             image_info = imagehash2imageinfo.get(image_hash)
 
-            if image_info is None:
+            if image_info is None:  # if image not founded in hashed images
                 image_info = g.api.image.upload_hash(dataset_id=dataset_id, name=f'{image_hash[:5]}.png',
                                                      hash=image_hash)
                 g.imagehash2imageinfo_by_datasets.setdefault(dataset_id, {})[image_hash] = image_info
 
-                annotation = supervisely.Annotation(img_size=(image_info.height, image_info.width),
-                                                    labels=labels)
+                annotation = g.imagehash2imageann[image_info.hash].clone(labels=labels)
+
                 g.api.annotation.upload_ann(image_info.id, annotation)
             else:
                 g.api.annotation.append_labels(image_info.id, labels)

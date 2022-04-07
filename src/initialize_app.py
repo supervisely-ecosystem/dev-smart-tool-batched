@@ -34,7 +34,6 @@ def init_routes():
     g.app.add_api_route('/update-masks/', batched_smart_tool.update_masks, methods=["POST"])
     g.app.add_api_route('/next-batch/', batched_smart_tool.next_batch, methods=["POST"])
 
-
     g.app.add_api_route('/spawn-unsaved-mask-dialog/', dialog_window.spawn_unsaved_mask_dialog, methods=["POST"])
 
     g.app.add_api_route('/widgets/smarttool/negative-updated/{identifier}', batched_smart_tool.points_updated,

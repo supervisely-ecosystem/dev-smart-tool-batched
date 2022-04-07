@@ -164,7 +164,11 @@ def refill_queues_by_input_project_data(project_id):
             crops_data.extend(get_images_for_queue(selected_image=current_image,
                                                    current_dataset=current_dataset))
 
+            g.imagehash2imageann[current_image.hash] = supervisely.Annotation.from_json(
+                data=current_annotation.annotation, project_meta=project_meta)
+
     g.crops_data = crops_data
+    g.input_project_meta = project_meta.clone()
 
 
 def select_input_project(identifier: str, state):
@@ -212,3 +216,9 @@ def get_output_project_id():
     for project in g.api.project.get_list(workspace_id=DataJson()['workspaceId']):
         if project.name == f'{g.api.project.get_info_by_id(g.input_project_id).name}_BST':
             return project.id
+
+
+def copy_meta_from_input_to_output(output_project_id):
+    meta = supervisely.ProjectMeta.from_json(data=g.api.project.get_meta(output_project_id))
+    meta = meta.merge(other=g.input_project_meta)
+    g.api.project.update_meta(output_project_id, meta.to_json())
