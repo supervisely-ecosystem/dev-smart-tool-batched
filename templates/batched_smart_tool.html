@@ -73,28 +73,29 @@
 
             <div style="display: flex">
                 <div style="display: flex; padding-bottom: 10px; align-items: center; justify-content: center">
-                    <el-tooltip placement="bottom" effect="light" :open-delay="900">
-                        <div style="text-align: center" slot="content">
-                            <b>select
-                                <a :href="`https://ecosystem.supervise.ly/apps/supervisely-ecosystem%252Fritm-interactive-segmentation%252Fsupervisely`"
-                                   target="_blank">
-                                    served Smart Tool</a>
-                                model</b>
 
-                        </div>
-                        <div style="padding: 0 10px; display: flex; justify-content: center; align-items: center; border-right: solid black 1px">
-                            <sly-icon
-                                    style="margin-top: 17px;"
-                                    v-if="!state.processingServer.connected"
-                                    slot="icon" :options="{ color: '#ffffff', bgColor: '#fe5a1d', rounded: false }">
-                                <i class="zmdi zmdi-memory"></i>
-                            </sly-icon>
-                            <sly-icon
-                                    v-else
-                                    style="margin-top: 17px;"
-                                    slot="icon" :options="{ color: '#ffffff', bgColor: '#32a852', rounded: false }">
-                                <i class="zmdi zmdi-memory"></i>
-                            </sly-icon>
+                    <div style="padding: 0 10px; display: flex; justify-content: center; align-items: center; border-right: solid black 1px">
+                        <sly-icon
+                                style="margin-top: 17px;"
+                                v-if="!state.processingServer.connected"
+                                slot="icon" :options="{ color: '#ffffff', bgColor: '#fe5a1d', rounded: false }">
+                            <i class="zmdi zmdi-memory"></i>
+                        </sly-icon>
+                        <sly-icon
+                                v-else
+                                style="margin-top: 17px;"
+                                slot="icon" :options="{ color: '#ffffff', bgColor: '#32a852', rounded: false }">
+                            <i class="zmdi zmdi-memory"></i>
+                        </sly-icon>
+                        <el-tooltip placement="bottom" effect="light" :open-delay="900">
+                            <div style="text-align: center" slot="content">
+                                <b>select
+                                    <a :href="`https://ecosystem.supervise.ly/apps/supervisely-ecosystem%252Fritm-interactive-segmentation%252Fsupervisely`"
+                                       target="_blank">
+                                        served Smart Tool</a>
+                                    model</b>
+
+                            </div>
                             <div
 
                                     class="fflex"
@@ -111,8 +112,34 @@
                                 >
                                 </sly-select-app-session>
                             </div>
-                        </div>
-                    </el-tooltip>
+                        </el-tooltip>
+                        <el-tooltip placement="bottom" effect="light" :open-delay="900">
+                            <div style="text-align: center" slot="content">
+                                in <b></b>consistent</b> mode model make <b>predictions for each point</b> in points
+                                order, each next point contributes less prediction;<br>in <b>batched</b> mode model make
+                                <b>one prediction</b> from all gave points
+                            </div>
+                            <div class="fflex"
+                                 style="justify-content: center; flex-direction: column; margin: 0 2px;">
+                                <p style="font-size: 12px; color: #5a6772; margin: 2px 0">Mode</p>
+                                <el-select v-model="state.processingServer.mode" clearable placeholder="select mode"
+                                           @change="post('/update-locals/')"
+                                           :disabled="!state.processingServer.connected"
+                                           size="small"
+                                           style="width: 108px"
+                                           :clearable="false"
+                                >
+                                    <el-option
+                                            v-for="item in ['batched', 'consistent']"
+                                            :key="item"
+                                            :label="item"
+                                            :value="item">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </el-tooltip>
+                    </div>
+
 
                     <el-tooltip placement="bottom" effect="light" :open-delay="900">
                         <div style="text-align: center" slot="content">
@@ -152,7 +179,8 @@
                                                     width: 86%;
                                                     white-space: nowrap;
                                                     text-overflow: ellipsis;
-                                                    overflow-x: hidden;">
+                                                    overflow-x: hidden;
+                                                    overflow-y: hidden;">
                                             {{ state.outputClassName }}
                                         </span>
 

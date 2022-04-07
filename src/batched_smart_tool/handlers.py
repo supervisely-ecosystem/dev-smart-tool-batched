@@ -97,7 +97,7 @@ def points_updated(identifier: str,
     run_sync(DataJson().synchronize_changes())
 
     widget = g.grid_controller.get_widget_by_id(widget_id=identifier)
-    g.realtime_widget_update = copy.copy(widget.last_call)
+    g.realtime_widget_update = copy.deepcopy(widget.last_call)
 
     background_tasks.add_task(local_functions.update_single_widget_realtime, widget=widget, state=state)
     # local_functions.update_single_widget_realtime(widget=widget, state=state)
@@ -242,6 +242,7 @@ def next_batch(state: supervisely.app.StateJson = Depends(supervisely.app.StateJ
 def bboxes_padding_changed(request: Request,
                            state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     bboxes_padding = state['bboxesPadding']
+    g.grid_controller.update_local_fields(state=state, data=DataJson())
     g.grid_controller.change_padding(actual_padding=bboxes_padding)
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
@@ -279,4 +280,6 @@ def bboxes_masks_opacity_changed(state: supervisely.app.StateJson = Depends(supe
 
 
 def update_locals(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+    g.prediction_mode = state['processingServer']['mode']
+
     run_sync(state.synchronize_changes())

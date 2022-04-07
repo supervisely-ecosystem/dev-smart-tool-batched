@@ -40,10 +40,12 @@ def get_data_to_render(image_info, bboxes, current_dataset):
 
         data_to_render.append({
             'label': label,
+            'imageLink': f'{g.api.image.url(team_id=DataJson()["teamId"], workspace_id=DataJson()["workspaceId"], project_id=current_dataset.project_id, dataset_id=current_dataset.id, image_id=image_info.id)}',
             'imageUrl': f'{image_info.full_storage_url}',
             'imageHash': f'{image_info.hash}',
             'imageSize': [image_info.width, image_info.height],
             'datasetName': f'{current_dataset.name}',
+            'datasetId': f'{current_dataset.id}',
             'originalBbox': [[bbox.left, bbox.top], [bbox.right, bbox.bottom]],
             'scaledBbox': [[bbox.left, bbox.top], [bbox.right, bbox.bottom]],
             'positivePoints': [],

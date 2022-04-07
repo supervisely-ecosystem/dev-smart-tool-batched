@@ -27,7 +27,8 @@ StateJson()['outputClass'] = {
 StateJson()['processingServer'] = {
     'sessionId': None,
     'connected': None,
-    'loading': False
+    'loading': False,
+    'mode': 'batched'  # consistent, batched
 }
 
 StateJson()['selectProjectLoading'] = None

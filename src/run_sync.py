@@ -1,4 +1,5 @@
 import asyncio
+import time
 
 
 def run_sync(coroutine):

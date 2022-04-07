@@ -86,3 +86,4 @@ class GridController:
         while len(identifiers) > 0:
             self._remove(state, data, images_queue)
             identifiers = list(self.widgets.keys())
+        run_sync(state.synchronize_changes())

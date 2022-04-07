@@ -25,6 +25,8 @@ class SmartTool:
         self.app = app
         self.identifier = self.get_widget_identifier(state, data)
 
+        self.image_link = None
+
         self.sly_id = None
 
         self.image_url = None
@@ -178,6 +180,7 @@ class SmartTool:
         self.update_fields_by_data(new_widget_data)
 
     def update_fields_by_data(self, new_widget_data):
+        self.image_link = new_widget_data.get('imageLink', '')
         self.image_url = new_widget_data.get('imageUrl', '')
         self.image_hash = new_widget_data.get('imageHash', '')
         self.image_size = new_widget_data.get('imageSize', '')
@@ -199,6 +202,7 @@ class SmartTool:
     def get_data_to_send(self):
         return {
             'identifier': f'{self.identifier}',
+            'imageLink': self.image_link,
             'imageUrl': self.image_url,
             'imageHash': self.image_hash,
             'imageSize': self.image_size,
@@ -225,7 +229,7 @@ class SmartTool:
         existing_objects = state['widgets'].get(f'{self.__class__.__name__}', {})
         if existing_objects.get(self.identifier, None) is not None:
             existing_objects.pop(self.identifier)
-            run_sync(state.synchronize_changes())
+            # run_sync(state.synchronize_changes())
 
     def get_widget_identifier(self, state, data):
         existing_widgets_count = len(state["widgets"].get(f'{self.__class__.__name__}', []))

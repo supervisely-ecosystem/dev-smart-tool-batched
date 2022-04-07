@@ -45,6 +45,7 @@ DataJson()['widgets'] = {}
 
 templates_env = Jinja2Templates(directory=os.path.join(app_root_directory, 'templates'))
 
+prediction_mode = 'batched'
 
 # selected_queue = Queue(maxsize=int(1e6))
 crops_data = None
