@@ -14,17 +14,12 @@ import src.select_class as select_class
 from supervisely.app import DataJson
 
 
-def get_supervisely_label_by_widget_data(widget_data, current_class_name="batched_smart_tool"):
+def get_supervisely_label_by_widget_data(widget_data):
     label = None
 
     if widget_data.get('isBroken', False) and widget_data.get('originalBbox') is not None:
-        original_bbox = widget_data['originalBbox']
-        geometry = supervisely.Rectangle(
-            top=original_bbox[0][1], left=original_bbox[0][0],
-            bottom=original_bbox[1][1], right=original_bbox[1][0]
-        )
-        label = supervisely.Label(geometry=geometry,
-                                  obj_class=g.broken_class_object)
+        label = g.labelid2labelann[widget_data['slyId']]
+        label = label.add_tag(supervisely.Tag(meta=g.broken_tag_meta, value='not annotated'))
 
     elif widget_data.get('mask') is not None:
         mask_np = supervisely.Bitmap.base64_2_data(widget_data['mask']['data'])
@@ -34,8 +29,10 @@ def get_supervisely_label_by_widget_data(widget_data, current_class_name="batche
 
         # settings_card.get_object_class_by_name(state)
 
-        label = supervisely.Label(geometry=geometry,
-                                  obj_class=g.output_class_object)
+        label = g.labelid2labelann[widget_data['slyId']].clone(geometry=geometry,
+                                                               obj_class=g.output_class_object)
+
+    label = supervisely.Label(label.geometry, label.obj_class, label.tags, label.description)  # check without recreation
 
     return label
 

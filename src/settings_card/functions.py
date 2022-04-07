@@ -3,6 +3,8 @@ import functools
 from queue import Queue
 
 import numpy as np
+from loguru import logger
+
 from src.run_sync import run_sync
 
 import supervisely
@@ -105,7 +107,7 @@ def get_object_class_by_name(state, output_class_name, geometry_type=supervisely
 
     while obj_class is None or obj_class.geometry_type is not geometry_type:
         if obj_class is not None and obj_class.geometry_type is not geometry_type:
-            output_class_name += '_smart_tool'
+            output_class_name += '_BST'
 
         updated_meta = output_project_meta.merge(create_new_object_meta_by_name(output_class_name, geometry_type))
         g.api.project.update_meta(id=state['outputProject']['id'], meta=updated_meta.to_json())
@@ -142,8 +144,21 @@ def get_images_for_queue(selected_image, current_dataset):
     return data_to_render
 
 
+def update_additional_data(current_image, current_annotation):
+    image_annotation = supervisely.Annotation.from_json(data=current_annotation.annotation,
+                                                        project_meta=g.input_project_meta)
+
+    for label in image_annotation.labels:
+        if label.geometry.geometry_name() == 'rectangle':
+            g.labelid2labelann[label.geometry.sly_id] = label
+
+    g.imagehash2imageann[current_image.hash] = image_annotation
+
+
 def refill_queues_by_input_project_data(project_id):
     project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(id=project_id))
+    g.input_project_meta = project_meta.clone()
+
     project_datasets = g.api.dataset.get_list(project_id=project_id)
 
     crops_data = []
@@ -164,11 +179,9 @@ def refill_queues_by_input_project_data(project_id):
             crops_data.extend(get_images_for_queue(selected_image=current_image,
                                                    current_dataset=current_dataset))
 
-            g.imagehash2imageann[current_image.hash] = supervisely.Annotation.from_json(
-                data=current_annotation.annotation, project_meta=project_meta)
+            update_additional_data(current_image, current_annotation)
 
     g.crops_data = crops_data
-    g.input_project_meta = project_meta.clone()
 
 
 def select_input_project(identifier: str, state):
@@ -222,3 +235,22 @@ def copy_meta_from_input_to_output(output_project_id):
     meta = supervisely.ProjectMeta.from_json(data=g.api.project.get_meta(output_project_id))
     meta = meta.merge(other=g.input_project_meta)
     g.api.project.update_meta(output_project_id, meta.to_json())
+
+
+def add_tag_to_project_meta(project_id, tag_name):
+    project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(project_id))
+    tag_meta = supervisely.TagMeta(name=tag_name, value_type=supervisely.TagValueType.ANY_STRING)
+    project_meta = project_meta.clone(tag_metas=project_meta.tag_metas.add(tag_meta))
+    g.api.project.update_meta(project_id, project_meta.to_json())
+
+    logger.info(f'new tag added to project meta: {project_id=}, {tag_name=}')
+
+    return tag_meta
+
+
+def get_tag_from_project_meta(project_id, tag_name):
+    project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(project_id))
+    tag_meta = project_meta.tag_metas.get(tag_name, None)
+    if tag_meta is None:
+        tag_meta = add_tag_to_project_meta(project_id, tag_name)
+    return tag_meta

@@ -50,15 +50,20 @@ def select_output_project(state: supervisely.app.StateJson = Depends(supervisely
     if state['outputProject']['mode'] == 'new':
         local_functions.create_new_project_by_name(state)
         local_functions.copy_meta_from_input_to_output(state['outputProject']['id'])
+        g.broken_tag_meta = local_functions.add_tag_to_project_meta(project_id=state['outputProject']['id'],
+                                                                    tag_name='_not_labeled_by_BTC')
     else:
         state['outputProject']['id'] = local_functions.get_output_project_id()
         local_functions.cache_existing_images(state)
         local_functions.remove_processed_geometries(state)
 
+        g.broken_tag_meta = local_functions.get_tag_from_project_meta(project_id=state['outputProject']['id'],
+                                                                      tag_name='_not_labeled_by_BTC')
+
     g.output_project_id = state['outputProject']['id']
     select_output_class(state=state)  # selecting first class from table
 
-    g.broken_class_object = local_functions.get_object_class_by_name(state, 'broken_input_', supervisely.Rectangle)
+    # g.broken_class_object = local_functions.get_object_class_by_name(state, 'broken_input_', supervisely.Rectangle)
 
     # grid_controller.handlers.windows_count_changed(state=state)
 

@@ -58,11 +58,13 @@ grid_controller = GridController(SmartTool)
 
 imagehash2imageinfo_by_datasets = {}
 imagehash2imageann = {}
+labelid2labelann = {}
+
 processed_geometries = []
 
 output_class_name = None
 output_class_object = None
-broken_class_object = None
+broken_tag_meta = None
 
 input_project_id = os.getenv('modal.state.slyProjectId')
 input_project_meta = supervisely.ProjectMeta()
