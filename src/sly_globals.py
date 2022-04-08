@@ -39,6 +39,7 @@ api = supervisely.Api.from_env()
 StateJson()['widgets'] = {}
 
 
+DataJson()['instanceAddress'] = os.environ['SERVER_ADDRESS']
 DataJson()['teamId'] = os.environ['context.teamId']
 DataJson()['workspaceId'] = os.environ['context.workspaceId']
 DataJson()['widgets'] = {}

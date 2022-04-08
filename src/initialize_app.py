@@ -48,6 +48,8 @@ def _init_project(state):
     settings_card.select_input_project(identifier=f'{g.input_project_id}', state=state)  # download input project
 
     state['inputProject']['loading'] = False
+    state['inputProject']['previewUrl'] = g.api.project.get_info_by_id(g.input_project_id).reference_image_url
+
     state['dialogWindow']['mode'] = 'bboxesOrder'
 
     dialog_window.notification_box.title = None

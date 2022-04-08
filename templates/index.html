@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./static/styles.css"/>
 </head>
 
-<body style="overflow-y: auto;">
+<body style="overflow-y: auto; padding: 10px">
 
 <script src="https://supervise.ly/apps-designer.bundle.js"></script>
 <script>
@@ -55,16 +55,16 @@
     ]">
         <template v-slot="{ post, state, data }">
 <!--            {{ JSON.stringify(state, null, 2) }}-->
-            <div style="position: fixed; top: 0; right: 0; z-index: 999999">
-                <el-button
-                        style="position: absolute; right:0;  z-index: 99999"
-                        @click="state.showViewer = !state.showViewer" size="small">
-                    toggle
-                </el-button>
+<!--            <div style="position: fixed; top: 0; right: 0; z-index: 999999">-->
+<!--                <el-button-->
+<!--                        style="position: absolute; right:0;  z-index: 99999"-->
+<!--                        @click="state.showViewer = !state.showViewer" size="small">-->
+<!--                    toggle-->
+<!--                </el-button>-->
 
-                <json-viewer v-if='state.showViewer' :value="{'state': state, 'data': data}"
-                ></json-viewer>
-            </div>
+<!--                <json-viewer v-if='state.showViewer' :value="{'state': state, 'data': data}"-->
+<!--                ></json-viewer>-->
+<!--            </div>-->
             {% include 'batched_smart_tool.html' %}
 
             {% include 'select_class.html' %}

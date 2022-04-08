@@ -8,7 +8,8 @@ StateJson()['showViewer'] = True
 
 StateJson()['inputProject'] = {
     'id': None,
-    'loading': True
+    'loading': True,
+    'previewUrl': None
 }
 
 StateJson()['outputProject'] = {

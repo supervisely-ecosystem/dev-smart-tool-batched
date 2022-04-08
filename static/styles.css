@@ -72,3 +72,7 @@
 .checkers:hover {
     color: #d7d7d7;
 }
+
+.without-margins.input-label {
+    margin: 15px 0 0 !important;
+}

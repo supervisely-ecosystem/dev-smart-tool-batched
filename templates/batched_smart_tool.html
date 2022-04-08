@@ -195,19 +195,24 @@
                     </el-tooltip>
 
 
-                    <div style="padding: 0 10px;">
-                        <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">
-                            <p style="font-size: 12px; color: #5a6772; margin: 2px 0">Output Project</p>
-                            <a :href="`https://supervisely-dev.deepsystems.io/projects/${state.outputProject.id}/datasets`"
-                               target="_blank">
-                                <el-button
-                                        :plain="true"
-                                        type="success" class="regular" size="small"
-                                        style="margin: 0 0; padding: 6px 10px; width: 86px; height: 33px;">
-                                    <i class="zmdi zmdi-arrow-right-top"></i>
-                                </el-button>
-                            </a>
-                        </div>
+                    <div style="padding-left: 12px; padding-right: 4px">
+                        <sly-field title="" description="Output Project" class="without-margins">
+                            <a slot="title" target="_blank"
+                               :href="`${data.instanceAddress}projects/${state.outputProject.id}/datasets`">Open</a>
+                            <sly-icon slot="icon" :options="{ imageUrl: `${state.inputProject.previewUrl}` }"/>
+                        </sly-field>
+                        <!--                        <div class="fflex" style="justify-content: center; flex-direction: column; margin: 0 2px;">-->
+                        <!--                            <p style="font-size: 12px; color: #5a6772; margin: 2px 0">Output Project</p>-->
+                        <!--                            <a :href="`https://supervisely-dev.deepsystems.io/projects/${state.outputProject.id}/datasets`"-->
+                        <!--                               target="_blank">-->
+                        <!--                                <el-button-->
+                        <!--                                        :plain="true"-->
+                        <!--                                        type="success" class="regular" size="small"-->
+                        <!--                                        style="margin: 0 0; padding: 6px 10px; width: 86px; height: 33px;">-->
+                        <!--                                    <i class="zmdi zmdi-arrow-right-top"></i>-->
+                        <!--                                </el-button>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
                     </div>
 
                 </div>
