@@ -35,7 +35,7 @@ Application key points:
 
 Easily place green points to label-interested area and red points to label-not-interested area.
 
-<img src="https://imgur.com/N6SbpAU.png" style="width: 100%;"/>
+<img src="https://imgur.com/4xnqYYl.png" style="width: 100%;"/>
 
 
 | Key                                                           | Description                               |
