@@ -30,14 +30,11 @@ Application key points:
 - Mark broken Objects / Images
 - Linked green / red points between cards
 - Flexible settings
+- Saves the progress of an annotation
 
 # Usage
 
-Easily place green points to label-interested area and red points to label-not-interested area.
-
-<img src="https://imgur.com/4xnqYYl.png" style="width: 100%;"/>
-
-
+### Controls
 | Key                                                           | Description                               |
 | ------------------------------------------------------------- | ------------------------------------------|
 | <kbd>Left Mouse Button</kbd>                                  | Place a green point |
@@ -45,6 +42,29 @@ Easily place green points to label-interested area and red points to label-not-i
 | <kbd>Left Mouse Button</kbd> + <kbd>Ctrl</kbd>           | Remove point                              |
 | <kbd>Scroll Wheel</kbd>                                       | Zoom an image in and out                  |
 | <kbd>Right Mouse Button</kbd> + <kbd>Move Mouse</kbd>    | Move an image                             |
+| <kbd>Shift</kbd> + <kbd>E</kbd>    |      Link All Cells                        |
+| <kbd>Shift</kbd> + <kbd>Q</kbd>    |      Unlink All Cells                        |
+| <kbd>Shift</kbd> + <kbd>A</kbd>    |      Assign Points Automatically                        |
+| <kbd>Shift</kbd> + <kbd>D</kbd>    |      Update Unupdated Cells                         |
+| <kbd>Shift</kbd> + <kbd>C</kbd>    |      Clean All Linked Cells                        |
+
+### General Usage Scenario
+
+1. **Assign Base (<kbd>Shift</kbd> + <kbd>A</kbd>)** points to all linked cells
+<img src="https://imgur.com/nE0CP4N.png" style="width: 100%;"/>  
+
+2. **Update Masks (<kbd>Shift</kbd> + <kbd>D</kbd>)** on all unupdated cells
+<img src="https://imgur.com/IxcUVm3.png" style="width: 100%;"/>
+
+3. **Unlink All (<kbd>Shift</kbd> + <kbd>Q</kbd>)** cells
+<img src="https://imgur.com/5XkMWoI.png" style="width: 100%;"/>
+
+4. Easily place **green points** to label-interested area and **red points** to label-not-interested area to correct local mistakes.
+<img src="https://imgur.com/1ijrQpC.png" style="width: 100%;"/>
+
+5. When you satisfied with results, click **Next Batch** button to load next images
+<img src="https://imgur.com/HJaNRY3.png" style="width: 100%;"/>
+
 
 
 
