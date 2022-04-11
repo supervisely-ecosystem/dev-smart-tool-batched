@@ -1,7 +1,7 @@
 {
-    "name": "Batched Smart Tool [beta]",
+    "name": "Batched Smart Tool",
     "type": "app",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "categories": [
       "development"
     ],
