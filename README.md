@@ -25,7 +25,10 @@ Application allows you to label objects with **Smart Tool using batch way**.
 
 Application key points:  
 - Multiclass annotation
-- Connected green / red points between cards
+- Input data ordering
+- Apply model to Objects (Rectangles) / whole Images
+- Mark broken Objects / Images
+- Linked green / red points between cards
 - Flexible settings
 
 # Usage
