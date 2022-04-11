@@ -5,7 +5,7 @@ from queue import Queue
 import numpy as np
 from loguru import logger
 
-from src.run_sync import run_sync
+from supervisely.app.fastapi import run_sync
 
 import supervisely
 

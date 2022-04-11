@@ -10,7 +10,7 @@ import supervisely
 
 import cv2
 
-from src.run_sync import run_sync
+from supervisely.app.fastapi import run_sync
 from supervisely.app import DataJson
 
 from loguru import logger

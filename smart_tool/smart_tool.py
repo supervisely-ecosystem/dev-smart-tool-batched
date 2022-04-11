@@ -7,7 +7,7 @@ from pathlib import Path
 from uuid import uuid4
 
 import markupsafe
-from src.run_sync import run_sync
+from supervisely.app.fastapi import run_sync
 from jinja2 import Environment
 
 from supervisely.app import StateJson, DataJson

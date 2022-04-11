@@ -1,4 +1,4 @@
-supervisely==6.9.2
+supervisely==6.10.1
 imutils==0.5.4
 
 #uvicorn==0.17.0

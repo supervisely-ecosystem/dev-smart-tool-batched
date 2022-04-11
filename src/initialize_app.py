@@ -1,7 +1,7 @@
 import functools
 from threading import Thread
 
-from src.run_sync import run_sync
+from supervisely.app.fastapi import run_sync
 
 from supervisely.app import StateJson, DataJson
 

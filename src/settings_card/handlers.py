@@ -3,7 +3,7 @@ from queue import Queue
 
 from loguru import logger
 
-from src.run_sync import run_sync
+from supervisely.app.fastapi import run_sync
 from fastapi import Request, Depends
 
 import src.sly_functions as f
@@ -63,7 +63,7 @@ def select_output_project(state: supervisely.app.StateJson = Depends(supervisely
     g.output_project_id = state['outputProject']['id']
     select_output_class(state=state)  # selecting first class from table
 
-    # g.broken_class_object = local_functions.get_object_class_by_name(state, 'broken_input_', supervisely.Rectangle)
+    g.broken_image_object = local_functions.get_object_class_by_name(state, 'image', supervisely.Rectangle)
 
     # grid_controller.handlers.windows_count_changed(state=state)
 
