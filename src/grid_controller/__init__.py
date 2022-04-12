@@ -5,4 +5,4 @@ from .handlers import *
 
 StateJson()['windowsCount'] = 12
 StateJson()['toolSize'] = 16
-StateJson()['bboxesPadding'] = 50
+StateJson()['bboxesPadding'] = 0

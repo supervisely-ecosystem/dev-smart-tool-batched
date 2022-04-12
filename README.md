@@ -141,7 +141,7 @@ You can select objects (Rectangles) from prepared project or label whole images.
 
 
 **Update Masks (<kbd>Shift</kbd> + <kbd>D</kbd>)** — updates masks on all unupdated (orange) cells.  
-**Next Batch** — uploads labeled data from cells to output project and load new data to label.
+**Next Batch** — uploads labeled data from cells to output project and load new data to label.  
 <img src="https://imgur.com/Y9Mfxrc.png" style="height: 60px;"/>
 
 
