@@ -74,13 +74,20 @@ Application key points:
 
 ### Preferences Panel
 
-**Preferences Panel** allows you to customize labeling interface for your needs.  
-
+**Preferences Panel** allows you to customize labeling interface for your needs.
 <img src="https://imgur.com/cYXObJB.png" style="width: 100%;"/>
 
-**Cells Settings**
+**Grid Cells Preferences** allows you to adjust number, size, padding and masks opacity parameters for each cell in the grid.  
+<img src="https://imgur.com/MrqTMmc.png" style="width: 60%;"/>
 
-<img src="https://imgur.com/MrqTMmc.png" style="width: 40%;"/>
+**Model Preferences** allows you to connect to served Smart Tool model, and select labeling mode.  
+<img src="https://imgur.com/CSroTT2.png" style="width: 60%;"/>
+
+**Apply model to Preference** allows you to choose input data for labeling.  
+You can select objects (Rectangles type) from prepared project or label whole images.  
+`Multiclass labeling` available.   
+<img src="https://imgur.com/y05aYwo.png" style="width: 60%;"/>
+<img src="https://imgur.com/Ov78dSp.png" style="width: 60%;"/>
 
 
 
