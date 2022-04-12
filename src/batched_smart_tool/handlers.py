@@ -43,7 +43,7 @@ async def select_bboxes_order(state: supervisely.app.StateJson = Depends(supervi
         dialog_window.notification_box.title = 'Project with same output name founded'
         dialog_window.notification_box.description = '''
         Output project with name
-            <a href="{}projects/{}/datasets"
+            <a href="{}/projects/{}/datasets"
                            target="_blank">{}</a> already exists.<br>
             Do you want to use existing project or create a new?
         '''.format(

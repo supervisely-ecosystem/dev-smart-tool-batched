@@ -23,7 +23,7 @@
 
 Application allows you to label objects with **Smart Tool using batch way**.
 
-Application key points:  
+Application key points:
 - Multiclass annotation
 - Input data ordering
 - Application saves annotation progress automatically 
@@ -44,6 +44,20 @@ Application key points:
 * <a href="#control-panel">Control Panel</a>  
 
 
+### Application Startup
+
+1. On startup application will suggest **input data order.**<br> 
+   For comfortable and efficient labeling we recommend to use sorted bboxes order.
+
+<img src="https://imgur.com/IQhS6Bg.png" style="width: 100%;"/>
+
+2. **Application saves annotation progress automatically.**<br>
+If you launch application on same project a second time — 
+   it will suggest you to continue the labeling process from the paused point.
+
+<img src="https://imgur.com/n1oLkux.png" style="width: 100%;"/>
+
+
 ### Controls with Shortcuts
 | Key                                                           | Description                               |
 | ------------------------------------------------------------- | ------------------------------------------|
@@ -58,18 +72,6 @@ Application key points:
 | <kbd>Shift</kbd> + <kbd>D</kbd>    |      Update Unupdated Cells                         |
 | <kbd>Shift</kbd> + <kbd>C</kbd>    |      Clean All Linked Cells                        |
 
-### Application Startup
-
-1. On startup application will suggest **input data order.**<br> 
-   For comfortable and efficient labeling we recommend to use sorted bboxes order.
-
-<img src="https://imgur.com/IQhS6Bg.png" style="width: 100%;"/>
-
-2. **Application saves annotation progress automatically.**<br>
-If you launch application on same project a second time — 
-   it will suggest you to continue the labeling process from the paused point.
-
-<img src="https://imgur.com/n1oLkux.png" style="width: 100%;"/>
 
 ### General Usage Scenario
 
