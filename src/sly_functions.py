@@ -44,6 +44,9 @@ def get_supervisely_label_by_widget_data(widget_data):
             label = label.clone(geometry=geometry,
                                 obj_class=g.output_class_object)
 
+    else:
+        return None
+
     label = supervisely.Label(label.geometry, label.obj_class, label.tags,
                               label.description)  # check without recreation
 
