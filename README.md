@@ -26,11 +26,12 @@ Application allows you to label objects with **Smart Tool using batch way**.
 Application key points:
 - Multiclass annotation
 - Input data ordering
-- Application saves annotation progress automatically 
+- Saves annotation progress automatically 
 - Apply model to Objects (Rectangles) / whole Images
 - Mark broken Objects / Images
 - Linked green / red points between cards
 - Flexible settings
+- Doesn't change the Input Project
 
 # Usage
 
@@ -109,15 +110,15 @@ Each cell has core functionality:
 <img src="https://imgur.com/cYXObJB.png" style="width: 100%;"/>
 
 **Grid Cells Preferences** allows you to adjust number, size, padding and masks opacity parameters for each cell in the grid.  
-<img src="https://imgur.com/MrqTMmc.png" style="width: 60%;"/>
+<img src="https://imgur.com/MrqTMmc.png" style="height: 60px;"/>
 
 **Model Preferences** allows you to connect to served Smart Tool model, and select labeling mode.  
-<img src="https://imgur.com/CSroTT2.png" style="width: 60%;"/>
+<img src="https://imgur.com/CSroTT2.png" style="height: 60px;"/>
 
 **Apply model to Preference** allows you to choose input data for labeling.  
 You can select objects (Rectangles) from prepared project or label whole images.  
    
-<img src="https://imgur.com/y05aYwo.png" style="width: 60%;"/>  
+<img src="https://imgur.com/y05aYwo.png" style="height: 60px;"/>  
 
 `ℹ️ Multiclass labeling available`  
 <img src="https://imgur.com/bJKavJA.png" style="width: 60%;"/>
@@ -130,18 +131,18 @@ You can select objects (Rectangles) from prepared project or label whole images.
 
 
 **Link all (<kbd>Shift</kbd> + <kbd>E</kbd>)** — links all cells, all points (green / red) on linked cells will synchronise.  
-**Unlink all (<kbd>Shift</kbd> + <kbd>Q</kbd>)** — unlinks all cells.
-<img src="https://imgur.com/iYBzz7m.png" style="width: 60%;"/>
+**Unlink all (<kbd>Shift</kbd> + <kbd>Q</kbd>)** — unlinks all cells.  
+<img src="https://imgur.com/iYBzz7m.png" style="height: 60px;"/>
 
 **Assign Base (<kbd>Shift</kbd> + <kbd>A</kbd>)** — assign 8 red points to corners and 1 green point to center of image.    
 **Clean Up (<kbd>Shift</kbd> + <kbd>C</kbd>)** — clean up data from all linked cells.   
-<img src="https://imgur.com/y2SCqOu.png" style="width: 60%;"/>
+<img src="https://imgur.com/y2SCqOu.png" style="height: 60px;"/>
 
 
 
 **Update Masks (<kbd>Shift</kbd> + <kbd>D</kbd>)** — updates masks on all unupdated (orange) cells.  
 **Next Batch** — uploads labeled data from cells to output project and load new data to label.
-<img src="https://imgur.com/Y9Mfxrc.png" style="width: 60%;"/>
+<img src="https://imgur.com/Y9Mfxrc.png" style="height: 60px;"/>
 
 
 # How to run
