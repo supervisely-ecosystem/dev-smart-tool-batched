@@ -34,7 +34,14 @@ Application key points:
 
 # Usage
 
-### Controls
+📋 Content:
+
+* <a href="#controls-with-shortcuts">Controls with Shortcuts</a>  
+* <a href="#general-usage-scenario">General Usage Scenario</a>  
+* <a href="#settings-board">Settings Board</a>  
+
+
+### Controls with Shortcuts
 | Key                                                           | Description                               |
 | ------------------------------------------------------------- | ------------------------------------------|
 | <kbd>Left Mouse Button</kbd>                                  | Place a green point |
@@ -65,6 +72,15 @@ Application key points:
 5. When you satisfied with results, click **Next Batch** button to load next images
 <img src="https://imgur.com/HJaNRY3.png" style="width: 100%;"/>
 
+### Preferences Panel
+
+**Preferences Panel** allows you to customize labeling interface for your needs.  
+
+<img src="https://imgur.com/cYXObJB.png" style="width: 100%;"/>
+
+**Cells Settings**
+
+<img src="https://imgur.com/MrqTMmc.png" style="width: 40%;"/>
 
 
 
