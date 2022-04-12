@@ -26,19 +26,22 @@ Application allows you to label objects with **Smart Tool using batch way**.
 Application key points:  
 - Multiclass annotation
 - Input data ordering
+- Application saves annotation progress automatically 
 - Apply model to Objects (Rectangles) / whole Images
 - Mark broken Objects / Images
 - Linked green / red points between cards
 - Flexible settings
-- Saves the progress of an annotation
 
 # Usage
 
 📋 Content:
 
-* <a href="#controls-with-shortcuts">Controls with Shortcuts</a>  
+* <a href="#application-startup">Application Startup</a>
+* <a href="#controls-with-shortcuts">Controls with Shortcuts</a>
 * <a href="#general-usage-scenario">General Usage Scenario</a>  
-* <a href="#settings-board">Settings Board</a>  
+* <a href="#cells-functionality">Cells Functionality</a>  
+* <a href="#preferences-panel">Preferences Panel</a>  
+* <a href="#control-panel">Control Panel</a>  
 
 
 ### Controls with Shortcuts
@@ -55,12 +58,25 @@ Application key points:
 | <kbd>Shift</kbd> + <kbd>D</kbd>    |      Update Unupdated Cells                         |
 | <kbd>Shift</kbd> + <kbd>C</kbd>    |      Clean All Linked Cells                        |
 
+### Application Startup
+
+1. On startup application will suggest **input data order.**<br> 
+   For comfortable and efficient labeling we recommend to use sorted bboxes order.
+
+<img src="https://imgur.com/IQhS6Bg.png" style="width: 100%;"/>
+
+2. **Application saves annotation progress automatically.**<br>
+If you launch application on same project a second time — 
+   it will suggest you to continue the labeling process from the paused point.
+
+<img src="https://imgur.com/n1oLkux.png" style="width: 100%;"/>
+
 ### General Usage Scenario
 
 1. **Assign Base (<kbd>Shift</kbd> + <kbd>A</kbd>)** points to all linked cells
 <img src="https://imgur.com/nE0CP4N.png" style="width: 100%;"/>  
 
-2. **Update Masks (<kbd>Shift</kbd> + <kbd>D</kbd>)** on all unupdated cells
+2. **Update Masks (<kbd>Shift</kbd> + <kbd>D</kbd>)** on all unupdated (orange) cells
 <img src="https://imgur.com/IxcUVm3.png" style="width: 100%;"/>
 
 3. **Unlink All (<kbd>Shift</kbd> + <kbd>Q</kbd>)** cells
@@ -71,6 +87,19 @@ Application key points:
 
 5. When you satisfied with results, click **Next Batch** button to load next images
 <img src="https://imgur.com/HJaNRY3.png" style="width: 100%;"/>
+
+### Cells Functionality
+
+Batched Smart Tool consists of cells with objects to label.<br/>
+Each cell has core functionality:
+
+1. Linked Cell —  all points (green / red) on linked cells will synchronise.
+2. Mark as Unlabeled — object will be marked with `_not_labeled_by_BTC` tag in output project.
+3. Mark as Labeled — mark object as labeled (optional option).
+4. Show in Input Project — open object in the Classic Labeling Interface.
+
+<img src="https://imgur.com/CfpcuAY.png" style="width: 100%;"/>
+
 
 ### Preferences Panel
 
@@ -84,19 +113,50 @@ Application key points:
 <img src="https://imgur.com/CSroTT2.png" style="width: 60%;"/>
 
 **Apply model to Preference** allows you to choose input data for labeling.  
-You can select objects (Rectangles type) from prepared project or label whole images.  
-`Multiclass labeling` available.   
-<img src="https://imgur.com/y05aYwo.png" style="width: 60%;"/>
-<img src="https://imgur.com/Ov78dSp.png" style="width: 60%;"/>
+You can select objects (Rectangles) from prepared project or label whole images.  
+   
+<img src="https://imgur.com/y05aYwo.png" style="width: 60%;"/>  
 
+`ℹ️ Multiclass labeling available`  
+<img src="https://imgur.com/bJKavJA.png" style="width: 60%;"/>
+
+
+### Control Panel
+
+**Control Panel** allows you control labeling process.
+<img src="https://imgur.com/DDTnoXW.png" style="width: 100%;"/>
+
+
+**Link all (<kbd>Shift</kbd> + <kbd>E</kbd>)** — links all cells, all points (green / red) on linked cells will synchronise.  
+**Unlink all (<kbd>Shift</kbd> + <kbd>Q</kbd>)** — unlinks all cells.
+<img src="https://imgur.com/iYBzz7m.png" style="width: 60%;"/>
+
+**Assign Base (<kbd>Shift</kbd> + <kbd>A</kbd>)** — assign 8 red points to corners and 1 green point to center of image.    
+**Clean Up (<kbd>Shift</kbd> + <kbd>C</kbd>)** — clean up data from all linked cells.   
+<img src="https://imgur.com/y2SCqOu.png" style="width: 60%;"/>
+
+
+
+**Update Masks (<kbd>Shift</kbd> + <kbd>D</kbd>)** — updates masks on all unupdated (orange) cells.  
+**Next Batch** — uploads labeled data from cells to output project and load new data to label.
+<img src="https://imgur.com/Y9Mfxrc.png" style="width: 60%;"/>
 
 
 # How to run
 
 
-1. Prepare **Images Project** with roughly assigned **Rectangles**
+1. Prepare **Images Project**<br>
+   
+**Option 1:** with roughly assigned **Rectangles** 
 
 <img src="https://github.com/supervisely-ecosystem/dev-smart-tool-batched/releases/download/v0.0.1/prepare-project.gif?raw=true" style="width: 100%;"/>
+
+**Option 2:** with plain images
+<img src="https://imgur.com/qSY467f.png" style="width: 100%;"/>
+
+
+
+
 
 2. Launch [RITM interactive segmentation Smart Tool](https://ecosystem.supervise.ly/apps/supervisely-ecosystem%252Fritm-interactive-segmentation%252Fsupervisely)
 
