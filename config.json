@@ -13,6 +13,7 @@
     "icon_background": "#FFFFFF",
     "icon_cover": false,
     "icon": "https://imgur.com/LHD0OCt.png",
+    "instance_version": "6.4.43",
     "context_menu": {
         "target": ["images_project"]
     }
