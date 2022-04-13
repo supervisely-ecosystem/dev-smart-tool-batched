@@ -4,7 +4,7 @@
     "version": "2.0.2",
     "categories": [
       "labeling tools",
-      "images",
+      "images"
     ],
     "description": "batched smart labeling tool",
     "docker_image": "supervisely/base-py-sdk:6.10.1",
