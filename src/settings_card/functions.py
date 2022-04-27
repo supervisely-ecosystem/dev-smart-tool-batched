@@ -44,6 +44,7 @@ def get_data_to_render(image_info, bboxes, current_dataset):
             'label': label,
             'imageLink': f'{g.api.image.url(team_id=DataJson()["teamId"], workspace_id=DataJson()["workspaceId"], project_id=current_dataset.project_id, dataset_id=current_dataset.id, image_id=image_info.id)}',
             'imageUrl': f'{image_info.full_storage_url}',
+            'imageName': f'{image_info.name}',
             'imageHash': f'{image_info.hash}',
             'imageSize': [image_info.width, image_info.height],
             'datasetName': f'{current_dataset.name}',

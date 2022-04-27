@@ -27,6 +27,7 @@ class SmartTool:
 
         self.image_link = None
 
+        self.image_name = None
         self.sly_id = None
 
         self.image_url = None
@@ -183,6 +184,7 @@ class SmartTool:
         self.image_link = new_widget_data.get('imageLink', '')
         self.image_url = new_widget_data.get('imageUrl', '')
         self.image_hash = new_widget_data.get('imageHash', '')
+        self.image_name = new_widget_data.get('imageName', '')
         self.image_size = new_widget_data.get('imageSize', '')
         self.dataset_name = new_widget_data.get('datasetName', '')
         self.positive_points = new_widget_data.get('positivePoints', [])
@@ -205,6 +207,7 @@ class SmartTool:
             'imageLink': self.image_link,
             'imageUrl': self.image_url,
             'imageHash': self.image_hash,
+            'imageName': self.image_name,
             'imageSize': self.image_size,
             'datasetName': self.dataset_name,
             'positivePoints': self.positive_points,

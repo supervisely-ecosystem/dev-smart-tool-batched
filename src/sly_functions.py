@@ -72,11 +72,13 @@ def append_processed_geometries(geometries_ids, project_id):
 def upload_images_to_dataset(dataset_id, data_to_upload):
     hash2annotation = {}
     hash2labels = {}
+    hash2names = {}
 
     for widget_data in data_to_upload:
         label = get_supervisely_label_by_widget_data(widget_data)
         if label is not None:
             hash2labels.setdefault(widget_data['imageHash'], []).append(label)
+            hash2names[widget_data['imageHash']] = widget_data['imageName']
 
     for image_hash, labels in hash2labels.items():
         if len(labels) > 0:
@@ -84,7 +86,7 @@ def upload_images_to_dataset(dataset_id, data_to_upload):
             image_info = imagehash2imageinfo.get(image_hash)
 
             if image_info is None:  # if image not founded in hashed images
-                image_info = g.api.image.upload_hash(dataset_id=dataset_id, name=f'{image_hash[:5]}.png',
+                image_info = g.api.image.upload_hash(dataset_id=dataset_id, name=f'{hash2names[image_hash]}',
                                                      hash=image_hash)
                 g.imagehash2imageinfo_by_datasets.setdefault(dataset_id, {})[image_hash] = image_info
 
@@ -129,13 +131,3 @@ def update_queues_stats(state):
 
     select_class.update_classes_table()
 
-
-def run_sync(coroutine):
-    try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:
-        loop = None
-    if loop and loop.is_running():
-        asyncio.ensure_future(coroutine, loop=loop)
-    else:
-        asyncio.run(coroutine)
