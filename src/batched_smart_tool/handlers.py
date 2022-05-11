@@ -249,6 +249,7 @@ def bboxes_padding_changed(request: Request,
 
 
 def bbox_updated(identifier: str,
+                 background_tasks: BackgroundTasks,
                  state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     DataJson()['newMasksAvailable'] = True
 
@@ -270,6 +271,7 @@ def bbox_updated(identifier: str,
 
     updated_widget.update_remote_fields(state=state, data=DataJson())
     run_sync(DataJson().synchronize_changes())
+    background_tasks.add_task(local_functions.update_single_widget_realtime, widget=updated_widget, state=state)
 
 
 def bboxes_masks_opacity_changed(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
