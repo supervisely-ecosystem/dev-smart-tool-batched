@@ -59,9 +59,9 @@ async def select_bboxes_order(state: supervisely.app.StateJson = Depends(supervi
 
 
 def points_updated(identifier: str,
-                   request: Request,
                    background_tasks: BackgroundTasks,
-                   state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+                   state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request),
+                   update_realtime=True):
     widget: SmartTool = g.grid_controller.get_widget_by_id(widget_id=identifier)
 
     DataJson()['newMasksAvailable'] = True
@@ -100,7 +100,8 @@ def points_updated(identifier: str,
     widget = g.grid_controller.get_widget_by_id(widget_id=identifier)
     g.realtime_widget_update = copy.deepcopy(widget.last_call)
 
-    background_tasks.add_task(local_functions.update_single_widget_realtime, widget=widget, state=state)
+    if update_realtime is True:
+        background_tasks.add_task(local_functions.update_single_widget_realtime, widget=widget, state=state)
     # local_functions.update_single_widget_realtime(widget=widget, state=state)
 
 
@@ -129,12 +130,18 @@ def clean_up(state: supervisely.app.StateJson = Depends(supervisely.app.StateJso
     g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
 
-def assign_base_points(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
+def assign_base_points(background_tasks: BackgroundTasks,
+                       state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):
     g.grid_controller.update_local_fields(state=state, data=DataJson())
 
+    updated_widget_id = None
     for widget in g.grid_controller.widgets.values():
         if widget.is_active and not widget.is_empty and not widget.is_finished and not widget.is_broken:
             widget.needs_an_update = True
+            updated_widget_id = widget.identifier
+
+            neg_backup = copy.deepcopy(widget.negative_points)
+            pos_backup = copy.deepcopy(widget.positive_points)
 
             w = widget.original_bbox[1][0] - widget.original_bbox[0][0]
             h = widget.original_bbox[1][1] - widget.original_bbox[0][1]
@@ -162,6 +169,11 @@ def assign_base_points(state: supervisely.app.StateJson = Depends(supervisely.ap
             center_x, center_y = int((x0 + x1) / 2), int((y0 + y1) / 2)
             widget.positive_points.append({'position': [[center_x, center_y]], 'id': f'{uuid.uuid4()}'})
 
+            widget.update_remote_fields(state=state, data=DataJson(), synchronize=False)
+
+            widget.negative_points = copy.deepcopy(neg_backup)
+            widget.positive_points = copy.deepcopy(pos_backup)
+
             # widget.needs_an_update = True
             # state['widgets'].setdefault(f'{widget.__class__.__name__}', {})[f'{widget.identifier}'] = \
             #     copy.deepcopy(widget.get_data_to_send())
@@ -170,12 +182,14 @@ def assign_base_points(state: supervisely.app.StateJson = Depends(supervisely.ap
             # for _ in range(4):
             #     widget.negative_points.pop()
             # widget.positive_points.pop()
-
-            # points_updated(identifier=widget.identifier, state=state)  # update main card
             DataJson()['newMasksAvailable'] = local_functions.new_masks_available_flag()
+            break
 
-    run_sync(DataJson().synchronize_changes())
-    g.grid_controller.update_remote_fields(state=state, data=DataJson())
+    if updated_widget_id is not None:
+        points_updated(identifier=updated_widget_id, state=state, background_tasks=background_tasks, update_realtime=False)  # update main card
+
+    # run_sync(DataJson().synchronize_changes())
+    # g.grid_controller.update_remote_fields(state=state, data=DataJson())
 
 
 def update_masks(state: supervisely.app.StateJson = Depends(supervisely.app.StateJson.from_request)):

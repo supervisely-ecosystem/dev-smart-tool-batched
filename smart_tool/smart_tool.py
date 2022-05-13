@@ -163,6 +163,15 @@ class SmartTool:
         if self.mask is not None:
             self.mask['contour'] = None
 
+    def _remove_repeated_points(self, points_list):
+        points = {}
+        for point in points_list:
+            point_id = point['id']
+            if points.get(point_id) is None:
+                points[point_id] = point
+
+        return list(points.values())
+
     def clean_up(self):
         self.positive_points = []
         self.negative_points = []
@@ -187,8 +196,8 @@ class SmartTool:
         self.image_name = new_widget_data.get('imageName', '')
         self.image_size = new_widget_data.get('imageSize', '')
         self.dataset_name = new_widget_data.get('datasetName', '')
-        self.positive_points = new_widget_data.get('positivePoints', [])
-        self.negative_points = new_widget_data.get('negativePoints', [])
+        self.positive_points = self._remove_repeated_points(new_widget_data.get('positivePoints', []))
+        self.negative_points = self._remove_repeated_points(new_widget_data.get('negativePoints', []))
         self.original_bbox = new_widget_data.get('originalBbox', [])
         self.scaled_bbox = new_widget_data.get('scaledBbox', [])
         self.mask = new_widget_data.get('mask', None)
