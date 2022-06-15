@@ -4,7 +4,6 @@ import uuid
 
 import numpy as np
 from supervisely.app.fastapi import run_sync
-from cv2 import cv2
 from fastapi import Request, Depends
 from fastapi import BackgroundTasks, FastAPI
 
