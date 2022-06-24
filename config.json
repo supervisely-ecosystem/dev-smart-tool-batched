@@ -22,5 +22,6 @@
     "target": [
       "images_project"
     ]
-  }
+  },
+  "poster": "https://github.com/supervisely-ecosystem/dev-smart-tool-batched/releases/download/v0.0.1/poster.jpg"
 }
