@@ -53,7 +53,11 @@
     ]">
         <template v-slot="{ post, state, data, session }">
             <sly-app-header v-if="session" :session="session"></sly-app-header>
+            <div>
+              ID: {{ session.id }}, status: {{ session.status }}
+            </div>
             <div @click="post('/test')">test</div>
+            <el-button @click="post('/test')">Click</div>
         </template>
     </sly-app>
 </div>
