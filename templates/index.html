@@ -3,14 +3,17 @@
 <head>
     <title>Supervisely Applications: Batched Smart Tool</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/svg.select.js@3.0.1/dist/svg.select.min.css"/>
-    <!--    <link rel="stylesheet" href="https://supervise.ly/apps-designer.bundle.css"/>-->
+    <link rel="stylesheet" href="https://supervise.ly/sly-app-widgets-2.1.8.bundle.css"/>
     <link rel="stylesheet" href="./static/styles.css"/>
 </head>
 
 <body style="overflow-y: auto; padding: 10px">
+<script>
+  window.parent.postMessage('{ "showHeader": false }', '*');
+</script>
 
 
-<script src="https://supervise.ly/sly-app-widgets-2.0.0.bundle.js"></script>
+<script src="https://supervise.ly/sly-app-widgets-2.1.8.bundle.js"></script>
 
 
 <script src="https://cdn.jsdelivr.net/npm/svg.js@2.7.1/dist/svg.min.js"></script>
@@ -25,12 +28,12 @@
 
 <script
         type="module"
-        src="https://cdn.jsdelivr.net/gh/supervisely-ecosystem/supervisely-app-frontend-js@v0.0.15/SlyApp.js">
+        src="https://supervisely-ecosystem.github.io/supervisely-app-frontend-js/SlyApp.js">
 </script>
+<!--        src="https://cdn.jsdelivr.net/gh/supervisely-ecosystem/supervisely-app-frontend-js@v0.0.21/SlyApp.js"-->
 <!--        src="https://supervisely-ecosystem.github.io/supervisely-app-frontend-js/SlyApp.js">-->
 <!--<script src="/static/SlyApp.js" type="module"></script>-->
 <script src="./static/smarttool.js"></script>
-
 
 <div id="sly-app">
     <sly-app
@@ -41,7 +44,8 @@
     { keyCode: 65, modifiers: ['shift'], handler({ state, post }) { post('/assign-base-points/'); }},
     { keyCode: 67, modifiers: ['shift'], handler({ state, post }) { post('/clean-up/') }},
     ]">
-        <template v-slot="{ post, state, data }">
+        <template v-slot="{ post, state, data, session }">
+            <sly-app-header v-if="session" :session="session"></sly-app-header>
             {% include 'batched_smart_tool.html' %}
 
             {% include 'select_class.html' %}
