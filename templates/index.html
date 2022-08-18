@@ -53,10 +53,11 @@
     ]">
         <template v-slot="{ post, state, data, session }">
             <sly-app-header v-if="session" :session="session"></sly-app-header>
-            {% include 'batched_smart_tool.html' %}
+            <div @click="post('/test')">test</div>
+<!--             {% include 'batched_smart_tool.html' %}
 
             {% include 'select_class.html' %}
-            {% include 'dialog_window.html' %}
+            {% include 'dialog_window.html' %} -->
         </template>
     </sly-app>
 </div>
