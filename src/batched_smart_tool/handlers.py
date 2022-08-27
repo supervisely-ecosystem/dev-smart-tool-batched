@@ -292,6 +292,7 @@ def next_batch(
         logger.info(f"Items in queue left: {len(g.selected_queue.queue)}")
         state["queueIsEmpty"] = g.selected_queue.empty()
 
+        raise ValueError("max debug")
         # 1 - load data from widgets
         g.grid_controller.update_local_fields(state=state, data=DataJson())
 
