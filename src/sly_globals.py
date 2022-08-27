@@ -5,6 +5,7 @@ import sys
 from loguru import logger
 from pathlib import Path
 
+# from dotenv import load_dotenv
 
 from fastapi import FastAPI
 from starlette.responses import FileResponse
@@ -25,32 +26,39 @@ logger.info(f"App root directory: {app_root_directory}")
 # local_project_dir = os.path.join(app_root_directory, 'local_project')
 logger.info(f'PYTHONPATH={os.environ.get("PYTHONPATH", "")}')
 
+# load_dotenv("debug.env")
+# load_dotenv(os.path.expanduser("~/supervisely.env"))
 
 app = FastAPI()
 
 sly_app = create()
 
 app.mount("/sly", sly_app)
-app.mount("/static", StaticFiles(directory=os.path.join(app_root_directory, 'static')), name="static")
+app.mount(
+    "/static",
+    StaticFiles(directory=os.path.join(app_root_directory, "static")),
+    name="static",
+)
+
 
 api = supervisely.Api.from_env()
 
 
-StateJson()['widgets'] = {}
+StateJson()["widgets"] = {}
 
 
-DataJson()['instanceAddress'] = os.environ['SERVER_ADDRESS']
-DataJson()['teamId'] = os.environ['context.teamId']
-DataJson()['workspaceId'] = os.environ['context.workspaceId']
-DataJson()['widgets'] = {}
+DataJson()["instanceAddress"] = os.environ["SERVER_ADDRESS"]
+DataJson()["teamId"] = os.environ["context.teamId"]
+DataJson()["workspaceId"] = os.environ["context.workspaceId"]
+DataJson()["widgets"] = {}
 
-templates_env = Jinja2Templates(directory=os.path.join(app_root_directory, 'templates'))
+templates_env = Jinja2Templates(directory=os.path.join(app_root_directory, "templates"))
 
-prediction_mode = 'batched'
+prediction_mode = "batched"
 
 # selected_queue = Queue(maxsize=int(1e6))
 crops_data = None
-bboxes_order = 'sizes'
+bboxes_order = "sizes"
 selected_queue = None
 classes2queues = {}
 images_queue = queue.Queue(maxsize=int(1e6))
@@ -70,13 +78,13 @@ broken_image_object = None
 
 broken_tag_meta = None
 
-input_project_id = os.getenv('modal.state.slyProjectId')
+input_project_id = os.getenv("modal.state.slyProjectId")
 input_project_meta = supervisely.ProjectMeta()
 output_project_id = None
 
 realtime_widget_update = 0
 
 
-@app.get('/favicon.ico')
+@app.get("/favicon.ico")
 def favicon():
-    return FileResponse(os.path.join(app_root_directory, 'static', 'favicon.png'))
+    return FileResponse(os.path.join(app_root_directory, "static", "favicon.png"))
