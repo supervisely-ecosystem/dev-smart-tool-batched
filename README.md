@@ -49,13 +49,13 @@ Application key points:
 1. On startup application will suggest **input data order.**<br> 
    For comfortable and efficient labeling we recommend to use sorted bboxes order.
 
-<img src="https://imgur.com/IQhS6Bg.png" style="width: 100%;"/>
+<img src="media/as1.png" style="width: 100%;"/>
 
 2. **Application saves annotation progress automatically.**<br>
 If you launch application on same project a second time — 
    it will suggest you to continue the labeling process from the paused point.
 
-<img src="https://imgur.com/n1oLkux.png" style="width: 100%;"/>
+<img src="media/as2.png" style="width: 100%;"/>
 
 
 ### Controls with Shortcuts
@@ -76,19 +76,19 @@ If you launch application on same project a second time —
 ### General Usage Scenario
 
 1. **Assign Base (<kbd>Shift</kbd> + <kbd>A</kbd>)** points to all linked cells
-<img src="https://imgur.com/nE0CP4N.png" style="width: 100%;"/>  
+<img src="media/gu1.png" style="width: 100%;"/>  
 
 2. **Update Masks (<kbd>Shift</kbd> + <kbd>D</kbd>)** on all unupdated (orange) cells
-<img src="https://imgur.com/IxcUVm3.png" style="width: 100%;"/>
+<img src="media/gu2.png" style="width: 100%;"/>
 
 3. **Unlink All (<kbd>Shift</kbd> + <kbd>Q</kbd>)** cells
-<img src="https://imgur.com/5XkMWoI.png" style="width: 100%;"/>
+<img src="media/gu3.png" style="width: 100%;"/>
 
 4. Easily place **green points** to label-interested area and **red points** to label-not-interested area to correct local mistakes.
-<img src="https://imgur.com/1ijrQpC.png" style="width: 100%;"/>
+<img src="media/gu4.png" style="width: 100%;"/>
 
 5. When you satisfied with results, click **Next Batch** button to load next images
-<img src="https://imgur.com/HJaNRY3.png" style="width: 100%;"/>
+<img src="media/gu5.png" style="width: 100%;"/>
 
 ### Cells Functionality
 
@@ -100,48 +100,48 @@ Each cell has core functionality:
 3. Mark as Labeled — mark object as labeled (optional option).
 4. Show in Input Project — open object in the Classic Labeling Interface.
 
-<img src="https://imgur.com/CfpcuAY.png" style="width: 100%;"/>
+<img src="media/cf.png" style="width: 100%;"/>
 
 
 ### Preferences Panel
 
 **Preferences Panel** allows you to customize labeling interface for your needs.
-<img src="https://imgur.com/cYXObJB.png" style="width: 100%;"/>
+<img src="media/prp.png" style="width: 100%;"/>
 
 **Grid Cells Preferences** allows you to adjust number, size, padding and masks opacity parameters for each cell in the grid.  
-<img src="https://imgur.com/MrqTMmc.png" style="height: 60px;"/>
+<img src="media/gcp.png" style="height: 60px;"/>
 
 **Model Preferences** allows you to connect to served Smart Tool model, and select labeling mode.  
-<img src="https://imgur.com/CSroTT2.png" style="height: 60px;"/>
+<img src="media/mp.png" style="height: 60px;"/>
 
 **Apply model to Preference** allows you to choose input data for labeling.  
 You can select objects (Rectangles) from prepared project or label whole images.  
    
-<img src="https://imgur.com/y05aYwo.png" style="height: 60px;"/>  
+<img src="media/amtp.png" style="height: 60px;"/>  
 
 `ℹ️ Multiclass labeling available`  
-<img src="https://imgur.com/bJKavJA.png" style="width: 60%;"/>
+<img src="media/amtp2.png" style="width: 60%;"/>
 
 
 ### Control Panel
 
 **Control Panel** allows you control labeling process.
-<img src="https://imgur.com/DDTnoXW.png" style="width: 100%;"/>
+<img src="media/copan.png" style="width: 100%;"/>
 
 
 **Link all (<kbd>Shift</kbd> + <kbd>E</kbd>)** — links all cells, all points (green / red) on linked cells will synchronise.  
 **Unlink all (<kbd>Shift</kbd> + <kbd>Q</kbd>)** — unlinks all cells.  
-<img src="https://imgur.com/iYBzz7m.png" style="height: 60px;"/>
+<img src="media/conplu.png" style="height: 60px;"/>
 
 **Assign Base (<kbd>Shift</kbd> + <kbd>A</kbd>)** — assign 8 red points to corners and 1 green point to center of image.    
 **Clean Up (<kbd>Shift</kbd> + <kbd>C</kbd>)** — clean up data from all linked cells.   
-<img src="https://imgur.com/y2SCqOu.png" style="height: 60px;"/>
+<img src="media/conpab.png" style="height: 60px;"/>
 
 
 
 **Update Masks (<kbd>Shift</kbd> + <kbd>D</kbd>)** — updates masks on all unupdated (orange) cells.  
 **Next Batch** — uploads labeled data from cells to output project and load new data to label.  
-<img src="https://imgur.com/Y9Mfxrc.png" style="height: 60px;"/>
+<img src="media/conpum.png" style="height: 60px;"/>
 
 
 # How to run
@@ -154,7 +154,7 @@ You can select objects (Rectangles) from prepared project or label whole images.
 <img src="https://github.com/supervisely-ecosystem/dev-smart-tool-batched/releases/download/v0.0.1/prepare-project.gif?raw=true" style="width: 100%;"/>
 
 **Option 2:** with plain images
-<img src="https://imgur.com/qSY467f.png" style="width: 100%;"/>
+<img src="media/htr1a.png" style="width: 100%;"/>
 
 
 
@@ -162,18 +162,18 @@ You can select objects (Rectangles) from prepared project or label whole images.
 
 2. Launch [RITM interactive segmentation Smart Tool](https://ecosystem.supervise.ly/apps/supervisely-ecosystem%252Fritm-interactive-segmentation%252Fsupervisely)
 
-<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/ritm-interactive-segmentation/supervisely" src="https://i.imgur.com/eWmFwQ9.png" width="600px" style='padding-bottom: 0'/>  
+<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/ritm-interactive-segmentation/supervisely" src="media/htr2.png" width="600px" style='padding-bottom: 0'/>  
 
 
 
 3. Add [Batched Smart Tool](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/dev-smart-tool-batched) to your Team
 
-<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/dev-smart-tool-batched" src="https://imgur.com/KkM6dO0.png" width="350px">
+<img data-key="sly-module-link" data-module-slug="supervisely-ecosystem/dev-smart-tool-batched" src="media/htr3.png" width="350px">
 
 
 4. Launch from context menu of prepared project
 
-<img src="https://imgur.com/YrAQeRi.png" style="width: 100%;"/>
+<img src="media/htr4.png" style="width: 100%;"/>
 
 
 
