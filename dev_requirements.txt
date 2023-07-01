@@ -1,0 +1,2 @@
+supervisely==6.72.55
+loguru==0.6.0
