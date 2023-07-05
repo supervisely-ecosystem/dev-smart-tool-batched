@@ -17,7 +17,7 @@
   "task_location": "workspace_tasks",
   "icon_background": "#FFFFFF",
   "icon_cover": false,
-  "icon": "https://imgur.com/LHD0OCt.png",
+  "icon": "media/icon.png",
   "context_menu": {
     "target": [
       "images_project"
