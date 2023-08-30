@@ -10,7 +10,7 @@
         "labeling"
     ],
     "description": "Batched smart labeling tool for Images",
-    "docker_image": "supervisely/labeling:0.0.5",
+    "docker_image": "supervisely/labeling:6.72.114",
     "instance_version": "6.4.61",
     "entrypoint": "python -m uvicorn src.main:g.app --host 0.0.0.0 --port 8000",
     "port": 8000,
