@@ -5,14 +5,14 @@ import src.select_class.local_widgets as local_widgets
 import src.sly_globals as g
 
 
-def update_classes_progress(label, total, n):
-    if local_widgets.running_classes_progress is None:
-        local_widgets.running_classes_progress = selected_class_progress(total=int(total),
-                                                                         message=f'annotating {label}',
-                                                                         initial=int(n))
-    else:
-        local_widgets.running_classes_progress.n = int(n)
-        local_widgets.running_classes_progress.refresh()
+# def update_classes_progress(label, total, n):
+#     if local_widgets.running_classes_progress is None:
+#         local_widgets.running_classes_progress = selected_class_progress(total=int(total),
+#                                                                          message=f'annotating {label}',
+#                                                                          initial=int(n))
+#     else:
+#         local_widgets.running_classes_progress.n = int(n)
+#         local_widgets.running_classes_progress.refresh()
 
 
 def init_table_data():
@@ -38,7 +38,7 @@ def update_classes_table():
         if label == g.output_class_name:
             row[1] = len(queues[labels.index(label)].queue) + len(g.grid_controller.widgets)  # left
 
-            update_classes_progress(label=label, total=row[2], n=row[2]-row[1])
+            # update_classes_progress(label=label, total=row[2], n=row[2]-row[1])
         else:
             row[1] = len(queues[labels.index(label)].queue)
 
@@ -51,7 +51,7 @@ def update_classes_table():
 
         if 'image' == g.output_class_name:
             row[1] = len(g.images_queue.queue) + len(g.grid_controller.widgets)  # left
-            update_classes_progress(label='images', total=row[2], n=row[2]-row[1])
+            # update_classes_progress(label='images', total=row[2], n=row[2]-row[1])
         else:
             row[1] = len(g.images_queue.queue)
 
