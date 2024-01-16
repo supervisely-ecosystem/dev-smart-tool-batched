@@ -25,6 +25,10 @@ logger.info(f"App root directory: {app_root_directory}")
 # local_project_dir = os.path.join(app_root_directory, 'local_project')
 logger.info(f'PYTHONPATH={os.environ.get("PYTHONPATH", "")}')
 
+# # for local debug
+# from dotenv import load_dotenv
+# load_dotenv(os.path.join(app_root_directory, 'debug.env'))
+# load_dotenv(os.path.expanduser('~/supervisely.env'))
 
 app = FastAPI()
 
