@@ -199,7 +199,7 @@ def update_masks(state: supervisely.app.StateJson = Depends(supervisely.app.Stat
     try:
         response = g.api.task.send_request(int(state['processingServer']['sessionId']), "smart_segmentation_batched",
                                            data={},
-                                           context={'data_to_process': data_to_process}, timeout=5)
+                                           context={'data_to_process': data_to_process}, timeout=600)
         local_functions.update_local_masks(response, state)
     except Exception as ex:
         dialog_window.notification_box.title = 'The model is not responding to requests.'
