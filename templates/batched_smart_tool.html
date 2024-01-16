@@ -341,7 +341,7 @@
                             v-if="data.newMasksAvailable"
                             type="primary" class="regular" size="small" style="margin: 0 2px; margin-bottom: 5px"
                             @click="post('/spawn-unsaved-mask-dialog/')"
-                            :disabled="state.queueIsEmpty || state.batchInUpload">
+                            :disabled="state.queueIsEmpty || state.batchInUpload || state.updatingMasks">
                         <i class="zmdi zmdi-skip-next mr5"></i>
                         NEXT BATCH
                     </el-button>
@@ -349,7 +349,7 @@
                             v-else
                             type="primary" class="regular" size="small" style="margin: 0 2px; margin-bottom: 5px"
                             @click="state.batchInUpload=true; state.updatingMasks=true; post('/next-batch/')"
-                            :disabled="state.queueIsEmpty || state.batchInUpload">
+                            :disabled="state.queueIsEmpty || state.batchInUpload || state.updatingMasks">
                         <i class="zmdi zmdi-skip-next mr5"></i>
                         NEXT BATCH
                     </el-button>
