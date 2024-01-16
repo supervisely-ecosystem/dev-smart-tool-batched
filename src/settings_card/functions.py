@@ -240,11 +240,15 @@ def copy_meta_from_input_to_output(output_project_id):
 
 def add_tag_to_project_meta(project_id, tag_name):
     project_meta = supervisely.ProjectMeta.from_json(g.api.project.get_meta(project_id))
-    tag_meta = supervisely.TagMeta(name=tag_name, value_type=supervisely.TagValueType.ANY_STRING)
-    project_meta = project_meta.clone(tag_metas=project_meta.tag_metas.add(tag_meta))
-    g.api.project.update_meta(project_id, project_meta.to_json())
+    tag_meta = project_meta.get_tag_meta(tag_name)
 
-    logger.info(f'new tag added to project meta: {project_id=}, {tag_name=}')
+    if tag_meta is not None:
+        logger.info(f'Tag: {tag_name} already exists in project meta. Will use existing tag.')
+    else:
+        tag_meta = supervisely.TagMeta(name=tag_name, value_type=supervisely.TagValueType.ANY_STRING)
+        project_meta = project_meta.clone(tag_metas=project_meta.tag_metas.add(tag_meta))
+        g.api.project.update_meta(project_id, project_meta.to_json())
+        logger.info(f'new tag added to project meta: {project_id=}, {tag_name=}')
 
     return tag_meta
 
