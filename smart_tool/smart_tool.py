@@ -192,6 +192,8 @@ class SmartTool:
     def update_fields_by_data(self, new_widget_data):
         self.image_link = new_widget_data.get('imageLink', '')
         self.image_url = new_widget_data.get('imageUrl', '')
+
+        # only for local debug ()
         # self.image_url = "https://dev.supervise.ly" + new_widget_data.get('imageUrl', '')
         self.image_hash = new_widget_data.get('imageHash', '')
         self.image_name = new_widget_data.get('imageName', '')
