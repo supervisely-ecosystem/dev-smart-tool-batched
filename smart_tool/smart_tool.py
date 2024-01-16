@@ -193,8 +193,11 @@ class SmartTool:
         self.image_link = new_widget_data.get('imageLink', '')
         self.image_url = new_widget_data.get('imageUrl', '')
 
-        # only for local debug (.com will not work)
-        # self.image_url = "https://dev.supervise.ly" + new_widget_data.get('imageUrl', '')
+        # # ! only for local debug
+        # if not self.image_url.startswith('https://dev.supervise.ly'):
+        #     # * .com will not work
+        #     self.image_url = "https://dev.supervise.ly" + new_widget_data.get('imageUrl', '')
+
         self.image_hash = new_widget_data.get('imageHash', '')
         self.image_name = new_widget_data.get('imageName', '')
         self.image_size = new_widget_data.get('imageSize', '')
