@@ -42,7 +42,10 @@ def update_classes_table():
         else:
             row[1] = len(queues[labels.index(label)].queue)
 
-        row[3] = int(((row[2] - row[1]) / row[2]) * 100)  # percentage
+        if row[2] == 0:
+            row[3] = 0
+        else:
+            row[3] = int(((row[2] - row[1]) / row[2]) * 100)  # percentage
 
     classes_table.rows = actual_rows
 
@@ -55,4 +58,7 @@ def update_classes_table():
         else:
             row[1] = len(g.images_queue.queue)
 
-        row[3] = int(((row[2] - row[1]) / row[2]) * 100)
+        if row[2] == 0:
+            row[3] = 0
+        else:            
+            row[3] = int(((row[2] - row[1]) / row[2]) * 100)
