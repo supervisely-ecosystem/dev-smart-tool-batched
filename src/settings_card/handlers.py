@@ -94,17 +94,15 @@ def _get_default_model_session():
     default_session = None
     app_list = None
     try:
-        app_list = g.api.app.get_list(DataJson()["teamId"], session_tags=["sly_smart_annotation"])
+        app_list = g.api.app.get_list(DataJson()["teamId"], only_running=True, session_tags=["sly_smart_annotation"])
+        if app_list is None or len(app_list) == 0:
+            raise Exception("No running models found")
+        task_list = app_list[0].tasks
+        if task_list is not None and len(task_list) > 0:
+            if task_list[0].get("status") == "started":
+                default_session = task_list[0].get("id")
     except Exception as ex:
-        logger.warning(f"Can't get list of apps. Please select model manually. Exception: {repr(ex)}")
-    if app_list is not None and len(app_list) > 0:
-        for app in app_list:
-            for task in app.tasks:
-                if task.get("status") == "started":
-                    default_session = task.get("id")
-                    break
-            if default_session is not None:
-                break
+        logger.warning(f"Please select running model session manually. {ex}")
     return default_session
     
 def set_default_model_session(state):
