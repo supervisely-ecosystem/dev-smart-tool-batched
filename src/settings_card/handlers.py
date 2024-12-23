@@ -94,7 +94,7 @@ def _get_default_model_session():
     default_session = None
     app_list = None
     try:
-        app_list = g.api.app.get_list(DataJson()["teamId"], session_tags=["sly_smart_annotation"])
+        app_list = g.api.app.get_list(DataJson()["teamId"], session_tags=["sly_smart_annotation"], only_running=True)
     except Exception as ex:
         logger.warning(f"Can't get list of apps. Please select model manually. Exception: {repr(ex)}")
     if app_list is not None and len(app_list) > 0:
