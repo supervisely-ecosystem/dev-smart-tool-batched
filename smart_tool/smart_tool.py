@@ -26,6 +26,8 @@ class SmartTool:
         self.identifier = self.get_widget_identifier(state, data)
 
         self.image_link = None
+        self.image_remote_link = None
+        self.image_id = None
 
         self.image_name = None
         self.sly_id = None
@@ -196,9 +198,11 @@ class SmartTool:
         # # ! only for local debug
         # if not self.image_url.startswith('https://dev.supervise.ly'):
         #     # * .com will not work
-        #     self.image_url = "https://dev.supervise.ly" + new_widget_data.get('imageUrl', '')
+        #     self.image_url = "https://dev.internal.supervisely.com" + new_widget_data.get('imageUrl', '')
 
         self.image_hash = new_widget_data.get('imageHash', '')
+        self.image_remote_link = new_widget_data.get('imageRemoteLink')
+        self.image_id = new_widget_data.get('imageId')
         self.image_name = new_widget_data.get('imageName', '')
         self.image_size = new_widget_data.get('imageSize', '')
         self.dataset_name = new_widget_data.get('datasetName', '')
@@ -235,7 +239,9 @@ class SmartTool:
             'isActive': self.is_active,
             'isBroken': self.is_broken,
             'isFinished': self.is_finished,
-            'lastCall': self.last_call
+            'lastCall': self.last_call,
+            'imageId': self.image_id,
+            'imageRemoteLink': self.image_remote_link
         }
 
     def update_remote_fields(self, state, data, synchronize=True):
