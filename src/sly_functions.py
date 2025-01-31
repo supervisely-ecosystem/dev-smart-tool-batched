@@ -73,12 +73,16 @@ def upload_images_to_dataset(dataset_id, data_to_upload):
     hash2annotation = {}
     hash2labels = {}
     hash2names = {}
+    hash2id = {}
+    hash2remote_links = {}
 
     for widget_data in data_to_upload:
         label = get_supervisely_label_by_widget_data(widget_data)
         if label is not None:
             hash2labels.setdefault(widget_data['imageHash'], []).append(label)
             hash2names[widget_data['imageHash']] = widget_data['imageName']
+            hash2id[widget_data['imageHash']] = widget_data['imageId']
+            hash2remote_links[widget_data['imageHash']] = widget_data['imageRemoteLink']
 
     for image_hash, labels in hash2labels.items():
         if len(labels) > 0:
@@ -86,7 +90,11 @@ def upload_images_to_dataset(dataset_id, data_to_upload):
             image_info = imagehash2imageinfo.get(image_hash)
 
             if image_info is None:  # if image not founded in hashed images
-                image_info = g.api.image.upload_hash(dataset_id=dataset_id, name=f'{hash2names[image_hash]}',
+                if hash2remote_links[image_hash] is not None:
+                    image_info = g.api.image.upload_link(dataset_id=dataset_id, name=f'{hash2names[image_hash]}',
+                                                         link=hash2remote_links[image_hash], force_metadata_for_links=False)
+                else:
+                    image_info = g.api.image.upload_hash(dataset_id=dataset_id, name=f'{hash2names[image_hash]}',
                                                      hash=image_hash)
                 g.imagehash2imageinfo_by_datasets.setdefault(dataset_id, {})[image_hash] = image_info
 
