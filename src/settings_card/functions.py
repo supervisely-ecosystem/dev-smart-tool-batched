@@ -1,6 +1,7 @@
 import copy
 import functools
 from queue import Queue
+from urllib.parse import urljoin
 
 import numpy as np
 from loguru import logger
@@ -31,6 +32,10 @@ def get_bboxes_from_annotation(image_annotations):
 
     return bboxes
 
+get_image_link = lambda ds_id, image_id: urljoin(
+    g.api.server_address,
+    f"app/images2/?datasetId={ds_id}&imageId={image_id}"
+)
 
 def get_data_to_render(image_info, bboxes, current_dataset):
     data_to_render = []
@@ -42,7 +47,7 @@ def get_data_to_render(image_info, bboxes, current_dataset):
 
         data_to_render.append({
             'label': label,
-            'imageLink': f'{g.api.image.url(team_id=DataJson()["teamId"], workspace_id=DataJson()["workspaceId"], project_id=current_dataset.project_id, dataset_id=current_dataset.id, image_id=image_info.id)}',
+            'imageLink': get_image_link(current_dataset.id, image_info.id),
             'imageUrl': f'{image_info.path_original}',
             'imageName': f'{image_info.name}',
             'imageHash': f'{image_info.hash}',
@@ -56,8 +61,9 @@ def get_data_to_render(image_info, bboxes, current_dataset):
             'mask': None,
             'isActive': True,
             'slyId': sly_id,
-
-            'boxArea': (bbox.right - bbox.left) * (bbox.bottom - bbox.top)
+            'boxArea': (bbox.right - bbox.left) * (bbox.bottom - bbox.top),
+            'imageRemoteLink': image_info.link,
+            'imageId': image_info.id,
         })
 
     return data_to_render

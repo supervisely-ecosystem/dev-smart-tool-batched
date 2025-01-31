@@ -119,7 +119,7 @@ def remove_point_from_connected_cards(origin_identifier, point_to_remove, points
 
 def get_data_from_widget_to_compute_masks(widget):
     widget_data = widget.get_data_to_send()
-    return {
+    data = {
         "crop": [
             {
                 "x": widget_data['scaledBbox'][0][0],
@@ -145,6 +145,9 @@ def get_data_from_widget_to_compute_masks(widget):
         "image_hash": f"{widget_data['imageHash']}",
         "predict_every_click": g.prediction_mode == 'consistent'
     }
+    if widget_data.get('imageRemoteLink') is not None:
+        data['image_id'] = widget_data['imageId']
+    return data
 
 
 def get_data_to_process():
